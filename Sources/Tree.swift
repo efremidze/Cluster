@@ -8,11 +8,87 @@
 
 import MapKit
 
+open class Tree {
+    
+    let rootNode = Node(rect: MKMapRectWorld)
+    
+    // -
+    
+    func insert(annotation: MKAnnotation) -> Bool {
+        return insert(annotation: annotation, toNode: rootNode)
+    }
+    
+    private func insert(annotation: MKAnnotation, toNode node: Node) -> Bool {
+        if !node.rect.contains(annotation.coordinate) {
+            return false
+        }
+        
+        if node.canAppendAnnotation() {
+            return node.append(annotation: annotation)
+        }
+        
+        let siblings = node.siblings ?? node.makeSiblings()
+        
+        for node in [siblings.northWest, siblings.northEast, siblings.southWest, siblings.southEast] {
+            if insert(annotation: annotation, toNode: node) {
+                return true
+            }
+        }
+        return false
+    }
+    
+    // -
+    
+    func enumerateAnnotationsUsingBlock(_ callback: (MKAnnotation) -> Void) {
+        enumerateAnnotations(inRect: MKMapRectWorld, withNode:rootNode, callback:callback)
+    }
+    
+    func enumerateAnnotations(inRect rect: MKMapRect, callback: (MKAnnotation) -> Void) {
+        enumerateAnnotations(inRect: rect, withNode: rootNode, callback: callback)
+    }
+    
+    private func enumerateAnnotations(inRect rect: MKMapRect, withNode node: Node, callback: (MKAnnotation) -> Void) {
+        guard node.rect.intersects(rect) else { return }
+        
+        for annotation in node.annotations where rect.contains(annotation.coordinate) {
+            callback(annotation)
+        }
+        
+        guard let siblings = node.siblings, !node.isLeaf else { return }
+        
+        for node in [siblings.northWest, siblings.northEast, siblings.southWest, siblings.southEast] {
+            enumerateAnnotations(inRect: rect, withNode: node, callback: callback)
+        }
+    }
+}
+
 open class Node {
     
-    let max = 8
+    let rect: MKMapRect
     
-    let boundingBox: MKMapRect
+    init(rect: MKMapRect) {
+        self.rect = rect
+    }
+    
+    // -
+    
+    private let max = 8
+    
+    private(set) var annotations = [MKAnnotation]()
+    
+    func canAppendAnnotation() -> Bool {
+        return annotations.count < max
+    }
+    
+    func append(annotation: MKAnnotation) -> Bool {
+        if canAppendAnnotation() {
+            annotations.append(annotation)
+            return true
+        }
+        return false
+    }
+    
+    // -
     
     struct Siblings {
         let northWest: Node
@@ -27,30 +103,11 @@ open class Node {
         return siblings == nil
     }
     
-//    private(set) var annotations = [MKAnnotation]()
-    
-    init(boundingBox: MKMapRect) {
-        self.boundingBox = boundingBox
-    }
-    
-//    func canAppendAnnotation() -> Bool {
-//        return annotations.count < max
-//    }
-//    
-//    func append(annotation: MKAnnotation) -> Bool {
-//        if canAppendAnnotation() {
-//            annotations.append(annotation)
-//            return true
-//        }
-//        return false
-//    }
-    
     func makeSiblings() -> Siblings {
-        let box = boundingBox
-        let northWest = Node(boundingBox: MKMapRect(minX: box.minX, minY: box.minY, maxX: box.midX, maxY: box.midY))
-        let northEast = Node(boundingBox: MKMapRect(minX: box.midX, minY: box.minY, maxX: box.maxX, maxY: box.midY))
-        let southWest = Node(boundingBox: MKMapRect(minX: box.minX, minY: box.midY, maxX: box.midX, maxY: box.maxY))
-        let southEast = Node(boundingBox: MKMapRect(minX: box.midX, minY: box.midY, maxX: box.maxX, maxY: box.maxY))
+        let northWest = Node(rect: MKMapRect(minX: rect.minX, minY: rect.minY, maxX: rect.midX, maxY: rect.midY))
+        let northEast = Node(rect: MKMapRect(minX: rect.midX, minY: rect.minY, maxX: rect.maxX, maxY: rect.midY))
+        let southWest = Node(rect: MKMapRect(minX: rect.minX, minY: rect.midY, maxX: rect.midX, maxY: rect.maxY))
+        let southEast = Node(rect: MKMapRect(minX: rect.midX, minY: rect.midY, maxX: rect.maxX, maxY: rect.maxY))
         return Siblings(northWest: northWest, northEast: northEast, southWest: southWest, southEast: southEast)
     }
     
@@ -69,4 +126,10 @@ extension MKMapRect {
     var midY: Double { return MKMapRectGetMidY(self) }
     var maxX: Double { return MKMapRectGetMaxX(self) }
     var maxY: Double { return MKMapRectGetMaxY(self) }
+    func intersects(_ rect: MKMapRect) -> Bool {
+        return MKMapRectIntersectsRect(self, rect)
+    }
+    func contains(_ coordinate: CLLocationCoordinate2D) -> Bool {
+        return MKMapRectContainsPoint(self, MKMapPointForCoordinate(coordinate))
+    }
 }
