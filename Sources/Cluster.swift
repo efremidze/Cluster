@@ -9,6 +9,12 @@
 import CoreLocation
 import MapKit
 
+open class ClusterManager {
+    
+    
+    
+}
+
 public enum AnnotationClusterDisplayMode {
     case color(color: UIColor, radius: CGFloat)
     case image(named: String)
