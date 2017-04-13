@@ -19,7 +19,7 @@ open class Node {
     
     private(set) var annotations = [MKAnnotation]()
     
-    private(set) let boundingBox: MKMapRect
+    let boundingBox: Bounds
     
     var siblings: Siblings?
     
@@ -29,7 +29,7 @@ open class Node {
     
     let max = 8
     
-    init(boundingBox box: MKMapRect) {
+    init(boundingBox box: Bounds) {
         boundingBox = box
     }
     
@@ -56,45 +56,44 @@ open class Node {
     
 }
 
-// bounds rect
 extension MKMapRect {
+    var minX: Double { return MKMapRectGetMinX(self) }
+    var minY: Double { return MKMapRectGetMinY(self) }
+    var midX: Double { return MKMapRectGetMidX(self) }
+    var midY: Double { return MKMapRectGetMidY(self) }
+    var maxX: Double { return MKMapRectGetMaxX(self) }
+    var maxY: Double { return MKMapRectGetMaxY(self) }
+}
+
+struct Bounds {
     
-    var minX: Double {
-        return origin.x
+    let topLeft, bottomRight: CLLocationCoordinate2D
+    
+    var mapRect: MKMapRect {
+        return [topLeft, bottomRight].map { MKMapPointForCoordinate($0) }.map { MKMapRect(origin: $0, size: MKMapSize()) }.reduce(MKMapRectNull, MKMapRectUnion)
+//        return MKMapRect(origin: MKMapPointForCoordinate(topLeft), size: MKMapSize(width: bottomRight.latitude - topLeft.latitude, height: bottomRight.longitude - topLeft.longitude))
     }
     
-    var minY: Double {
-        return origin.y
+    var midLatitude: CLLocationDegrees {
+        return (topLeft.latitude + bottomRight.latitude) / 2
     }
     
-    var midX: Double {
-        return maxX / 2
+    var midLongitude: CLLocationDegrees {
+        return (topLeft.longitude + bottomRight.longitude) / 2
     }
     
-    var midY: Double {
-        return maxY / 2
-    }
-    
-    var maxX: Double {
-        return origin.x + size.width
-    }
-    
-    var maxY: Double {
-        return origin.y + size.height
-    }
-    
-    init(_ mapRect: MKMapRect) {
-        let topLeft = MKCoordinateForMapPoint(mapRect.origin)
+    static func make(_ mapRect: MKMapRect) -> Bounds {
+        let topLeft = MKCoordinateForMapPoint(MKMapPointMake(MKMapRectGetMinX(mapRect), MKMapRectGetMinY(mapRect)))
         let bottomRight = MKCoordinateForMapPoint(MKMapPointMake(MKMapRectGetMaxX(mapRect), MKMapRectGetMaxY(mapRect)))
-        self.init(origin: MKMapPoint(x: bottomRight.latitude, y: topLeft.longitude), size: MKMapSize(width: topLeft.latitude, height: bottomRight.longitude))
+        return Bounds(topLeft: topLeft, bottomRight: bottomRight)
     }
     
-    func intersects(_ mapRect: MKMapRect) -> Bool {
-        return MKMapRectIntersectsRect(self, mapRect)
+    func intersects(_ bounds: Bounds) -> Bool {
+        return MKMapRectIntersectsRect(mapRect, bounds.mapRect)
     }
     
     func contains(_ coordinate: CLLocationCoordinate2D) -> Bool {
-        return MKMapRectContainsPoint(self, MKMapPointMake(coordinate.latitude, coordinate.longitude))
+        return MKMapRectContainsPoint(mapRect, MKMapPointForCoordinate(coordinate))
     }
     
 }
