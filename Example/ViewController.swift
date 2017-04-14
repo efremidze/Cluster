@@ -18,6 +18,8 @@ class ViewController: UIViewController {
         }
     }
     
+    let manager = ClusterManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -27,7 +29,6 @@ class ViewController: UIViewController {
             return annotation
         }
         manager.add(annotations: annotations)
-        manager.delegate = self
     }
     
 }
@@ -35,7 +36,26 @@ class ViewController: UIViewController {
 extension ViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        
+        if annotation is ClusterAnnotation {
+            let identifier = "Cluster"
+            var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+            if view == nil {
+                view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            } else {
+                view?.annotation = annotation
+            }
+            return view
+        } else {
+            let identifier = "Pin"
+            var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView
+            if view == nil {
+                view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                view?.pinTintColor = .green
+            } else {
+                view?.annotation = annotation
+            }
+            return view
+        }
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
