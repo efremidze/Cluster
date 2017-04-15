@@ -100,11 +100,11 @@
 		8BFA2B611E9F7149001A80FB /* Cluster */ = {
 			isa = PBXGroup;
 			children = (
+				8B53350F1EA2C723005C0A31 /* Annotation.swift */,
 				8BFA2B621E9F7149001A80FB /* Cluster.h */,
 				8BFA2B851E9F71BD001A80FB /* Cluster.swift */,
-				8BFA2B871E9FF960001A80FB /* Tree.swift */,
-				8B53350F1EA2C723005C0A31 /* Annotation.swift */,
 				8BFA2B631E9F7149001A80FB /* Info.plist */,
+				8BFA2B871E9FF960001A80FB /* Tree.swift */,
 			);
 			name = Cluster;
 			path = Sources;

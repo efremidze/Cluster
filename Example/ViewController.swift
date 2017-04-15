@@ -34,11 +34,12 @@ class ViewController: UIViewController {
 extension ViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let color = UIColor(red:0.11, green:0.70, blue:0.42, alpha:1)
         if annotation is ClusterAnnotation {
             let identifier = "Cluster"
             var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
             if view == nil {
-                view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, type: .color(color: color, radius: 15))
             } else {
                 view?.annotation = annotation
             }
@@ -48,7 +49,7 @@ extension ViewController: MKMapViewDelegate {
             var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView
             if view == nil {
                 view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-                view?.pinTintColor = .green
+                view?.pinTintColor = color
             } else {
                 view?.annotation = annotation
             }
@@ -60,16 +61,14 @@ extension ViewController: MKMapViewDelegate {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let strongSelf = self else { return }
             
-            let mapBoundsWidth = Double(strongSelf.mapView.bounds.width)
-            let mapRectWidth = strongSelf.mapView.visibleMapRect.size.width
-            let scale = mapBoundsWidth / mapRectWidth
-            
-            let annotationArray = strongSelf.manager.clusteredAnnotations(withinMapRect: strongSelf.mapView.visibleMapRect, zoomScale: scale)
+            let width = Double(strongSelf.mapView.bounds.width)
+            let visibleWidth = strongSelf.mapView.visibleMapRect.size.width
+            let annotations = strongSelf.manager.clusteredAnnotations(withinMapRect: strongSelf.mapView.visibleMapRect, zoomScale: width / visibleWidth)
             
             DispatchQueue.main.async { [weak self] in
                 guard let strongSelf = self else { return }
                 
-                strongSelf.manager.display(annotations: annotationArray, onMapView: strongSelf.mapView)
+                strongSelf.manager.display(annotations: annotations, onMapView: strongSelf.mapView)
             }
         }
     }

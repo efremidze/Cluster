@@ -37,7 +37,7 @@ open class ClusterAnnotationView: MKAnnotationView {
         return label
     }()
     
-    public var type: ClusterAnnotationType = .color(color: .red, radius: 15)
+    public var type: ClusterAnnotationType = .color(color: .black, radius: 15)
     
     override open var annotation: MKAnnotation? {
         didSet {
@@ -57,6 +57,11 @@ open class ClusterAnnotationView: MKAnnotationView {
         updateAnnotation()
     }
     
+    public convenience init(annotation: MKAnnotation?, reuseIdentifier: String?, type: ClusterAnnotationType) {
+        self.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
+        self.type = type
+    }
+    
     private func updateAnnotation() {
         guard let annotation = annotation as? ClusterAnnotation else { return }
         
@@ -64,12 +69,14 @@ open class ClusterAnnotationView: MKAnnotationView {
         
         switch type {
         case let .image(named):
+            backgroundColor = .clear
             image = UIImage(named: named)
         case let .color(color, radius):
             backgroundColor	= color
             frame = CGRect(origin: frame.origin, size: CGSize(width: radius * 2, height: radius * 2))
         }
         
+        layer.borderColor = UIColor.white.cgColor
         layer.borderWidth = 3
         countLabel.font = .boldSystemFont(ofSize: 13)
         countLabel.text = "\(count)"

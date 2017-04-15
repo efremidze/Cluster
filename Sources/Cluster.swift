@@ -49,7 +49,6 @@ open class ClusterManager {
         
         for i in minX...maxX {
             for j in minY...maxY {
-                
                 let mapPoint = MKMapPoint(x: Double(i) / scaleFactor, y: Double(j) / scaleFactor)
                 let mapSize = MKMapSize(width: 1.0 / scaleFactor, height: 1.0 / scaleFactor)
                 let mapRect = MKMapRect(origin: mapPoint, size: mapSize)
@@ -142,6 +141,7 @@ extension ZoomLevel {
             return 88 // Less than 13
         }
     }
+    
 }
 
 // Required due to conflict with Int static variable 'max'
