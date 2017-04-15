@@ -12,11 +12,7 @@ import Cluster
 
 class ViewController: UIViewController {
     
-    @IBOutlet weak var mapView: MKMapView! {
-        didSet {
-            mapView.centerCoordinate = CLLocationCoordinate2DMake(0, 0)
-        }
-    }
+    @IBOutlet weak var mapView: MKMapView!
     
     let manager = ClusterManager()
     
@@ -29,6 +25,8 @@ class ViewController: UIViewController {
             return annotation
         }
         manager.add(annotations: annotations)
+        
+        mapView.centerCoordinate = CLLocationCoordinate2DMake(0, 0)
     }
     
 }
