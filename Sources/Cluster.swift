@@ -33,7 +33,7 @@ open class ClusterManager {
         return annotations
     }
     
-    func clusteredAnnotations(withinMapRect rect:MKMapRect, zoomScale: Double) -> [MKAnnotation] {
+    open func clusteredAnnotations(withinMapRect rect:MKMapRect, zoomScale: Double) -> [MKAnnotation] {
         guard !zoomScale.isInfinite else { return [] }
         
         let cellSize = ZoomLevel(MKZoomScale(zoomScale)).cellSize()
@@ -87,24 +87,29 @@ open class ClusterManager {
         return clusteredAnnotations
     }
     
-//    func display(annotations: [MKAnnotation], onMapView mapView: MKMapView) {
-//        let before = NSMutableSet(mapView.annotations)
-//        before.remove(mapView.userLocation)
-//        
-//        let after = NSSet(array: annotations)
-//        
-//        let toKeep = NSMutableSet(set: before)
-//        toKeep.intersect(after as Set<NSObject>)
-//        
-//        let toAdd = NSMutableSet(set: after)
-//        toAdd.minus(toKeep as Set<NSObject>)
-//        
-//        let toRemove = NSMutableSet(set: before)
-//        toRemove.minus(after as Set<NSObject>)
-//        
-//        _ = toAdd.allObjects.flatMap { $0 as? MKAnnotation }.map { mapView.addAnnotations($0) }
-//        _ = toRemove.allObjects.flatMap { $0 as? MKAnnotation }.map { mapView.removeAnnotations($0) }
-//    }
+    open func display(annotations: [MKAnnotation], onMapView mapView: MKMapView) {
+        let before = NSMutableSet(array: mapView.annotations)
+        before.remove(mapView.userLocation)
+        
+        let after = NSSet(array: annotations)
+        
+        let toKeep = NSMutableSet(set: before)
+        toKeep.intersect(after as Set<NSObject>)
+        
+        let toAdd = NSMutableSet(set: after)
+        toAdd.minus(toKeep as Set<NSObject>)
+        
+        let toRemove = NSMutableSet(set: before)
+        toRemove.minus(after as Set<NSObject>)
+        
+        if let toAddAnnotations = toAdd.allObjects as? [MKAnnotation] {
+            mapView.addAnnotations(toAddAnnotations)
+        }
+        
+        if let removeAnnotations = toRemove.allObjects as? [MKAnnotation] {
+            mapView.removeAnnotations(removeAnnotations)
+        }
+    }
     
 }
 
@@ -224,15 +229,3 @@ open class Annotation: NSObject, MKAnnotation {
     open var title: String?
     open var subtitle: String?
 }
-
-//extension MKAnnotation: Hashable {
-//    var hashValue: Int {
-//        return coordinate.latitude.hashValue ^ coordinate.longitude.hashValue
-//    }
-//}
-//
-//extension MKAnnotation: Equatable {}
-//
-//func ==(lhs: MKAnnotation, rhs: MKAnnotation) -> Bool {
-//    return lhs.coordinate == rhs.coordinate
-//}
