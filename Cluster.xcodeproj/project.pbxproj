@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8B5335101EA2C723005C0A31 /* Annotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B53350F1EA2C723005C0A31 /* Annotation.swift */; };
+		8B65CB041EA30BAB00753706 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B65CB031EA30BAB00753706 /* Extensions.swift */; };
 		8BFA2B641E9F7149001A80FB /* Cluster.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BFA2B621E9F7149001A80FB /* Cluster.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8BFA2B711E9F715B001A80FB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFA2B701E9F715B001A80FB /* AppDelegate.swift */; };
 		8BFA2B731E9F715B001A80FB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFA2B721E9F715B001A80FB /* ViewController.swift */; };
@@ -46,6 +47,7 @@
 
 /* Begin PBXFileReference section */
 		8B53350F1EA2C723005C0A31 /* Annotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Annotation.swift; sourceTree = "<group>"; };
+		8B65CB031EA30BAB00753706 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		8BFA2B5F1E9F7149001A80FB /* Cluster.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Cluster.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BFA2B621E9F7149001A80FB /* Cluster.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cluster.h; sourceTree = "<group>"; };
 		8BFA2B631E9F7149001A80FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				8B53350F1EA2C723005C0A31 /* Annotation.swift */,
 				8BFA2B621E9F7149001A80FB /* Cluster.h */,
 				8BFA2B851E9F71BD001A80FB /* Cluster.swift */,
+				8B65CB031EA30BAB00753706 /* Extensions.swift */,
 				8BFA2B631E9F7149001A80FB /* Info.plist */,
 				8BFA2B871E9FF960001A80FB /* Tree.swift */,
 			);
@@ -242,6 +245,7 @@
 				8BFA2B861E9F71BD001A80FB /* Cluster.swift in Sources */,
 				8B5335101EA2C723005C0A31 /* Annotation.swift in Sources */,
 				8BFA2B881E9FF960001A80FB /* Tree.swift in Sources */,
+				8B65CB041EA30BAB00753706 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
