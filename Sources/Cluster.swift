@@ -21,11 +21,11 @@ open class ClusterManager {
         }
     }
     
-    func removeAll() {
+    open func removeAll() {
         tree = Tree()
     }
     
-    func annotations() -> [MKAnnotation] {
+    open func annotations() -> [MKAnnotation] {
         var annotations = [MKAnnotation]()
         tree.enumerateAnnotationsUsingBlock {
             annotations.append($0)

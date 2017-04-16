@@ -29,7 +29,7 @@ open class Tree {
         
         let siblings = node.siblings ?? node.makeSiblings()
         
-        for node in [siblings.northWest, siblings.northEast, siblings.southWest, siblings.southEast] {
+        for node in siblings.all {
             if insert(annotation: annotation, toNode: node) {
                 return true
             }
@@ -40,7 +40,7 @@ open class Tree {
     // -
     
     func enumerateAnnotationsUsingBlock(_ callback: (MKAnnotation) -> Void) {
-        enumerateAnnotations(inRect: MKMapRectWorld, withNode:rootNode, callback:callback)
+        enumerateAnnotations(inRect: MKMapRectWorld, withNode: rootNode, callback:callback)
     }
     
     func enumerateAnnotations(inRect rect: MKMapRect, callback: (MKAnnotation) -> Void) {
@@ -56,7 +56,7 @@ open class Tree {
         
         guard let siblings = node.siblings, !node.isLeaf else { return }
         
-        for node in [siblings.northWest, siblings.northEast, siblings.southWest, siblings.southEast] {
+        for node in siblings.all {
             enumerateAnnotations(inRect: rect, withNode: node, callback: callback)
         }
     }
@@ -95,6 +95,9 @@ open class Node {
         let northEast: Node
         let southWest: Node
         let southEast: Node
+        var all: [Node] {
+            return [northWest, northEast, southWest, southEast]
+        }
     }
     
     var siblings: Siblings?
@@ -108,7 +111,9 @@ open class Node {
         let northEast = Node(rect: MKMapRect(minX: rect.midX, minY: rect.minY, maxX: rect.maxX, maxY: rect.midY))
         let southWest = Node(rect: MKMapRect(minX: rect.minX, minY: rect.midY, maxX: rect.midX, maxY: rect.maxY))
         let southEast = Node(rect: MKMapRect(minX: rect.midX, minY: rect.midY, maxX: rect.maxX, maxY: rect.maxY))
-        return Siblings(northWest: northWest, northEast: northEast, southWest: southWest, southEast: southEast)
+        let siblings = Siblings(northWest: northWest, northEast: northEast, southWest: southWest, southEast: southEast)
+        self.siblings = siblings
+        return siblings
     }
     
 }
