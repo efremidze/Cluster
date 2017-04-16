@@ -12,8 +12,9 @@ open class Tree {
     
     let rootNode = Node(rect: MKMapRectWorld)
     
-    // -
+    // - Insertion
     
+    @discardableResult
     func insert(annotation: MKAnnotation) -> Bool {
         return insert(annotation: annotation, toNode: rootNode)
     }
@@ -37,7 +38,7 @@ open class Tree {
         return false
     }
     
-    // -
+    // - Enumeration
     
     func enumerateAnnotationsUsingBlock(_ callback: (MKAnnotation) -> Void) {
         enumerateAnnotations(inRect: MKMapRectWorld, withNode: rootNode, callback:callback)
@@ -60,6 +61,7 @@ open class Tree {
             enumerateAnnotations(inRect: rect, withNode: node, callback: callback)
         }
     }
+    
 }
 
 open class Node {
@@ -70,7 +72,7 @@ open class Node {
         self.rect = rect
     }
     
-    // -
+    // - Annotations
     
     private let max = 8
     
@@ -88,7 +90,7 @@ open class Node {
         return false
     }
     
-    // -
+    // - Siblings
     
     struct Siblings {
         let northWest: Node

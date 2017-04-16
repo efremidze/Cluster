@@ -27,6 +27,7 @@ open class ClusterAnnotationView: MKAnnotationView {
     
     open lazy var countLabel: UILabel = { [unowned self] in
         let label = UILabel()
+        label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         label.backgroundColor = .clear
         label.textColor = .white
         label.textAlignment = .center

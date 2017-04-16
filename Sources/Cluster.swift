@@ -33,17 +33,17 @@ open class ClusterManager {
         return annotations
     }
     
-    open func clusteredAnnotations(withinMapRect rect:MKMapRect, zoomScale: Double) -> [MKAnnotation] {
+    open func clusteredAnnotations(withinMapRect rect: MKMapRect, zoomScale: Double) -> [MKAnnotation] {
         guard !zoomScale.isInfinite else { return [] }
         
         let cellSize = ZoomLevel(MKZoomScale(zoomScale)).cellSize()
         
         let scaleFactor = zoomScale / Double(cellSize)
         
-        let minX = Int(floor(MKMapRectGetMinX(rect) * scaleFactor))
-        let maxX = Int(floor(MKMapRectGetMaxX(rect) * scaleFactor))
-        let minY = Int(floor(MKMapRectGetMinY(rect) * scaleFactor))
-        let maxY = Int(floor(MKMapRectGetMaxY(rect) * scaleFactor))
+        let minX = Int(floor(rect.minX * scaleFactor))
+        let maxX = Int(floor(rect.maxX * scaleFactor))
+        let minY = Int(floor(rect.minY * scaleFactor))
+        let maxY = Int(floor(rect.maxY * scaleFactor))
         
         var clusteredAnnotations = [MKAnnotation]()
         
@@ -72,8 +72,8 @@ open class ClusterManager {
                     clusteredAnnotations += annotations
                 default:
                     let coordinate = CLLocationCoordinate2D(
-                        latitude: CLLocationDegrees(totalLatitude)/CLLocationDegrees(count),
-                        longitude: CLLocationDegrees(totalLongitude)/CLLocationDegrees(count)
+                        latitude: CLLocationDegrees(totalLatitude) / CLLocationDegrees(count),
+                        longitude: CLLocationDegrees(totalLongitude) / CLLocationDegrees(count)
                     )
                     let cluster = ClusterAnnotation()
                     cluster.coordinate = coordinate
@@ -116,14 +116,11 @@ typealias ZoomLevel = Int
 extension ZoomLevel {
     
     init(scale: MKZoomScale) {
-        let totalTilesAtMaxZoom = MKMapSizeWorld.width / 256.0
+        let totalTilesAtMaxZoom = MKMapSizeWorld.width / 256
         let zoomLevelAtMaxZoom = Int(log2(totalTilesAtMaxZoom))
         let floorLog2ScaleFloat = floor(log2f(Float(scale))) + 0.5
-        
         if !floorLog2ScaleFloat.isInfinite {
-            let sum = zoomLevelAtMaxZoom + Int(floorLog2ScaleFloat)
-            let zoomLevel = altmax(0, sum)
-            self = zoomLevel
+            self = altmax(0, zoomLevelAtMaxZoom + Int(floorLog2ScaleFloat))
         } else {
             self = floorLog2ScaleFloat.sign == .plus ? 0 : 19
         }
@@ -135,16 +132,16 @@ extension ZoomLevel {
             return 64
         case 16...18:
             return 32
-        case 18 ..< Int.max:
+        case 18 ..< .max:
             return 16
-        default:
-            return 88 // Less than 13
+        default: // Less than 13
+            return 88
         }
     }
     
 }
 
 // Required due to conflict with Int static variable 'max'
-public func altmax<T : Comparable>(_ x: T, _ y: T) -> T {
+func altmax<T : Comparable>(_ x: T, _ y: T) -> T {
     return max(x, y)
 }
