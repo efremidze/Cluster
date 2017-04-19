@@ -24,7 +24,7 @@ class ViewController: UIViewController {
             annotation.coordinate = CLLocationCoordinate2D(latitude: drand48() * 80 - 40, longitude: drand48() * 80 - 40)
             return annotation
         }
-        manager.add(annotations: annotations)
+        manager.add(annotations)
         
         mapView.centerCoordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
     }
@@ -39,7 +39,7 @@ extension ViewController: MKMapViewDelegate {
             let identifier = "Cluster"
             var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
             if view == nil {
-                view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, type: .color(color: color, radius: 15))
+                view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, type: .color(color: color, radius: 25))
             } else {
                 view?.annotation = annotation
             }

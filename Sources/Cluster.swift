@@ -15,7 +15,7 @@ open class ClusterManager {
     
     public init() {}
     
-    open func add(annotations: [MKAnnotation]) {
+    open func add(_ annotations: [MKAnnotation]) {
         for annotation in annotations {
             tree.insert(annotation)
         }
@@ -25,7 +25,7 @@ open class ClusterManager {
         tree = Tree()
     }
     
-    open func annotations() -> [MKAnnotation] {
+    open var annotations: [MKAnnotation] {
         var annotations = [MKAnnotation]()
         tree.enumerate {
             annotations.append($0)
@@ -33,11 +33,25 @@ open class ClusterManager {
         return annotations
     }
     
-    open func clusteredAnnotations(withinMapRect rect: MKMapRect, zoomScale: Double) -> [MKAnnotation] {
-        guard !zoomScale.isInfinite else { return [] }
+    open func refresh(_ mapView: MKMapView) {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self, weak mapView] in
+            guard let strongSelf = self, let mapView = mapView else { return }
+            let (toAdd, toRemove) = strongSelf.clusteredAnnotations(mapView)
+            DispatchQueue.main.async { [weak mapView] in
+                guard let mapView = mapView else { return }
+                mapView.removeAnnotations(toRemove)
+                mapView.addAnnotations(toAdd)
+            }
+        }
+    }
+    
+    func clusteredAnnotations(_ mapView: MKMapView) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
+        let rect = mapView.visibleMapRect
+        let zoomScale = ZoomScale(mapView.bounds.width) / rect.size.width
         
-        let cellSize = ZoomLevel(MKZoomScale(zoomScale)).cellSize()
+        guard !zoomScale.isInfinite else { return (toAdd: [], toRemove: []) }
         
+        let cellSize = zoomScale.zoomLevel().cellSize()
         let scaleFactor = zoomScale / Double(cellSize)
         
         let minX = Int(floor(rect.minX * scaleFactor))
@@ -49,28 +63,20 @@ open class ClusterManager {
         
         for i in minX...maxX {
             for j in minY...maxY {
-                let mapPoint = MKMapPoint(x: Double(i) / scaleFactor, y: Double(j) / scaleFactor)
-                let mapSize = MKMapSize(width: 1.0 / scaleFactor, height: 1.0 / scaleFactor)
-                let mapRect = MKMapRect(origin: mapPoint, size: mapSize)
+                let mapRect = MKMapRect(x: Double(i) / scaleFactor, y: Double(j) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
                 
                 var totalLatitude: Double = 0
                 var totalLongitude: Double = 0
-                
                 var annotations = [MKAnnotation]()
                 
-                tree.enumerateAnnotations(inRect: mapRect) { obj in
-                    totalLatitude += obj.coordinate.latitude
-                    totalLongitude += obj.coordinate.longitude
-                    annotations.append(obj)
+                tree.enumerate(in: mapRect) { node in
+                    totalLatitude += node.coordinate.latitude
+                    totalLongitude += node.coordinate.longitude
+                    annotations.append(node)
                 }
                 
                 let count = annotations.count
-                
-                switch count {
-                case 0: break
-                case 1:
-                    clusteredAnnotations += annotations
-                default:
+                if count > 1 {
                     let coordinate = CLLocationCoordinate2D(
                         latitude: CLLocationDegrees(totalLatitude) / CLLocationDegrees(count),
                         longitude: CLLocationDegrees(totalLongitude) / CLLocationDegrees(count)
@@ -79,18 +85,16 @@ open class ClusterManager {
                     cluster.coordinate = coordinate
                     cluster.annotations = annotations
                     clusteredAnnotations.append(cluster)
+                } else {
+                    clusteredAnnotations += annotations
                 }
             }
         }
         
-        return clusteredAnnotations
-    }
-    
-    open func display(annotations: [MKAnnotation], onMapView mapView: MKMapView) {
         let before = NSMutableSet(array: mapView.annotations)
         before.remove(mapView.userLocation)
         
-        let after = NSSet(array: annotations)
+        let after = NSSet(array: clusteredAnnotations)
         
         let toKeep = NSMutableSet(set: before)
         toKeep.intersect(after as Set<NSObject>)
@@ -101,47 +105,31 @@ open class ClusterManager {
         let toRemove = NSMutableSet(set: before)
         toRemove.minus(after as Set<NSObject>)
         
-        if let toAddAnnotations = toAdd.allObjects as? [MKAnnotation] {
-            mapView.addAnnotations(toAddAnnotations)
-        }
-        
-        if let removeAnnotations = toRemove.allObjects as? [MKAnnotation] {
-            mapView.removeAnnotations(removeAnnotations)
-        }
+        return (toAdd: toAdd.allObjects as? [MKAnnotation] ?? [], toRemove: toRemove.allObjects as? [MKAnnotation] ?? [])
     }
     
 }
 
-typealias ZoomLevel = Int
-extension ZoomLevel {
+typealias ZoomScale = Double
+extension ZoomScale {
     
-    init(scale: MKZoomScale) {
+    func zoomLevel() -> Double {
         let totalTilesAtMaxZoom = MKMapSizeWorld.width / 256
-        let zoomLevelAtMaxZoom = Int(log2(totalTilesAtMaxZoom))
-        let floorLog2ScaleFloat = floor(log2f(Float(scale))) + 0.5
-        if !floorLog2ScaleFloat.isInfinite {
-            self = altmax(0, zoomLevelAtMaxZoom + Int(floorLog2ScaleFloat))
-        } else {
-            self = floorLog2ScaleFloat.sign == .plus ? 0 : 19
-        }
+        let zoomLevelAtMaxZoom = log2(totalTilesAtMaxZoom)
+        return max(0, zoomLevelAtMaxZoom + floor(log2(self) + 0.5))
     }
     
-    func cellSize() -> CGFloat {
-        switch (self) {
+    func cellSize() -> Double {
+        switch self {
         case 13...15:
             return 64
         case 16...18:
             return 32
-        case 18 ..< .max:
+        case 19:
             return 16
-        default: // Less than 13
+        default:
             return 88
         }
     }
     
-}
-
-// Required due to conflict with Int static variable 'max'
-func altmax<T : Comparable>(_ x: T, _ y: T) -> T {
-    return max(x, y)
 }

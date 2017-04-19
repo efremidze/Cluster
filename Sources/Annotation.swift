@@ -74,7 +74,15 @@ open class ClusterAnnotationView: MKAnnotationView {
             image = UIImage(named: named)
         case let .color(color, radius):
             backgroundColor	= color
-            frame = CGRect(origin: frame.origin, size: CGSize(width: radius * 2, height: radius * 2))
+            var diameter = radius * 2
+            switch count {
+            case _ where count < 8:
+                diameter *= 0.6
+            case _ where count < 16:
+                diameter *= 0.8
+            default: break
+            }
+            frame = CGRect(origin: frame.origin, size: CGSize(width: diameter, height: diameter))
         }
         
         layer.borderColor = UIColor.white.cgColor

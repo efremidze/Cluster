@@ -7,6 +7,8 @@
 
 **Cluster** is an easy map annotation clustering library.
 
+<img src="https://raw.githubusercontent.com/efremidze/Cluster/master/Images/demo.gif" width="320">
+
 ```
 $ pod try Cluster
 ```
@@ -19,28 +21,40 @@ $ pod try Cluster
 
 ## Usage
 
-#1: Initiate a cluster manager.
+### Step 1: Initiate the ClusterManager.
 
 ```swift
-let manager = ClusterManager()
+let clusterManager = ClusterManager()
 ```
 
-#2: Add pins to the manager.
+### Step 2: Add annotations to the ClusterManager.
 
 ```swift
-
+let annotation = Annotation()
+annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+clusterManager.add(annotation)
 ```
 
-#3: Return annotations in the MKMapViewDelegate.
+### Step 3: Return the ClusterAnnotationView.
 
 ```swift
-
+func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+    var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+    if view == nil {
+        view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, type: .color(color: color, radius: radius))
+    } else {
+        view?.annotation = annotation
+    }
+    return view
+}
 ```
 
-#4: Refresh the map view.
+### Step 4: Refresh the MKMapView.
 
 ```swift
-
+func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+    clusterManager.refresh(mapView)
+}
 ```
 
 ## Installation
@@ -66,7 +80,7 @@ github "efremidze/Cluster"
 
 ## Credits
 
-https://github.com/freemiumdev/FBAnnotationClusteringSwift
+https://github.com/ribl/FBAnnotationClusteringSwift
 
 ## License
 
