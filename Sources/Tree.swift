@@ -8,18 +8,14 @@
 
 import MapKit
 
+let rootNode = Node(mapRect: MKMapRectWorld)
+
 open class Tree {
-    
-    let rootNode = Node(mapRect: MKMapRectWorld)
     
     // - Insertion
     
     @discardableResult
-    func insert(annotation: MKAnnotation) -> Bool {
-        return insert(annotation: annotation, toNode: rootNode)
-    }
-    
-    private func insert(annotation: MKAnnotation, toNode node: Node) -> Bool {
+    func insert(_ annotation: MKAnnotation, to node: Node = rootNode) -> Bool {
         guard node.mapRect.contains(annotation.coordinate) else { return false }
         
         if node.canAppendAnnotation() {
@@ -30,7 +26,7 @@ open class Tree {
         let siblings = node.siblings ?? node.makeSiblings()
         
         for node in siblings.all {
-            if insert(annotation: annotation, toNode: node) {
+            if insert(annotation, to: node) {
                 return true
             }
         }
@@ -39,25 +35,17 @@ open class Tree {
     
     // - Enumeration
     
-    func enumerateAnnotationsUsingBlock(_ callback: (MKAnnotation) -> Void) {
-        enumerateAnnotations(inRect: MKMapRectWorld, withNode: rootNode, callback:callback)
-    }
-    
-    func enumerateAnnotations(inRect rect: MKMapRect, callback: (MKAnnotation) -> Void) {
-        enumerateAnnotations(inRect: rect, withNode: rootNode, callback: callback)
-    }
-    
-    private func enumerateAnnotations(inRect rect: MKMapRect, withNode node: Node, callback: (MKAnnotation) -> Void) {
-        guard node.mapRect.intersects(rect) else { return }
+    func enumerate(rootNode node: Node = rootNode, in mapRect: MKMapRect = rootNode.mapRect, callback: (MKAnnotation) -> Void) {
+        guard node.mapRect.intersects(mapRect) else { return }
         
-        for annotation in node.annotations where rect.contains(annotation.coordinate) {
+        for annotation in node.annotations where mapRect.contains(annotation.coordinate) {
             callback(annotation)
         }
         
         guard let siblings = node.siblings else { return }
         
         for node in siblings.all {
-            enumerateAnnotations(inRect: rect, withNode: node, callback: callback)
+            enumerate(rootNode: node, in: mapRect, callback: callback)
         }
     }
     

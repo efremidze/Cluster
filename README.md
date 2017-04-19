@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/cocoapods/l/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
 [![Platform](https://img.shields.io/cocoapods/p/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
 
-Map Clustering Library
+**Cluster** is an easy map annotation clustering library.
 
 ```
 $ pod try Cluster
@@ -16,6 +16,32 @@ $ pod try Cluster
 - iOS 8.0+
 - Xcode 8.0+
 - Swift 3.0+
+
+## Usage
+
+#1: Initiate a cluster manager.
+
+```swift
+let manager = ClusterManager()
+```
+
+#2: Add pins to the manager.
+
+```swift
+
+```
+
+#3: Return annotations in the MKMapViewDelegate.
+
+```swift
+
+```
+
+#4: Refresh the map view.
+
+```swift
+
+```
 
 ## Installation
 
@@ -37,6 +63,10 @@ github "efremidze/Cluster"
 - If you **found a bug**, open an issue.
 - If you **have a feature request**, open an issue.
 - If you **want to contribute**, submit a pull request.
+
+## Credits
+
+https://github.com/freemiumdev/FBAnnotationClusteringSwift
 
 ## License
 
