@@ -8,14 +8,16 @@
 
 import MapKit
 
-let rootNode = Node(mapRect: MKMapRectWorld)
-
 class Tree {
+    
+    let rootNode = Node(mapRect: MKMapRectWorld)
     
     // - Insertion
     
     @discardableResult
-    func insert(_ annotation: MKAnnotation, to node: Node = rootNode) -> Bool {
+    func insert(_ annotation: MKAnnotation, to node: Node? = nil) -> Bool {
+        let node = node ?? rootNode
+        
         guard node.mapRect.contains(annotation.coordinate) else { return false }
         
         if node.shouldAddAnnotation() {
@@ -35,7 +37,10 @@ class Tree {
     
     // - Enumeration
     
-    func enumerate(rootNode node: Node = rootNode, in mapRect: MKMapRect = rootNode.mapRect, callback: (MKAnnotation) -> Void) {
+    func enumerate(rootNode node: Node? = nil, in mapRect: MKMapRect? = nil, callback: (MKAnnotation) -> Void) {
+        let node = node ?? rootNode
+        let mapRect = mapRect ?? node.mapRect
+        
         guard node.mapRect.intersects(mapRect) else { return }
         
         for annotation in node.annotations where mapRect.contains(annotation.coordinate) {

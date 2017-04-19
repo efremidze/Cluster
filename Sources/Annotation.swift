@@ -38,32 +38,35 @@ open class ClusterAnnotationView: MKAnnotationView {
         return label
     }()
     
-    public var type: ClusterAnnotationType = .color(color: .black, radius: 15)
-    
     override open var annotation: MKAnnotation? {
         didSet {
-            updateAnnotation()
+            configure()
         }
     }
     
-    override public init(annotation: MKAnnotation?, reuseIdentifier: String?) {
-        super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
-        
-        updateAnnotation()
+    public var type: ClusterAnnotationType = .color(color: .red, radius: 25) {
+        didSet {
+            configure()
+        }
     }
     
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        
-        updateAnnotation()
-    }
-    
+    /**
+     Initializes and returns a new cluster annotation view.
+     
+     - Parameters:
+        - annotation: The annotation object to associate with the new view.
+        - reuseIdentifier: If you plan to reuse the annotation view for similar types of annotations, pass a string to identify it. Although you can pass nil if you do not intend to reuse the view, reusing annotation views is generally recommended.
+        - type: The cluster annotation type to associate with the new view.
+     
+     - Returns: The initialized cluster annotation view.
+     */
     public convenience init(annotation: MKAnnotation?, reuseIdentifier: String?, type: ClusterAnnotationType) {
         self.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
         self.type = type
+        configure()
     }
     
-    open func updateAnnotation() {
+    open func configure() {
         guard let annotation = annotation as? ClusterAnnotation else { return }
         
         let count = annotation.annotations.count

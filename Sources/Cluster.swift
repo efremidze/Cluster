@@ -15,16 +15,30 @@ open class ClusterManager {
     
     public init() {}
     
+    /**
+     Adds an array of annotation objects to the cluster manager.
+     
+     - Parameters:
+        - annotations: An array of annotation objects. Each object in the array must conform to the MKAnnotation protocol.
+     */
     open func add(_ annotations: [MKAnnotation]) {
         for annotation in annotations {
             tree.insert(annotation)
         }
     }
     
+    /**
+     Removes all the annotation objects from the cluster manager.
+     */
     open func removeAll() {
         tree = Tree()
     }
     
+    /**
+     The complete list of annotations associated.
+     
+     The objects in this array must adopt the MKAnnotation protocol. If no annotations are associated with the cluster manager, the value of this property is an empty array.
+     */
     open var annotations: [MKAnnotation] {
         var annotations = [MKAnnotation]()
         tree.enumerate {
@@ -33,6 +47,12 @@ open class ClusterManager {
         return annotations
     }
     
+    /**
+     Refreshes the annotations on the map view.
+     
+     - Parameters:
+        - mapView: The map view object to refresh.
+     */
     open func refresh(_ mapView: MKMapView) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self, weak mapView] in
             guard let strongSelf = self, let mapView = mapView else { return }
