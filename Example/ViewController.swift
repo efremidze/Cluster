@@ -58,7 +58,7 @@ extension ViewController: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        manager.refresh(mapView)
+        manager.reload(mapView)
     }
 
 }

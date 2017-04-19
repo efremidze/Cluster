@@ -48,12 +48,12 @@ open class ClusterManager {
     }
     
     /**
-     Refreshes the annotations on the map view.
+     Reload the annotations on the map view.
      
      - Parameters:
-        - mapView: The map view object to refresh.
+        - mapView: The map view object to reload.
      */
-    open func refresh(_ mapView: MKMapView) {
+    open func reload(_ mapView: MKMapView) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self, weak mapView] in
             guard let strongSelf = self, let mapView = mapView else { return }
             let (toAdd, toRemove) = strongSelf.clusteredAnnotations(mapView)

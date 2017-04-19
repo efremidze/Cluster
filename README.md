@@ -21,13 +21,15 @@ $ pod try Cluster
 
 ## Usage
 
-### Step 1: Initiate the ClusterManager.
+Follow the instructions below:
+
+### Step 1: Initialize a `ClusterManager` object
 
 ```swift
 let clusterManager = ClusterManager()
 ```
 
-### Step 2: Add annotations to the ClusterManager.
+### Step 2: Add annotations
 
 ```swift
 let annotation = Annotation()
@@ -35,7 +37,7 @@ annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: lo
 clusterManager.add(annotation)
 ```
 
-### Step 3: Return the ClusterAnnotationView.
+### Step 3: Return the pins and clusters
 
 ```swift
 func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -49,11 +51,11 @@ func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnota
 }
 ```
 
-### Step 4: Refresh the MKMapView.
+### Step 4: Reload the annotations
 
 ```swift
 func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-    clusterManager.refresh(mapView)
+    clusterManager.reload(mapView)
 }
 ```
 
