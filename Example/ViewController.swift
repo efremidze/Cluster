@@ -58,18 +58,7 @@ extension ViewController: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        let width = Double(mapView.bounds.width)
-        let visibleMapRect = mapView.visibleMapRect
-        let visibleWidth = visibleMapRect.size.width
-        let zoomScale = width / visibleWidth
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let strongSelf = self else { return }
-            let annotations = strongSelf.manager.clusteredAnnotations(withinMapRect: visibleMapRect, zoomScale: zoomScale)
-            DispatchQueue.main.async { [weak self] in
-                guard let strongSelf = self else { return }
-                strongSelf.manager.display(annotations: annotations, onMapView: strongSelf.mapView)
-            }
-        }
+        manager.refresh(mapView)
     }
 
 }

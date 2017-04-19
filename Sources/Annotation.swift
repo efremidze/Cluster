@@ -63,7 +63,7 @@ open class ClusterAnnotationView: MKAnnotationView {
         self.type = type
     }
     
-    private func updateAnnotation() {
+    open func updateAnnotation() {
         guard let annotation = annotation as? ClusterAnnotation else { return }
         
         let count = annotation.annotations.count
@@ -86,9 +86,9 @@ open class ClusterAnnotationView: MKAnnotationView {
     override open func layoutSubviews() {
         super.layoutSubviews()
         
-        countLabel.frame = bounds
-        layer.cornerRadius = image == nil ? bounds.width / 2 : 0
         layer.masksToBounds = true
+        layer.cornerRadius = image == nil ? bounds.width / 2 : 0
+        countLabel.frame = bounds
     }
     
 }

@@ -10,7 +10,7 @@ import MapKit
 
 let rootNode = Node(mapRect: MKMapRectWorld)
 
-open class Tree {
+class Tree {
     
     // - Insertion
     
@@ -18,7 +18,7 @@ open class Tree {
     func insert(_ annotation: MKAnnotation, to node: Node = rootNode) -> Bool {
         guard node.mapRect.contains(annotation.coordinate) else { return false }
         
-        if node.canAppendAnnotation() {
+        if node.shouldAddAnnotation() {
             node.annotations.append(annotation)
             return true
         }
@@ -51,7 +51,7 @@ open class Tree {
     
 }
 
-open class Node {
+class Node {
     
     let mapRect: MKMapRect
     
@@ -61,12 +61,12 @@ open class Node {
     
     // - Annotations
     
-    private let max = 8
+    let maxAnnotations = 8
     
     var annotations = [MKAnnotation]()
     
-    func canAppendAnnotation() -> Bool {
-        return annotations.count < max
+    func shouldAddAnnotation() -> Bool {
+        return annotations.count < maxAnnotations
     }
     
     // - Siblings

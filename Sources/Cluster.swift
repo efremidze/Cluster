@@ -17,7 +17,7 @@ open class ClusterManager {
     
     open func add(annotations: [MKAnnotation]) {
         for annotation in annotations {
-            tree.insert(annotation: annotation)
+            tree.insert(annotation)
         }
     }
     
@@ -27,7 +27,7 @@ open class ClusterManager {
     
     open func annotations() -> [MKAnnotation] {
         var annotations = [MKAnnotation]()
-        tree.enumerateAnnotationsUsingBlock {
+        tree.enumerate {
             annotations.append($0)
         }
         return annotations
