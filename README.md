@@ -23,7 +23,7 @@ $ pod try Cluster
 
 Follow the instructions below:
 
-### Step 1: Initialize a `ClusterManager` object
+### Step 1: Initialize a ClusterManager object
 
 ```swift
 let clusterManager = ClusterManager()
