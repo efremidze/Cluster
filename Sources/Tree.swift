@@ -8,49 +8,6 @@
 
 import MapKit
 
-let rootNode = Node(mapRect: MKMapRectWorld)
-
-class Tree {
-    
-    // - Insertion
-    
-    @discardableResult
-    func insert(_ annotation: MKAnnotation, to node: Node = rootNode) -> Bool {
-        guard node.mapRect.contains(annotation.coordinate) else { return false }
-        
-        if node.shouldAddAnnotation() {
-            node.annotations.append(annotation)
-            return true
-        }
-        
-        let siblings = node.siblings ?? node.makeSiblings()
-        
-        for node in siblings.all {
-            if insert(annotation, to: node) {
-                return true
-            }
-        }
-        return false
-    }
-    
-    // - Enumeration
-    
-    func enumerate(rootNode node: Node = rootNode, in mapRect: MKMapRect = rootNode.mapRect, callback: (MKAnnotation) -> Void) {
-        guard node.mapRect.intersects(mapRect) else { return }
-        
-        for annotation in node.annotations where mapRect.contains(annotation.coordinate) {
-            callback(annotation)
-        }
-        
-        guard let siblings = node.siblings else { return }
-        
-        for node in siblings.all {
-            enumerate(rootNode: node, in: mapRect, callback: callback)
-        }
-    }
-    
-}
-
 class Node {
     
     let mapRect: MKMapRect
@@ -95,4 +52,52 @@ class Node {
         return siblings
     }
     
+}
+
+class Tree {
+	
+	let rootNode = Node(mapRect: MKMapRectWorld)
+	
+	// - Insertion
+	
+	@discardableResult
+	func insert(_ annotation: MKAnnotation, to node: Node? = nil) -> Bool {
+		let node = node ?? rootNode
+		
+		guard node.mapRect.contains(annotation.coordinate) else { return false }
+		
+		if node.shouldAddAnnotation() {
+			node.annotations.append(annotation)
+			return true
+		}
+		
+		let siblings = node.siblings ?? node.makeSiblings()
+		
+		for node in siblings.all {
+			if insert(annotation, to: node) {
+				return true
+			}
+		}
+		return false
+	}
+	
+	// - Enumeration
+	
+	func enumerate(rootNode node: Node? = nil, in mapRect: MKMapRect? = nil, callback: (MKAnnotation) -> Void) {
+		let node = node ?? rootNode
+		let mapRect	= mapRect ?? rootNode.mapRect
+		
+		guard node.mapRect.intersects(mapRect) else { return }
+		
+		for annotation in node.annotations where mapRect.contains(annotation.coordinate) {
+			callback(annotation)
+		}
+		
+		guard let siblings = node.siblings else { return }
+		
+		for node in siblings.all {
+			enumerate(rootNode: node, in: mapRect, callback: callback)
+		}
+	}
+	
 }
