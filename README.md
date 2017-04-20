@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="Images/logo.png" width="890" alt="Cluster" />
+    <img src="Images/logo.png" width="474" alt="Cluster" />
 </p>
 
 [![Language](https://img.shields.io/badge/Swift-3.1-orange.svg?style=flat)](https://swift.org)
