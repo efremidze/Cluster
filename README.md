@@ -2,10 +2,20 @@
     <img src="Images/logo.png" width="890" alt="Cluster" />
 </p>
 
-[![Language](https://img.shields.io/badge/Swift-3.1-orange.svg?style=flat)](https://swift.org)
-[![Version](https://img.shields.io/cocoapods/v/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
-[![License](https://img.shields.io/cocoapods/l/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
-[![Platform](https://img.shields.io/cocoapods/p/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
+<p align="center">
+<a href="https://swift.org" target="_blank">
+<img alt="Language" src="https://img.shields.io/badge/Swift-3.1-orange.svg?style=flat">
+</a>
+<a href="http://cocoapods.org/pods/Cluster" target="_blank">
+<img alt="Version" src="https://img.shields.io/cocoapods/v/Cluster.svg?style=flat">
+</a>
+<a href="http://cocoapods.org/pods/Cluster" target="_blank">
+<img alt="License" src="https://img.shields.io/cocoapods/l/Cluster.svg?style=flat">
+</a>
+<a href="http://cocoapods.org/pods/Cluster" target="_blank">
+<img alt="Platform" src="https://img.shields.io/cocoapods/p/Cluster.svg?style=flat">
+</a>
+</p>
 
 **Cluster** is an easy map annotation clustering library.
 
