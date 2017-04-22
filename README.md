@@ -17,7 +17,9 @@
 </a>
 </p>
 
-**Cluster** is an easy map annotation clustering library.
+**Cluster** is an easy map annotation clustering library. This repository uses an efficient method (QuadTree) to aggregate pins into a cluster.
+
+You may want to see Example first if you'd like to see the actual code.
 
 <img src="https://raw.githubusercontent.com/efremidze/Cluster/master/Images/demo.gif" width="320">
 
