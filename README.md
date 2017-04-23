@@ -15,6 +15,9 @@
 <a href="http://cocoapods.org/pods/Cluster" target="_blank">
 <img alt="Platform" src="https://img.shields.io/cocoapods/p/Cluster.svg?style=flat">
 </a>
+<a href="https://github.com/Carthage/Carthage" target="_blank">
+<img alt="Carthage compatible" src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat">
+</a>
 </p>
 
 **Cluster** is an easy map annotation clustering library. This repository uses an efficient method (QuadTree) to aggregate pins into a cluster.
