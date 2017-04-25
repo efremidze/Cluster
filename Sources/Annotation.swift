@@ -18,9 +18,10 @@ open class ClusterAnnotation: Annotation {
     open var annotations = [MKAnnotation]()
 }
 
-public enum ClusterAnnotationType {
-    case color(color: UIColor, radius: CGFloat)
-    case image(named: String)
+open class ClusterAnnotationConfig: NSObject {
+    public var color = UIColor.red
+    public var radius: Double = 25.0
+    public var image: UIImage?
 }
 
 open class ClusterAnnotationView: MKAnnotationView {
@@ -44,7 +45,7 @@ open class ClusterAnnotationView: MKAnnotationView {
         }
     }
     
-    public var type: ClusterAnnotationType = .color(color: .red, radius: 25) {
+    public var type: ClusterAnnotationConfig = ClusterAnnotationConfig.init() {
         didSet {
             configure()
         }
@@ -60,7 +61,7 @@ open class ClusterAnnotationView: MKAnnotationView {
      
      - Returns: The initialized cluster annotation view.
      */
-    public convenience init(annotation: MKAnnotation?, reuseIdentifier: String?, type: ClusterAnnotationType) {
+    public convenience init(annotation: MKAnnotation?, reuseIdentifier: String?, type: ClusterAnnotationConfig) {
         self.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
         self.type = type
         configure()
@@ -70,14 +71,14 @@ open class ClusterAnnotationView: MKAnnotationView {
         guard let annotation = annotation as? ClusterAnnotation else { return }
         
         let count = annotation.annotations.count
-        
-        switch type {
-        case let .image(named):
+
+        if let img = type.image {
             backgroundColor = .clear
-            image = UIImage(named: named)
-        case let .color(color, radius):
-            backgroundColor	= color
-            var diameter = radius * 2
+            image = img
+        }
+        else {
+            backgroundColor	= type.color
+            var diameter: Double = type.radius * 2.0
             switch count {
             case _ where count < 8:
                 diameter *= 0.6
@@ -87,7 +88,7 @@ open class ClusterAnnotationView: MKAnnotationView {
             }
             frame = CGRect(origin: frame.origin, size: CGSize(width: diameter, height: diameter))
         }
-        
+
         layer.borderColor = UIColor.white.cgColor
         layer.borderWidth = 2
         countLabel.font = .boldSystemFont(ofSize: 13)

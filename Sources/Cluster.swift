@@ -9,12 +9,10 @@
 import CoreLocation
 import MapKit
 
-open class ClusterManager {
+@objc open class ClusterManager: NSObject {
     
     var tree = Tree()
-    
-    public init() {}
-    
+        
     /**
      Adds an array of annotation objects to the cluster manager.
      
