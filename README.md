@@ -76,6 +76,10 @@ func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
 }
 ```
 
+### Customization
+
+To use images for your annotation cluster view take a look at [Example2](Example/ViewController2.swift).
+
 ## Installation
 
 ### CocoaPods
