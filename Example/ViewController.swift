@@ -58,7 +58,28 @@ extension ViewController: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        manager.reload(mapView)
+        manager.reload(mapView, visibleMapRect: mapView.visibleMapRect)
     }
-
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        guard let annotation = view.annotation else { return }
+        
+        if let cluster = annotation as? ClusterAnnotation {
+            mapView.removeAnnotations(mapView.annotations)
+            
+            var zoomRect = MKMapRectNull
+            for annotation in cluster.annotations {
+                let annotationPoint = MKMapPointForCoordinate(annotation.coordinate)
+                let pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, 0, 0)
+                if MKMapRectIsNull(zoomRect) {
+                    zoomRect = pointRect
+                } else {
+                    zoomRect = MKMapRectUnion(zoomRect, pointRect)
+                }
+            }
+            manager.reload(mapView, visibleMapRect: zoomRect)
+            mapView.setVisibleMapRect(zoomRect, animated: true)
+        }
+    }
+    
 }

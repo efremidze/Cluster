@@ -25,7 +25,7 @@ public enum ClusterAnnotationType {
 
 open class ClusterAnnotationView: MKAnnotationView {
     
-    open lazy var countLabel: UILabel = { [unowned self] in
+    open lazy var countLabel: UILabel = {
         let label = UILabel()
         label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         label.backgroundColor = .clear
