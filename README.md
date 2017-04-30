@@ -51,6 +51,7 @@ let clusterManager = ClusterManager()
 ```swift
 let annotation = Annotation()
 annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+annotation.type = .color(color, radius: 25) // .image(UIImage(named: "pin"))
 clusterManager.add(annotation)
 ```
 
@@ -60,7 +61,7 @@ clusterManager.add(annotation)
 func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
     var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
     if view == nil {
-        view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, type: .color(color: color, radius: radius))
+        view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, type: type)
     } else {
         view?.annotation = annotation
     }
@@ -72,13 +73,9 @@ func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnota
 
 ```swift
 func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-    clusterManager.reload(mapView)
+    clusterManager.reload(mapView, visibleMapRect: mapView.visibleMapRect)
 }
 ```
-
-### Customization
-
-To use images for your annotation cluster view take a look at [Example2](Example/ViewController2.swift).
 
 ## Installation
 

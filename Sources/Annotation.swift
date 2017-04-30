@@ -12,6 +12,7 @@ open class Annotation: NSObject, MKAnnotation {
     open var coordinate = CLLocationCoordinate2D()
     open var title: String?
     open var subtitle: String?
+    open var type: ClusterAnnotationType?
 }
 
 open class ClusterAnnotation: Annotation {
@@ -19,8 +20,8 @@ open class ClusterAnnotation: Annotation {
 }
 
 public enum ClusterAnnotationType {
-    case color(color: UIColor, radius: CGFloat)
-    case image(named: String)
+    case color(UIColor, radius: CGFloat)
+    case image(UIImage?)
 }
 
 open class ClusterAnnotationView: MKAnnotationView {
@@ -44,7 +45,7 @@ open class ClusterAnnotationView: MKAnnotationView {
         }
     }
     
-    public var type: ClusterAnnotationType = .color(color: .red, radius: 25) {
+    public var type: ClusterAnnotationType? {
         didSet {
             configure()
         }
@@ -72,10 +73,10 @@ open class ClusterAnnotationView: MKAnnotationView {
         let count = annotation.annotations.count
         
         switch type {
-        case let .image(named):
+        case let .image(image)?:
             backgroundColor = .clear
-            image = UIImage(named: named)
-        case let .color(color, radius):
+            self.image = image
+        case let .color(color, radius)?:
             backgroundColor	= color
             var diameter = radius * 2
             switch count {
@@ -86,20 +87,22 @@ open class ClusterAnnotationView: MKAnnotationView {
             default: break
             }
             frame = CGRect(origin: frame.origin, size: CGSize(width: diameter, height: diameter))
+            layer.borderColor = UIColor.white.cgColor
+            layer.borderWidth = 2
+            countLabel.font = .boldSystemFont(ofSize: 13)
+            countLabel.text = "\(count)"
+        default: break
         }
-        
-        layer.borderColor = UIColor.white.cgColor
-        layer.borderWidth = 2
-        countLabel.font = .boldSystemFont(ofSize: 13)
-        countLabel.text = "\(count)"
     }
     
     override open func layoutSubviews() {
         super.layoutSubviews()
         
-        layer.masksToBounds = true
-        layer.cornerRadius = image == nil ? bounds.width / 2 : 0
-        countLabel.frame = bounds
+        if case .color? = type {
+            layer.masksToBounds = true
+            layer.cornerRadius = image == nil ? bounds.width / 2 : 0
+            countLabel.frame = bounds
+        }
     }
     
 }

@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 1.0.3](https://github.com/efremidze/Cluster/releases/tag/1.0.3)
+Released on 2017-04-29
+
+- Added image support
+
 ## [Version 1.0.2](https://github.com/efremidze/Cluster/releases/tag/1.0.2)
 Released on 2017-04-19
 
