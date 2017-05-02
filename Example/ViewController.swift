@@ -47,6 +47,8 @@ extension ViewController: MKMapViewDelegate {
             if view == nil {
                 if let annotation = annotation.annotations.first as? Annotation, let type = annotation.type {
                     view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, type: type)
+                    (view as! ClusterAnnotationView).countLabel.textColor = UIColor.black
+                    (view as! ClusterAnnotationView).layer.borderColor = UIColor.green.cgColor
                 } else {
                     view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, type: .color(color, radius: 25))
                 }
