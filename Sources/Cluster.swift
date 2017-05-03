@@ -23,6 +23,16 @@ open class ClusterManager {
     public init() {}
     
     /**
+     Adds an annotation object to the cluster manager.
+     
+     - Parameters:
+        - annotation: An annotation object. The object must conform to the MKAnnotation protocol.
+     */
+    open func add(_ annotation: MKAnnotation) {
+        tree.insert(annotation)
+    }
+    
+    /**
      Adds an array of annotation objects to the cluster manager.
      
      - Parameters:
@@ -30,7 +40,29 @@ open class ClusterManager {
      */
     open func add(_ annotations: [MKAnnotation]) {
         for annotation in annotations {
-            tree.insert(annotation)
+            add(annotation)
+        }
+    }
+    
+    /**
+     Removes an annotation object from the cluster manager.
+     
+     - Parameters:
+        - annotation: An annotation object. The object must conform to the MKAnnotation protocol.
+     */
+    open func remove(_ annotation: MKAnnotation) {
+        tree.remove(annotation)
+    }
+    
+    /**
+     Removes an array of annotation objects from the cluster manager.
+     
+     - Parameters:
+        - annotations: An array of annotation objects. Each object in the array must conform to the MKAnnotation protocol.
+     */
+    open func remove(_ annotations: [MKAnnotation]) {
+        for annotation in annotations {
+            remove(annotation)
         }
     }
     
