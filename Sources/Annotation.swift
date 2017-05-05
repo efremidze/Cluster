@@ -87,7 +87,7 @@ open class ClusterAnnotationView: MKAnnotationView {
             default: break
             }
             frame = CGRect(origin: frame.origin, size: CGSize(width: diameter, height: diameter))
-            //layer.borderColor = UIColor.white.cgColor
+            layer.borderColor = UIColor.white.cgColor
             layer.borderWidth = 2
             countLabel.font = .boldSystemFont(ofSize: 13)
             countLabel.text = "\(count)"
