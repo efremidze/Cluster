@@ -26,10 +26,31 @@ class Tree {
         }
         
         let siblings = node.siblings ?? node.makeSiblings()
-        
         for node in siblings.all {
             if insert(annotation, to: node) {
                 return true
+            }
+        }
+        return false
+    }
+    
+    @discardableResult
+    func remove(_ annotation: MKAnnotation, from node: Node? = nil) -> Bool {
+        let node = node ?? rootNode
+        
+        guard node.mapRect.contains(annotation.coordinate) else { return false }
+        
+        let index = node.annotations.map { $0.coordinate }.index(of: annotation.coordinate)
+        if let index = index {
+            node.annotations.remove(at: index)
+            return true
+        }
+        
+        if let siblings = node.siblings {
+            for node in siblings.all {
+                if remove(annotation, from: node) {
+                    return true
+                }
             }
         }
         return false
