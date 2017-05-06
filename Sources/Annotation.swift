@@ -30,6 +30,7 @@ open class ClusterAnnotationView: MKAnnotationView {
         let label = UILabel()
         label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         label.backgroundColor = .clear
+        label.font = .boldSystemFont(ofSize: 13)
         label.textColor = .white
         label.textAlignment = .center
         label.adjustsFontSizeToFitWidth = true
@@ -45,11 +46,7 @@ open class ClusterAnnotationView: MKAnnotationView {
         }
     }
     
-    public var type: ClusterAnnotationType? {
-        didSet {
-            configure()
-        }
-    }
+    let type: ClusterAnnotationType
     
     /**
      Initializes and returns a new cluster annotation view.
@@ -61,22 +58,25 @@ open class ClusterAnnotationView: MKAnnotationView {
      
      - Returns: The initialized cluster annotation view.
      */
-    public convenience init(annotation: MKAnnotation?, reuseIdentifier: String?, type: ClusterAnnotationType) {
-        self.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
+    public init(annotation: MKAnnotation?, reuseIdentifier: String?, type: ClusterAnnotationType) {
         self.type = type
+        super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
         configure()
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     open func configure() {
         guard let annotation = annotation as? ClusterAnnotation else { return }
         
-        let count = annotation.annotations.count
-        
         switch type {
-        case let .image(image)?:
+        case let .image(image):
             backgroundColor = .clear
             self.image = image
-        case let .color(color, radius)?:
+        case let .color(color, radius):
+            let count = annotation.annotations.count
             backgroundColor	= color
             var diameter = radius * 2
             switch count {
@@ -89,16 +89,14 @@ open class ClusterAnnotationView: MKAnnotationView {
             frame = CGRect(origin: frame.origin, size: CGSize(width: diameter, height: diameter))
             layer.borderColor = UIColor.white.cgColor
             layer.borderWidth = 2
-            countLabel.font = .boldSystemFont(ofSize: 13)
             countLabel.text = "\(count)"
-        default: break
         }
     }
     
     override open func layoutSubviews() {
         super.layoutSubviews()
         
-        if case .color? = type {
+        if case .color = type {
             layer.masksToBounds = true
             layer.cornerRadius = image == nil ? bounds.width / 2 : 0
             countLabel.frame = bounds
