@@ -8,99 +8,9 @@
 
 import MapKit
 
-public struct Point {
-    let x: Double
-    let y: Double
-    
-    public init(_ x: Double, _ y: Double) {
-        self.x = x
-        self.y = y
-    }
-}
-
-public struct Size {
-    var xLength: Double
-    var yLength: Double
-    
-    public init(xLength: Double, yLength: Double) {
-        precondition(xLength >= 0, "xLength can not be negative")
-        precondition(yLength >= 0, "yLength can not be negative")
-        self.xLength = xLength
-        self.yLength = yLength
-    }
-    
-    var half: Size {
-        return Size(xLength: xLength / 2, yLength: yLength / 2)
-    }
-}
-
-public struct Rect {
-    // left top vertice
-    var origin: Point
-    var size: Size
-    
-    public init(origin: Point, size: Size) {
-        self.origin = origin
-        self.size = size
-    }
-    
-    var minX: Double {
-        return origin.x
-    }
-    
-    var minY: Double {
-        return origin.y
-    }
-    
-    var maxX: Double {
-        return origin.x + size.xLength
-    }
-    
-    var maxY: Double {
-        return origin.y + size.yLength
-    }
-    
-    func containts(point: Point) -> Bool {
-        return (minX <= point.x && point.x <= maxX) &&
-            (minY <= point.y && point.y <= maxY)
-    }
-    
-    var leftTopRect: Rect {
-        return Rect(origin: origin, size: size.half)
-    }
-    
-    var leftBottomRect: Rect {
-        return Rect(origin: Point(origin.x, origin.y + size.half.yLength), size: size.half)
-    }
-    
-    var rightTopRect: Rect {
-        return Rect(origin: Point(origin.x + size.half.xLength, origin.y), size: size.half)
-    }
-    
-    var rightBottomRect: Rect {
-        return Rect(origin: Point(origin.x + size.half.xLength, origin.y + size.half.yLength), size: size.half)
-    }
-    
-    func intersects(rect: Rect) -> Bool {
-        
-        func lineSegmentsIntersect(lStart: Double, lEnd: Double, rStart: Double, rEnd: Double) -> Bool {
-            return max(lStart, rStart) <= min(lEnd, rEnd)
-        }
-        // to intersect, both horizontal and vertical projections need to intersect
-        // horizontal
-        if !lineSegmentsIntersect(lStart: minX, lEnd: maxX, rStart: rect.minX, rEnd: rect.maxX) {
-            return false
-        }
-        
-        // vertical
-        return lineSegmentsIntersect(lStart: minY, lEnd: maxY, rStart: rect.minY, rEnd: rect.maxY)
-    }
-    
-}
-
-protocol PointsContainer {
-    func add(point: Point) -> Bool
-    func points(inRect rect: Rect) -> [Point]
+protocol AnnotationsContainer {
+    func add(_ annotation: MKAnnotation) -> Bool
+    func annotations(in rect: MKMapRect) -> [MKAnnotation]
 }
 
 class QuadTreeNode {
@@ -111,16 +21,17 @@ class QuadTreeNode {
     }
     
     struct Children: Sequence {
-        let leftTop: QuadTreeNode
-        let leftBottom: QuadTreeNode
-        let rightTop: QuadTreeNode
-        let rightBottom: QuadTreeNode
+        let northWest: QuadTreeNode
+        let northEast: QuadTreeNode
+        let southWest: QuadTreeNode
+        let southEast: QuadTreeNode
         
         init(parentNode: QuadTreeNode) {
-            leftTop = QuadTreeNode(rect: parentNode.rect.leftTopRect)
-            leftBottom = QuadTreeNode(rect: parentNode.rect.leftBottomRect)
-            rightTop = QuadTreeNode(rect: parentNode.rect.rightTopRect)
-            rightBottom = QuadTreeNode(rect: parentNode.rect.rightBottomRect)
+            let mapRect = parentNode.rect
+            northWest = QuadTreeNode(rect: MKMapRect(minX: mapRect.minX, minY: mapRect.minY, maxX: mapRect.midX, maxY: mapRect.midY))
+            northEast = QuadTreeNode(rect: MKMapRect(minX: mapRect.midX, minY: mapRect.minY, maxX: mapRect.maxX, maxY: mapRect.midY))
+            southWest = QuadTreeNode(rect: MKMapRect(minX: mapRect.minX, minY: mapRect.midY, maxX: mapRect.midX, maxY: mapRect.maxY))
+            southEast = QuadTreeNode(rect: MKMapRect(minX: mapRect.midX, minY: mapRect.midY, maxX: mapRect.maxX, maxY: mapRect.maxY))
         }
         
         struct ChildrenIterator: IteratorProtocol {
@@ -132,14 +43,12 @@ class QuadTreeNode {
             }
             
             mutating func next() -> QuadTreeNode? {
-                
                 defer { index += 1 }
-                
                 switch index {
-                case 0: return children.leftTop
-                case 1: return children.leftBottom
-                case 2: return children.rightTop
-                case 3: return children.rightBottom
+                case 0: return children.northWest
+                case 1: return children.northEast
+                case 2: return children.southWest
+                case 3: return children.southEast
                 default: return nil
                 }
             }
@@ -150,7 +59,7 @@ class QuadTreeNode {
         }
     }
     
-    var points: [Point] = []
+    var annotations = [MKAnnotation]()
     let rect: MKMapRect
     var type: NodeType = .leaf
     
@@ -162,11 +71,11 @@ class QuadTreeNode {
     
 }
 
-extension QuadTreeNode: PointsContainer {
+extension QuadTreeNode: AnnotationsContainer {
     
     @discardableResult
-    func add(point: Point) -> Bool {
-        if !rect.containts(point: point) {
+    func add(_ annotation: MKAnnotation) -> Bool {
+        if !rect.contains(annotation.coordinate) {
             return false
         }
         
@@ -174,16 +83,16 @@ extension QuadTreeNode: PointsContainer {
         case .internal(let children):
             // pass the point to one of the children
             for child in children {
-                if child.add(point: point) {
+                if child.add(annotation) {
                     return true
                 }
             }
             
             fatalError("rect.containts evaluted to true, but none of the children added the point")
         case .leaf:
-            points.append(point)
+            annotations.append(annotation)
             // if the max capacity was reached, become an internal node
-            if points.count == QuadTreeNode.maxPointCapacity {
+            if annotations.count == QuadTreeNode.maxPointCapacity {
                 subdivide()
             }
         }
@@ -199,21 +108,21 @@ extension QuadTreeNode: PointsContainer {
         }
     }
     
-    func points(inRect rect: Rect) -> [Point] {
+    func annotations(in rect: MKMapRect) -> [MKAnnotation] {
         
         // if the node's rect and the given rect don't intersect, return an empty array,
         // because there can't be any points that lie the node's (or its children's) rect and
         // in the given rect
-        if !self.rect.intersects(rect: rect) {
+        if !self.rect.intersects(rect) {
             return []
         }
         
-        var result: [Point] = []
+        var result = [MKAnnotation]()
         
         // collect the node's points that lie in the rect
-        for point in points {
-            if rect.containts(point: point) {
-                result.append(point)
+        for annotation in annotations {
+            if rect.contains(annotation.coordinate) {
+                result.append(annotation)
             }
         }
         
@@ -223,7 +132,7 @@ extension QuadTreeNode: PointsContainer {
         case .internal(let children):
             // recursively add children's points that lie in the rect
             for childNode in children {
-                result.append(contentsOf: childNode.points(inRect: rect))
+                result.append(contentsOf: childNode.annotations(in: rect))
             }
         }
         
@@ -232,7 +141,7 @@ extension QuadTreeNode: PointsContainer {
     
 }
 
-public class QuadTree: PointsContainer {
+public class QuadTree: AnnotationsContainer {
     
     let root: QuadTreeNode
     
@@ -241,12 +150,12 @@ public class QuadTree: PointsContainer {
     }
     
     @discardableResult
-    public func add(point: Point) -> Bool {
-        return root.add(point: point)
+    public func add(_ annotation: MKAnnotation) -> Bool {
+        return root.add(annotation)
     }
     
-    public func points(inRect rect: Rect) -> [Point] {
-        return root.points(inRect: rect)
+    public func annotations(in rect: MKMapRect) -> [MKAnnotation] {
+        return root.annotations(in: rect)
     }
     
 }
