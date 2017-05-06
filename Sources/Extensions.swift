@@ -28,3 +28,12 @@ extension MKMapRect {
         return MKMapRectContainsPoint(self, MKMapPointForCoordinate(coordinate))
     }
 }
+
+extension CLLocationCoordinate2D: Hashable, Equatable {
+    public var hashValue: Int {
+        return latitude.hashValue ^ longitude.hashValue
+    }
+    public static func ==(lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
+        return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
+    }
+}
