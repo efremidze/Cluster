@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8B03BCB01EBE8A1500CC9EED /* QuadTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B03BCAF1EBE8A1500CC9EED /* QuadTree.swift */; };
 		8B5335101EA2C723005C0A31 /* Annotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B53350F1EA2C723005C0A31 /* Annotation.swift */; };
 		8B65CB041EA30BAB00753706 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B65CB031EA30BAB00753706 /* Extensions.swift */; };
 		8BFA2B641E9F7149001A80FB /* Cluster.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BFA2B621E9F7149001A80FB /* Cluster.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -46,6 +47,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8B03BCAF1EBE8A1500CC9EED /* QuadTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuadTree.swift; sourceTree = "<group>"; };
 		8B53350F1EA2C723005C0A31 /* Annotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Annotation.swift; sourceTree = "<group>"; };
 		8B65CB031EA30BAB00753706 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		8BFA2B5F1E9F7149001A80FB /* Cluster.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Cluster.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -108,6 +110,7 @@
 				8B65CB031EA30BAB00753706 /* Extensions.swift */,
 				8BFA2B631E9F7149001A80FB /* Info.plist */,
 				8BFA2B871E9FF960001A80FB /* Tree.swift */,
+				8B03BCAF1EBE8A1500CC9EED /* QuadTree.swift */,
 			);
 			name = Cluster;
 			path = Sources;
@@ -245,6 +248,7 @@
 			files = (
 				8BFA2B861E9F71BD001A80FB /* Cluster.swift in Sources */,
 				8B5335101EA2C723005C0A31 /* Annotation.swift in Sources */,
+				8B03BCB01EBE8A1500CC9EED /* QuadTree.swift in Sources */,
 				8BFA2B881E9FF960001A80FB /* Tree.swift in Sources */,
 				8B65CB041EA30BAB00753706 /* Extensions.swift in Sources */,
 			);
