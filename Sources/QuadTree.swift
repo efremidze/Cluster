@@ -10,6 +10,7 @@ import MapKit
 
 protocol AnnotationsContainer {
     func add(_ annotation: MKAnnotation) -> Bool
+    func remove(_ annotation: MKAnnotation) -> Bool
     func annotations(in rect: MKMapRect) -> [MKAnnotation]
 }
 
@@ -75,26 +76,41 @@ extension QuadTreeNode: AnnotationsContainer {
     
     @discardableResult
     func add(_ annotation: MKAnnotation) -> Bool {
-        if !rect.contains(annotation.coordinate) {
-            return false
-        }
+        guard rect.contains(annotation.coordinate) else { return false }
         
         switch type {
-        case .internal(let children):
-            // pass the point to one of the children
-            for child in children {
-                if child.add(annotation) {
-                    return true
-                }
-            }
-            
-            fatalError("rect.containts evaluted to true, but none of the children added the point")
         case .leaf:
             annotations.append(annotation)
             // if the max capacity was reached, become an internal node
             if annotations.count == QuadTreeNode.maxPointCapacity {
                 subdivide()
             }
+        case .internal(let children):
+            // pass the point to one of the children
+            for child in children where child.add(annotation) {
+                return true
+            }
+            
+            fatalError("rect.contains evaluted to true, but none of the children added the annotation")
+        }
+        return true
+    }
+    
+    @discardableResult
+    func remove(_ annotation: MKAnnotation) -> Bool {
+        guard rect.contains(annotation.coordinate) else { return false }
+        
+        _ = annotations.map { $0.coordinate }.index(of: annotation.coordinate).map { annotations.remove(at: $0) }
+        
+        switch type {
+        case .leaf: break
+        case .internal(let children):
+            // pass the point to one of the children
+            for child in children where child.remove(annotation) {
+                return true
+            }
+            
+            fatalError("rect.contains evaluted to true, but none of the children removed the annotation")
         }
         return true
     }
@@ -113,22 +129,17 @@ extension QuadTreeNode: AnnotationsContainer {
         // if the node's rect and the given rect don't intersect, return an empty array,
         // because there can't be any points that lie the node's (or its children's) rect and
         // in the given rect
-        if !self.rect.intersects(rect) {
-            return []
-        }
+        guard self.rect.intersects(rect) else { return [] }
         
         var result = [MKAnnotation]()
         
         // collect the node's points that lie in the rect
-        for annotation in annotations {
-            if rect.contains(annotation.coordinate) {
-                result.append(annotation)
-            }
+        for annotation in annotations where rect.contains(annotation.coordinate) {
+            result.append(annotation)
         }
         
         switch type {
-        case .leaf:
-            break
+        case .leaf: break
         case .internal(let children):
             // recursively add children's points that lie in the rect
             for childNode in children {
@@ -152,6 +163,11 @@ public class QuadTree: AnnotationsContainer {
     @discardableResult
     public func add(_ annotation: MKAnnotation) -> Bool {
         return root.add(annotation)
+    }
+    
+    @discardableResult
+    public func remove(_ annotation: MKAnnotation) -> Bool {
+        return root.remove(annotation)
     }
     
     public func annotations(in rect: MKMapRect) -> [MKAnnotation] {
