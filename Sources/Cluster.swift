@@ -11,7 +11,7 @@ import MapKit
 
 open class ClusterManager {
     
-    var tree = Tree()
+    var tree = QuadTree(rect: MKMapRectWorld)
     
     let queue: OperationQueue = {
         let queue = OperationQueue()
@@ -29,7 +29,7 @@ open class ClusterManager {
         - annotation: An annotation object. The object must conform to the MKAnnotation protocol.
      */
     open func add(_ annotation: MKAnnotation) {
-        tree.insert(annotation)
+        tree.add(annotation)
     }
     
     /**
@@ -70,7 +70,7 @@ open class ClusterManager {
      Removes all the annotation objects from the cluster manager.
      */
     open func removeAll() {
-        tree = Tree()
+        tree = QuadTree(rect: MKMapRectWorld)
     }
     
     /**
@@ -79,11 +79,7 @@ open class ClusterManager {
      The objects in this array must adopt the MKAnnotation protocol. If no annotations are associated with the cluster manager, the value of this property is an empty array.
      */
     open var annotations: [MKAnnotation] {
-        var annotations = [MKAnnotation]()
-        tree.enumerate {
-            annotations.append($0)
-        }
-        return annotations
+        return tree.annotations(in: MKMapRectWorld)
     }
     
     /**
@@ -132,7 +128,7 @@ open class ClusterManager {
                 var totalLongitude: Double = 0
                 var annotations = [MKAnnotation]()
                 
-                tree.enumerate(in: mapRect) { node in
+                for node in tree.annotations(in: mapRect) {
                     totalLatitude += node.coordinate.latitude
                     totalLongitude += node.coordinate.longitude
                     annotations.append(node)
