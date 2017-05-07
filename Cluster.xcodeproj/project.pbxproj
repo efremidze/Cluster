@@ -19,7 +19,6 @@
 		8BFA2B801E9F7184001A80FB /* Cluster.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BFA2B5F1E9F7149001A80FB /* Cluster.framework */; };
 		8BFA2B811E9F7184001A80FB /* Cluster.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8BFA2B5F1E9F7149001A80FB /* Cluster.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8BFA2B861E9F71BD001A80FB /* Cluster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFA2B851E9F71BD001A80FB /* Cluster.swift */; };
-		8BFA2B881E9FF960001A80FB /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFA2B871E9FF960001A80FB /* Tree.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,7 +60,6 @@
 		8BFA2B7A1E9F715B001A80FB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8BFA2B7C1E9F715B001A80FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8BFA2B851E9F71BD001A80FB /* Cluster.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cluster.swift; sourceTree = "<group>"; };
-		8BFA2B871E9FF960001A80FB /* Tree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,7 +107,6 @@
 				8BFA2B851E9F71BD001A80FB /* Cluster.swift */,
 				8B65CB031EA30BAB00753706 /* Extensions.swift */,
 				8BFA2B631E9F7149001A80FB /* Info.plist */,
-				8BFA2B871E9FF960001A80FB /* Tree.swift */,
 				8B03BCAF1EBE8A1500CC9EED /* QuadTree.swift */,
 			);
 			name = Cluster;
@@ -249,7 +246,6 @@
 				8BFA2B861E9F71BD001A80FB /* Cluster.swift in Sources */,
 				8B5335101EA2C723005C0A31 /* Annotation.swift in Sources */,
 				8B03BCB01EBE8A1500CC9EED /* QuadTree.swift in Sources */,
-				8BFA2B881E9FF960001A80FB /* Tree.swift in Sources */,
 				8B65CB041EA30BAB00753706 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
