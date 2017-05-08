@@ -20,6 +20,16 @@ open class ClusterManager {
         return queue
     }()
     
+    /**
+     Constrolls the level from which clustering will be enabled. Min value is 2 (max zoom out), max is 20 (max zoom in).
+     */
+    open var clusteringZoomLevel: Int = 20 {
+        didSet {
+            clusteringZoomLevel = clusteringZoomLevel.clamp(lower: 2, 20)
+        }
+    }
+
+    
     public init() {}
     
     /**
@@ -110,7 +120,10 @@ open class ClusterManager {
         
         guard !zoomScale.isInfinite else { return (toAdd: [], toRemove: []) }
         
-        let cellSize = zoomScale.zoomLevel().cellSize()
+        let zoomLevel = zoomScale.zoomLevel()
+        let zoomLevelComparable = Int(zoomLevel)
+        
+        let cellSize = zoomLevel.cellSize()
         let scaleFactor = zoomScale / Double(cellSize)
         
         let minX = Int(floor(visibleMapRect.minX * scaleFactor))
@@ -135,7 +148,7 @@ open class ClusterManager {
                 }
                 
                 let count = annotations.count
-                if count > 1 {
+                if count > 1, zoomLevelComparable <= clusteringZoomLevel {
                     let coordinate = CLLocationCoordinate2D(
                         latitude: CLLocationDegrees(totalLatitude) / CLLocationDegrees(count),
                         longitude: CLLocationDegrees(totalLongitude) / CLLocationDegrees(count)
@@ -193,4 +206,10 @@ extension ZoomScale {
         }
     }
     
+}
+
+extension Comparable {
+    func clamp<T: Comparable>(lower: T, _ upper: T) -> T {
+        return min(max(self as! T, lower), upper)
+    }
 }
