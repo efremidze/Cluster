@@ -21,14 +21,13 @@ open class ClusterManager {
     }()
     
     /**
-     Constrolls the level from which clustering will be enabled. Min value is 2 (max zoom out), max is 20 (max zoom in).
+     Controls the level from which clustering will be enabled. Min value is 2 (max zoom out), max is 20 (max zoom in).
      */
     open var clusteringZoomLevel: Int = 20 {
         didSet {
-            clusteringZoomLevel = clusteringZoomLevel.clamp(lower: 2, 20)
+            clusteringZoomLevel = clusteringZoomLevel.clamped(to: 2...20)
         }
     }
-
     
     public init() {}
     
@@ -121,8 +120,6 @@ open class ClusterManager {
         guard !zoomScale.isInfinite else { return (toAdd: [], toRemove: []) }
         
         let zoomLevel = zoomScale.zoomLevel()
-        let zoomLevelComparable = Int(zoomLevel)
-        
         let cellSize = zoomLevel.cellSize()
         let scaleFactor = zoomScale / Double(cellSize)
         
@@ -148,7 +145,7 @@ open class ClusterManager {
                 }
                 
                 let count = annotations.count
-                if count > 1, zoomLevelComparable <= clusteringZoomLevel {
+                if count > 1, Int(zoomLevel) <= clusteringZoomLevel {
                     let coordinate = CLLocationCoordinate2D(
                         latitude: CLLocationDegrees(totalLatitude) / CLLocationDegrees(count),
                         longitude: CLLocationDegrees(totalLongitude) / CLLocationDegrees(count)
@@ -182,34 +179,4 @@ open class ClusterManager {
         return (toAdd: toAdd.allObjects as? [MKAnnotation] ?? [], toRemove: toRemove.allObjects as? [MKAnnotation] ?? [])
     }
     
-}
-
-typealias ZoomScale = Double
-extension ZoomScale {
-    
-    func zoomLevel() -> Double {
-        let totalTilesAtMaxZoom = MKMapSizeWorld.width / 256
-        let zoomLevelAtMaxZoom = log2(totalTilesAtMaxZoom)
-        return max(0, zoomLevelAtMaxZoom + floor(log2(self) + 0.5))
-    }
-    
-    func cellSize() -> Double {
-        switch self {
-        case 13...15:
-            return 64
-        case 16...18:
-            return 32
-        case 19:
-            return 16
-        default:
-            return 88
-        }
-    }
-    
-}
-
-extension Comparable {
-    func clamp<T: Comparable>(lower: T, _ upper: T) -> T {
-        return min(max(self as! T, lower), upper)
-    }
 }
