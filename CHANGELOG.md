@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 1.0.5](https://github.com/efremidze/Cluster/releases/tag/1.0.5)
+Released on 2017-05-08
+
+- Added zoom level
+
 ## [Version 1.0.4](https://github.com/efremidze/Cluster/releases/tag/1.0.4)
 Released on 2017-05-06
 
