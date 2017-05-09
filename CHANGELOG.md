@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 1.0.6](https://github.com/efremidze/Cluster/releases/tag/1.0.6)
+Released on 2017-05-08
+
+- Bug fixes
+
 ## [Version 1.0.5](https://github.com/efremidze/Cluster/releases/tag/1.0.5)
 Released on 2017-05-08
 
