@@ -23,9 +23,9 @@ open class ClusterManager {
     /**
      Controls the level from which clustering will be enabled. Min value is 2 (max zoom out), max is 20 (max zoom in).
      */
-    open var clusteringZoomLevel: Int = 20 {
+    open var zoomLevel: Int = 20 {
         didSet {
-            clusteringZoomLevel = clusteringZoomLevel.clamped(to: 2...20)
+            zoomLevel = zoomLevel.clamped(to: 2...20)
         }
     }
     
@@ -145,7 +145,7 @@ open class ClusterManager {
                 }
                 
                 let count = annotations.count
-                if count > 1, Int(zoomLevel) <= clusteringZoomLevel {
+                if count > 1, Int(zoomLevel) <= self.zoomLevel {
                     let coordinate = CLLocationCoordinate2D(
                         latitude: CLLocationDegrees(totalLatitude) / CLLocationDegrees(count),
                         longitude: CLLocationDegrees(totalLongitude) / CLLocationDegrees(count)
