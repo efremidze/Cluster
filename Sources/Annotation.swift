@@ -46,7 +46,7 @@ open class ClusterAnnotationView: MKAnnotationView {
         }
     }
     
-    let type: ClusterAnnotationType
+    open let type: ClusterAnnotationType
     
     /**
      Initializes and returns a new cluster annotation view.
