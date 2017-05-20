@@ -117,3 +117,11 @@ extension UIImage {
     }
     
 }
+
+let testLocations: [CLLocation] = [
+    CLLocation(latitude: 20.99019666666667, longitude: -156.66481166666671),
+    CLLocation(latitude: 37.787358900000001, longitude: -122.408227),
+    CLLocation(latitude: 40.747549999999997, longitude: -73.991950000000003),
+    CLLocation(latitude: 35.702069100000003, longitude: 139.77532690000001),
+    CLLocation(latitude: -33.863399999999999, longitude: 151.21100000000001)
+]
