@@ -63,7 +63,11 @@ extension ViewController: MKMapViewDelegate {
             var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView
             if view == nil {
                 view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-                view?.pinTintColor = color
+                if #available(iOS 9.0, *) {
+                    view?.pinTintColor = color
+                } else {
+                    view?.pinColor = .green
+                }
             } else {
                 view?.annotation = annotation
             }
