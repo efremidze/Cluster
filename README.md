@@ -100,8 +100,8 @@ github "efremidze/Cluster"
 
 ## Credits
 
-https://github.com/ribl/FBAnnotationClusteringSwift
-https://github.com/choefele/CCHMapClusterController
+* https://github.com/ribl/FBAnnotationClusteringSwift
+* https://github.com/choefele/CCHMapClusterController
 
 ## License
 
