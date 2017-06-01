@@ -23,7 +23,7 @@ class ViewController: UIViewController {
         manager.zoomLevel = 17
         
         // Add annotations to the manager.
-        let annotations: [Annotation] = (0..<10).map { i in
+        let annotations: [Annotation] = (0..<1000).map { i in
             let annotation = Annotation()
             annotation.coordinate = CLLocationCoordinate2D(latitude: drand48() * 80 - 40, longitude: drand48() * 80 - 40)
             let color = UIColor(red: 255/255, green: 149/255, blue: 0/255, alpha: 1)

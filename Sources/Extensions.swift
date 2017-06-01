@@ -29,6 +29,9 @@ extension MKMapRect {
     }
 }
 
+let CLLocationCoordinate2DMax = CLLocationCoordinate2D(latitude: 90, longitude: 180)
+let MKMapPointMax = MKMapPointForCoordinate(CLLocationCoordinate2DMax)
+
 extension CLLocationCoordinate2D: Hashable, Equatable {
     public var hashValue: Int {
         return latitude.hashValue ^ longitude.hashValue

@@ -145,7 +145,6 @@ extension QuadTreeNode: AnnotationsContainer {
             for childNode in children {
                 result.append(contentsOf: childNode.annotations(in: rect))
             }
-            break
         }
         
         return result
