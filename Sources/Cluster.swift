@@ -121,7 +121,7 @@ open class ClusterManager {
         
         let zoomLevel = zoomScale.zoomLevel()
         let cellSize = zoomLevel.cellSize()
-        let scaleFactor = zoomScale / Double(cellSize)
+        let scaleFactor = zoomScale / cellSize
         
         let minX = Int(floor(visibleMapRect.minX * scaleFactor))
         let maxX = Int(floor(visibleMapRect.maxX * scaleFactor))
@@ -130,9 +130,12 @@ open class ClusterManager {
         
         var clusteredAnnotations = [MKAnnotation]()
         
-        for i in minX...maxX where !operation.isCancelled {
-            for j in minY...maxY where !operation.isCancelled {
-                let mapRect = MKMapRect(x: Double(i) / scaleFactor, y: Double(j) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
+        for x in minX...maxX where !operation.isCancelled {
+            for y in minY...maxY where !operation.isCancelled {
+                var mapRect = MKMapRect(x: Double(x) / scaleFactor, y: Double(y) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
+                if mapRect.origin.x > MKMapPointMax.x {
+                    mapRect.origin.x -= MKMapPointMax.x
+                }
                 
                 var totalLatitude: Double = 0
                 var totalLongitude: Double = 0
