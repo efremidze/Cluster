@@ -132,12 +132,10 @@ open class ClusterManager {
         
         for x in minX...maxX where !operation.isCancelled {
             for y in minY...maxY where !operation.isCancelled {
-                
-                let a = Double(x) / scaleFactor
-                let b = MKMapPointForCoordinate(CLLocationCoordinate2D(latitude: 0, longitude: 180)).x
-                let c = a <= b ? a : a - b
-                
-                let mapRect = MKMapRect(x: c, y: Double(y) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
+                var mapRect = MKMapRect(x: Double(x) / scaleFactor, y: Double(y) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
+                if mapRect.origin.x > MKMapPointMax.x {
+                    mapRect.origin.x -= MKMapPointMax.x
+                }
                 
                 var totalLatitude: Double = 0
                 var totalLongitude: Double = 0
