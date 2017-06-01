@@ -50,7 +50,7 @@ extension ViewController: MKMapViewDelegate {
             var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
             if view == nil {
                 if let annotation = annotation.annotations.first as? Annotation, let type = annotation.type {
-                    view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, type: type)
+                    view = BorderedClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, type: type, borderColor: .white)
                 } else {
                     view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, type: .color(color, radius: 25))
                 }
@@ -63,7 +63,11 @@ extension ViewController: MKMapViewDelegate {
             var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView
             if view == nil {
                 view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-                view?.pinTintColor = color
+                if #available(iOS 9.0, *) {
+                    view?.pinTintColor = color
+                } else {
+                    view?.pinColor = .green
+                }
             } else {
                 view?.annotation = annotation
             }
@@ -116,4 +120,25 @@ extension UIImage {
         return newImage
     }
     
+}
+
+class BorderedClusterAnnotationView: ClusterAnnotationView {
+    var borderColor: UIColor?
+    
+    convenience init(annotation: MKAnnotation?, reuseIdentifier: String?, type: ClusterAnnotationType, borderColor: UIColor) {
+        self.init(annotation: annotation, reuseIdentifier: reuseIdentifier, type: type)
+        self.borderColor = borderColor
+    }
+    
+    override func configure() {
+        super.configure()
+        
+        switch type {
+        case .image:
+            break
+        case .color:
+            layer.borderColor = borderColor?.cgColor
+            layer.borderWidth = 2
+        }
+    }
 }
