@@ -133,18 +133,27 @@ extension QuadTreeNode: AnnotationsContainer {
         
         var result = [MKAnnotation]()
         
+//        print(rect)
+        
         // collect the node's points that lie in the rect
         for annotation in annotations where rect.contains(annotation.coordinate) {
+//            print(annotation.coordinate)
             result.append(annotation)
         }
+        
+//        print("--->")
+//        print(annotations.count)
+//        print(result.count)
+//        result.foraEach { print($0) }
         
         switch type {
         case .leaf: break
         case .internal(let children):
             // recursively add children's points that lie in the rect
-            for childNode in children {
-                result.append(contentsOf: childNode.annotations(in: rect))
-            }
+//            for childNode in children {
+//                result.append(contentsOf: childNode.annotations(in: rect))
+//            }
+            break
         }
         
         return result

@@ -22,19 +22,28 @@ class ViewController: UIViewController {
         // When zoom level is quite close to the pins, disable clustering in order to show individual pins and allow the user to interact with them via callouts.
         manager.zoomLevel = 17
         
-        // Add annotations to the manager.
-        let annotations: [Annotation] = (0..<1000).map { i in
+        for location in testLocations {
             let annotation = Annotation()
-            annotation.coordinate = CLLocationCoordinate2D(latitude: drand48() * 80 - 40, longitude: drand48() * 80 - 40)
-            let color = UIColor(red: 255/255, green: 149/255, blue: 0/255, alpha: 1)
-            if i % 2 == 0 {
-                annotation.type = .color(color, radius: 25)
-            } else {
-                annotation.type = .image(UIImage(named: "pin")?.filled(with: color))
-            }
-            return annotation
+            annotation.coordinate = location.coordinate
+            manager.add(annotation)
         }
-        manager.add(annotations)
+        
+//        // Add annotations to the manager.
+//        let annotations: [Annotation] = (0..<10).map { i in
+//            let annotation = Annotation()
+//            annotation.coordinate = CLLocationCoordinate2D(latitude: drand48() * 80 - 40, longitude: drand48() * 80 - 40)
+//            let color = UIColor(red: 255/255, green: 149/255, blue: 0/255, alpha: 1)
+//            if i % 2 == 0 {
+//                annotation.type = .color(color, radius: 25)
+//            } else {
+//                annotation.type = .image(UIImage(named: "pin")?.filled(with: color))
+//            }
+//            return annotation
+//        }
+//        manager.add(annotations)
+        
+//        print("Expected \(testLocations.count)")
+//        print("Actual \(manager.annotations.count)")
         
         mapView.centerCoordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
     }
@@ -94,6 +103,16 @@ extension ViewController: MKMapViewDelegate {
             manager.reload(mapView, visibleMapRect: zoomRect)
             mapView.setVisibleMapRect(zoomRect, animated: true)
         }
+    }
+    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        let view = MKPolylineRenderer(overlay: overlay)
+        if overlay is MKCustomPolyline {
+            view.strokeColor = .blue
+        } else {
+            view.strokeColor = UIColor(red: 255/255, green: 149/255, blue: 0/255, alpha: 1)
+        }
+        return view
     }
     
 }

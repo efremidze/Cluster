@@ -51,9 +51,9 @@ extension ZoomScale {
             return 64
         case 16...18:
             return 32
-        case 19:
+        case 19 ..< .greatestFiniteMagnitude:
             return 16
-        default:
+        default: // Less than 13
             return 88
         }
     }
