@@ -130,73 +130,18 @@ open class ClusterManager {
         
         var clusteredAnnotations = [MKAnnotation]()
         
-//        print("visibleMapRect")
-        print(visibleMapRect)
-        
-//        print("annotations")
-//        annotations.forEach { print(MKMapPointForCoordinate($0.coordinate)); print(visibleMapRect.contains($0.coordinate)) }
-        
-        print("X: \(visibleMapRect.minX / 1000000) -> \(visibleMapRect.maxX / 1000000)")
-        print("Y: \(visibleMapRect.minY / 1000000) -> \(visibleMapRect.maxY / 1000000)")
-        
-        print("X: \(minX) -> \(maxX)")
-        print("Y: \(minY) -> \(maxY)")
-        
-        print("-----> looping")
-        
-        DispatchQueue.main.async { [unowned mapView] in
-            mapView.removeOverlays(mapView.overlays)
-        }
-        
-        DispatchQueue.main.async { [unowned mapView] in
-            mapView.add(MKCustomPolyline(points: [
-                MKMapPoint(x: visibleMapRect.minX, y: visibleMapRect.minY),
-                MKMapPoint(x: visibleMapRect.maxX, y: visibleMapRect.minY),
-                MKMapPoint(x: visibleMapRect.maxX, y: visibleMapRect.maxY),
-                MKMapPoint(x: visibleMapRect.minX, y: visibleMapRect.maxY),
-                MKMapPoint(x: visibleMapRect.minX, y: visibleMapRect.minY)
-            ], count: 5))
-        }
-        
         for x in minX...maxX where !operation.isCancelled {
-//            for y in 0...0 where !operation.isCancelled {
             for y in minY...maxY where !operation.isCancelled {
                 
                 let a = Double(x) / scaleFactor
                 let b = MKMapPointForCoordinate(CLLocationCoordinate2D(latitude: 0, longitude: 180)).x
                 let c = a <= b ? a : a - b
                 
-                let point = MKMapPoint(x: c, y: Double(y) / scaleFactor)
-                let coordinate = MKCoordinateForMapPoint(point)
-                print(coordinate)
-                
-                let mapRect = MKMapRect(origin: point, size: MKMapSize(width: 1 / scaleFactor, height: 1 / scaleFactor))
-                
-                DispatchQueue.main.async { [unowned mapView] in
-                    mapView.add(MKPolyline(points: [
-                        MKMapPoint(x: mapRect.minX, y: mapRect.minY),
-                        MKMapPoint(x: mapRect.maxX, y: mapRect.minY),
-                        MKMapPoint(x: mapRect.maxX, y: mapRect.maxY),
-                        MKMapPoint(x: mapRect.minX, y: mapRect.maxY),
-                        MKMapPoint(x: mapRect.minX, y: mapRect.minY)
-                    ], count: 5))
-                }
+                let mapRect = MKMapRect(x: c, y: Double(y) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
                 
                 var totalLatitude: Double = 0
                 var totalLongitude: Double = 0
                 var annotations = [MKAnnotation]()
-                
-                print(mapRect)
-                print("X: \(mapRect.minX / 1000000) -> \(mapRect.maxX / 1000000)")
-                print("Y: \(mapRect.minY / 1000000) -> \(mapRect.maxY / 1000000)")
-                print("\(x)-\(y)")
-                
-                if MKMapRectSpans180thMeridian(mapRect) {
-                    print("---->")
-                }
-               
-//                print("annotations")
-//                annotations.forEach { print(MKMapPointForCoordinate($0.coordinate)); print(mapRect.contains($0.coordinate)) }
                 
                 for node in tree.annotations(in: mapRect) {
                     totalLatitude += node.coordinate.latitude
@@ -218,7 +163,6 @@ open class ClusterManager {
                     clusteredAnnotations += annotations
                 }
             }
-//            break
         }
         
         if operation.isCancelled { return (toAdd: [], toRemove: []) }
@@ -241,5 +185,3 @@ open class ClusterManager {
     }
     
 }
-
-public class MKCustomPolyline: MKPolyline {}
