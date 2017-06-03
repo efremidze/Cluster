@@ -97,7 +97,7 @@ open class ClusterManager {
      - Parameters:
         - mapView: The map view object to reload.
      */
-    open func reload(_ mapView: MKMapView, visibleMapRect: MKMapRect) {
+    open func reload(_ mapView: MKMapView, visibleMapRect: MKMapRect, complete: @escaping () -> Void) {
         let operation = BlockOperation()
         operation.addExecutionBlock { [weak self, weak mapView] in
             guard let strongSelf = self, let mapView = mapView else { return }
@@ -107,6 +107,7 @@ open class ClusterManager {
                     guard let mapView = mapView else { return }
                     mapView.removeAnnotations(toRemove)
                     mapView.addAnnotations(toAdd)
+                    complete()
                 }
             }
         }
