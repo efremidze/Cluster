@@ -97,7 +97,7 @@ open class ClusterManager {
      - Parameters:
         - mapView: The map view object to reload.
      */
-    open func reload(_ mapView: MKMapView, visibleMapRect: MKMapRect, completion: @escaping (() -> Void)? = nil) {
+    open func reload(_ mapView: MKMapView, visibleMapRect: MKMapRect, completion: (() -> Void)? = nil) {
         let operation = BlockOperation()
         operation.addExecutionBlock { [weak self, weak mapView] in
             guard let strongSelf = self, let mapView = mapView else { return }
