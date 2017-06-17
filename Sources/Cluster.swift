@@ -98,10 +98,11 @@ open class ClusterManager {
         - mapView: The map view object to reload.
      */
     open func reload(_ mapView: MKMapView, visibleMapRect: MKMapRect, completion: (() -> Void)? = nil) {
+        let zoomScale = ZoomScale(mapView.bounds.width) / visibleMapRect.size.width
         let operation = BlockOperation()
         operation.addExecutionBlock { [weak self, weak mapView] in
             guard let strongSelf = self, let mapView = mapView else { return }
-            let (toAdd, toRemove) = strongSelf.clusteredAnnotations(mapView, visibleMapRect: visibleMapRect, operation: operation)
+            let (toAdd, toRemove) = strongSelf.clusteredAnnotations(mapView, zoomScale: zoomScale, visibleMapRect: visibleMapRect, operation: operation)
             if !operation.isCancelled {
                 DispatchQueue.main.async { [weak mapView] in
                     guard let mapView = mapView else { return }
@@ -115,9 +116,7 @@ open class ClusterManager {
         queue.addOperation(operation)
     }
     
-    func clusteredAnnotations(_ mapView: MKMapView, visibleMapRect: MKMapRect, operation: Operation) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
-        let zoomScale = ZoomScale(mapView.bounds.width) / visibleMapRect.size.width
-        
+    func clusteredAnnotations(_ mapView: MKMapView, zoomScale: ZoomScale, visibleMapRect: MKMapRect, operation: Operation) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
         guard !zoomScale.isInfinite else { return (toAdd: [], toRemove: []) }
         
         let zoomLevel = zoomScale.zoomLevel()
