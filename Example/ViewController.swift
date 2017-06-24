@@ -135,7 +135,7 @@ class BorderedClusterAnnotationView: ClusterAnnotationView {
         
         switch type {
         case .image:
-            break
+            layer.borderWidth = 0
         case .color:
             layer.borderColor = borderColor?.cgColor
             layer.borderWidth = 2
