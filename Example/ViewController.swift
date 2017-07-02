@@ -27,11 +27,9 @@ class ViewController: UIViewController {
             let annotation = Annotation()
             annotation.coordinate = CLLocationCoordinate2D(latitude: drand48() * 80 - 40, longitude: drand48() * 80 - 40)
             let color = UIColor(red: 255/255, green: 149/255, blue: 0/255, alpha: 1)
-            if i % 2 == 0 {
-                annotation.type = .color(color, radius: 25)
-            } else {
-                annotation.type = .image(UIImage(named: "pin")?.filled(with: color))
-            }
+            annotation.type = .color(color, radius: 25)
+            // or
+            // annotation.type = .image(UIImage(named: "pin")?.filled(with: color)) // custom image
             return annotation
         }
         manager.add(annotations)

@@ -13,13 +13,6 @@ open class ClusterManager {
     
     var tree = QuadTree(rect: MKMapRectWorld)
     
-    let queue: OperationQueue = {
-        let queue = OperationQueue()
-        queue.maxConcurrentOperationCount = 1
-        queue.qualityOfService = .userInitiated
-        return queue
-    }()
-    
     /**
      Controls the level from which clustering will be enabled. Min value is 2 (max zoom out), max is 20 (max zoom in).
      */
@@ -99,24 +92,12 @@ open class ClusterManager {
      */
     open func reload(_ mapView: MKMapView, visibleMapRect: MKMapRect, completion: (() -> Void)? = nil) {
         let zoomScale = ZoomScale(mapView.bounds.width) / visibleMapRect.size.width
-        let operation = BlockOperation()
-        operation.addExecutionBlock { [weak self, weak mapView] in
-            guard let strongSelf = self, let mapView = mapView else { return }
-            let (toAdd, toRemove) = strongSelf.clusteredAnnotations(mapView, zoomScale: zoomScale, visibleMapRect: visibleMapRect, operation: operation)
-            if !operation.isCancelled {
-                DispatchQueue.main.async { [weak mapView] in
-                    guard let mapView = mapView else { return }
-                    mapView.removeAnnotations(toRemove)
-                    mapView.addAnnotations(toAdd)
-                    completion?()
-                }
-            }
-        }
-        queue.cancelAllOperations()
-        queue.addOperation(operation)
+        let (toAdd, toRemove) = clusteredAnnotations(mapView, zoomScale: zoomScale, visibleMapRect: visibleMapRect)
+        mapView.removeAnnotations(toRemove)
+        mapView.addAnnotations(toAdd)
     }
     
-    func clusteredAnnotations(_ mapView: MKMapView, zoomScale: ZoomScale, visibleMapRect: MKMapRect, operation: Operation) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
+    func clusteredAnnotations(_ mapView: MKMapView, zoomScale: ZoomScale, visibleMapRect: MKMapRect) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
         guard !zoomScale.isInfinite else { return (toAdd: [], toRemove: []) }
         
         let zoomLevel = zoomScale.zoomLevel()
@@ -130,8 +111,8 @@ open class ClusterManager {
         
         var clusteredAnnotations = [MKAnnotation]()
         
-        for x in minX...maxX where !operation.isCancelled {
-            for y in minY...maxY where !operation.isCancelled {
+        for x in minX...maxX {
+            for y in minY...maxY {
                 var mapRect = MKMapRect(x: Double(x) / scaleFactor, y: Double(y) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
                 if mapRect.origin.x > MKMapPointMax.x {
                     mapRect.origin.x -= MKMapPointMax.x
@@ -162,8 +143,6 @@ open class ClusterManager {
                 }
             }
         }
-        
-        if operation.isCancelled { return (toAdd: [], toRemove: []) }
         
         let before = NSMutableSet(array: mapView.annotations)
         before.remove(mapView.userLocation)
