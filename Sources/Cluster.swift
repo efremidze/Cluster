@@ -90,7 +90,7 @@ open class ClusterManager {
      - Parameters:
         - mapView: The map view object to reload.
      */
-    open func reload(_ mapView: MKMapView, visibleMapRect: MKMapRect, completion: (() -> Void)? = nil) {
+    open func reload(_ mapView: MKMapView, visibleMapRect: MKMapRect) {
         let zoomScale = ZoomScale(mapView.bounds.width) / visibleMapRect.size.width
         let (toAdd, toRemove) = clusteredAnnotations(mapView, zoomScale: zoomScale, visibleMapRect: visibleMapRect)
         mapView.removeAnnotations(toRemove)
@@ -137,6 +137,7 @@ open class ClusterManager {
                     let cluster = ClusterAnnotation()
                     cluster.coordinate = coordinate
                     cluster.annotations = annotations
+                    cluster.type = (annotations.first as? Annotation)?.type
                     clusteredAnnotations.append(cluster)
                 } else {
                     clusteredAnnotations += annotations
