@@ -40,13 +40,7 @@ open class ClusterAnnotationView: MKAnnotationView {
         return label
     }()
     
-    override open var annotation: MKAnnotation? {
-        didSet {
-            configure()
-        }
-    }
-    
-    open let type: ClusterAnnotationType
+    public private(set) var type: ClusterAnnotationType
     
     /**
      Initializes and returns a new cluster annotation view.
@@ -61,14 +55,14 @@ open class ClusterAnnotationView: MKAnnotationView {
     public init(annotation: MKAnnotation?, reuseIdentifier: String?, type: ClusterAnnotationType) {
         self.type = type
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
-        configure()
+        configure(with: type)
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    open func configure() {
+    open func configure(with type: ClusterAnnotationType) {
         guard let annotation = annotation as? ClusterAnnotation else { return }
         
         switch type {
