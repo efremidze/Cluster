@@ -21,6 +21,7 @@ class ViewController: UIViewController {
         
         // When zoom level is quite close to the pins, disable clustering in order to show individual pins and allow the user to interact with them via callouts.
         manager.zoomLevel = 17
+        manager.minimumCountForCluster = 3
         
         // Add annotations to the manager.
         let annotations: [Annotation] = (0..<1000).map { i in
