@@ -95,7 +95,6 @@ extension ViewController: MKMapViewDelegate {
                     zoomRect = MKMapRectUnion(zoomRect, pointRect)
                 }
             }
-            manager.reload(mapView, visibleMapRect: zoomRect)
             mapView.setVisibleMapRect(zoomRect, animated: true)
         }
     }
