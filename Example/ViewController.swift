@@ -83,7 +83,6 @@ extension ViewController: MKMapViewDelegate {
         guard let annotation = view.annotation else { return }
         
         if let cluster = annotation as? ClusterAnnotation {
-            mapView.removeAnnotations(mapView.annotations)
             
             var zoomRect = MKMapRectNull
             for annotation in cluster.annotations {
@@ -95,11 +94,17 @@ extension ViewController: MKMapViewDelegate {
                     zoomRect = MKMapRectUnion(zoomRect, pointRect)
                 }
             }
-            manager.reload(mapView, visibleMapRect: zoomRect)
             mapView.setVisibleMapRect(zoomRect, animated: true)
         }
     }
     
+    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
+        views.forEach { $0.alpha = 0 }
+        UIView.animate(withDuration: 0.35, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: { 
+            views.forEach { $0.alpha = 1 }
+        }, completion: nil)
+    }
+
 }
 
 extension UIImage {
