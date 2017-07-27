@@ -28,7 +28,9 @@ open class ClusterManager {
             zoomLevel = zoomLevel.clamped(to: 2...20)
         }
     }
-    
+
+    open var minimumCountForCluster: Int = 2
+
     public init() {}
     
     /**
@@ -148,7 +150,7 @@ open class ClusterManager {
                 }
                 
                 let count = annotations.count
-                if count > 1, Int(zoomLevel) <= self.zoomLevel {
+                if count >= minimumCountForCluster, Int(zoomLevel) <= self.zoomLevel {
                     let coordinate = CLLocationCoordinate2D(
                         latitude: CLLocationDegrees(totalLatitude) / CLLocationDegrees(count),
                         longitude: CLLocationDegrees(totalLongitude) / CLLocationDegrees(count)
