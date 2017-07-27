@@ -83,7 +83,6 @@ extension ViewController: MKMapViewDelegate {
         guard let annotation = view.annotation else { return }
         
         if let cluster = annotation as? ClusterAnnotation {
-            mapView.removeAnnotations(mapView.annotations)
             
             var zoomRect = MKMapRectNull
             for annotation in cluster.annotations {
