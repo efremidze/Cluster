@@ -98,6 +98,13 @@ extension ViewController: MKMapViewDelegate {
         }
     }
     
+    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
+        views.forEach { $0.alpha = 0 }
+        UIView.animate(withDuration: 0.35, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: { 
+            views.forEach { $0.alpha = 1 }
+        }, completion: nil)
+    }
+
 }
 
 extension UIImage {
