@@ -164,22 +164,14 @@ open class ClusterManager {
         }
         
         if operation.isCancelled { return (toAdd: [], toRemove: []) }
-        
-        let before = NSMutableSet(array: mapView.annotations)
-        before.remove(mapView.userLocation)
-        
-        let after = NSSet(array: clusteredAnnotations)
-        
-        let toKeep = NSMutableSet(set: before)
-        toKeep.intersect(after as Set<NSObject>)
-        
-        let toAdd = NSMutableSet(set: after)
-        toAdd.minus(toKeep as Set<NSObject>)
-        
-        let toRemove = NSMutableSet(set: before)
-        toRemove.minus(after as Set<NSObject>)
-        
-        return (toAdd: toAdd.allObjects as? [MKAnnotation] ?? [], toRemove: toRemove.allObjects as? [MKAnnotation] ?? [])
+
+        let before = Set<NSObject>(mapView.annotations as! Array<NSObject>)
+        let after = Set<NSObject>(clusteredAnnotations as! Array<NSObject>)
+
+        let toRemove = before.subtracting(after)
+        let toAdd = after.subtracting(before)
+
+        return (toAdd: Array(toAdd) as! Array<MKAnnotation>, toRemove: Array(toRemove) as! Array<MKAnnotation>)
     }
     
 }
