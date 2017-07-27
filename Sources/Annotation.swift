@@ -19,6 +19,26 @@ open class ClusterAnnotation: Annotation {
     open var annotations = [MKAnnotation]()
 }
 
+extension ClusterAnnotation {
+    open override var hashValue: Int {
+        return annotations.reduce(0) { (partialHashValue, annotation) -> Int in
+            partialHashValue ^ annotation.hash
+        }
+    }
+    override open func isEqual(_ object: Any?) -> Bool {
+        guard let object = object as? ClusterAnnotation else {
+            return false
+        }
+        guard annotations.count == object.annotations.count else {
+            return false
+        }
+        let inequalAnnotationPair = zip(annotations, object.annotations).first(where: { annotation1, annotation2 in
+            return annotation1.coordinate != annotation2.coordinate
+        })
+        return inequalAnnotationPair == nil
+    }
+}
+
 public enum ClusterAnnotationType {
     case color(UIColor, radius: CGFloat)
     case image(UIImage?)
