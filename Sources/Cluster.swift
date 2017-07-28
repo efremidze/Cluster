@@ -31,6 +31,17 @@ open class ClusterManager {
 
     open var minimumCountForCluster: Int = 2
 
+    // Sets whether to remove the non visible annotations when panning / zooming
+    var removeNonVisibleAnnotations:Bool=true
+    
+    open func setRemoveNonVisibleAnnotations(needToRemove:Bool){
+        self.removeNonVisibleAnnotations=needToRemove
+    }
+    
+    open func getRemoveNonVisibleAnnotations() -> Bool {
+        return self.removeNonVisibleAnnotations
+    }
+    
     public init() {}
     
     /**
@@ -172,6 +183,19 @@ open class ClusterManager {
 
         let toRemove = before.subtracting(after)
         let toAdd = after.subtracting(before)
+        
+         if !self.removeNonVisibleAnnotations {            
+            var nonRemoving = Set<NSObject>()
+            for point in toRemove.allObjects {
+                if !visibleMapRect.contains((point as AnyObject).coordinate) {
+                    nonRemoving.insert(point as! NSObject)
+                }
+            }
+            
+            if nonRemoving.count > 0 {
+                toRemove.minus(nonRemoving)
+            }
+        }
 
         return (toAdd: Array(toAdd) as! Array<MKAnnotation>, toRemove: Array(toRemove) as! Array<MKAnnotation>)
     }
