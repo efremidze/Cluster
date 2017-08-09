@@ -21,6 +21,7 @@ class ViewController: UIViewController {
         
         // When zoom level is quite close to the pins, disable clustering in order to show individual pins and allow the user to interact with them via callouts.
         manager.zoomLevel = 17
+        manager.minimumCountForCluster = 3
         
         // Add annotations to the manager.
         let annotations: [Annotation] = (0..<1000).map { i in
@@ -79,8 +80,6 @@ extension ViewController: MKMapViewDelegate {
         guard let annotation = view.annotation else { return }
         
         if let cluster = annotation as? ClusterAnnotation {
-            mapView.removeAnnotations(mapView.annotations)
-            
             var zoomRect = MKMapRectNull
             for annotation in cluster.annotations {
                 let annotationPoint = MKMapPointForCoordinate(annotation.coordinate)
@@ -91,11 +90,17 @@ extension ViewController: MKMapViewDelegate {
                     zoomRect = MKMapRectUnion(zoomRect, pointRect)
                 }
             }
-            manager.reload(mapView, visibleMapRect: zoomRect)
             mapView.setVisibleMapRect(zoomRect, animated: true)
         }
     }
     
+    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
+        views.forEach { $0.alpha = 0 }
+        UIView.animate(withDuration: 0.35, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: { 
+            views.forEach { $0.alpha = 1 }
+        }, completion: nil)
+    }
+
 }
 
 class BorderedClusterAnnotationView: ClusterAnnotationView {

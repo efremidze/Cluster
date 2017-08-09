@@ -22,6 +22,11 @@ open class ClusterManager {
         }
     }
     
+    /**
+     The minimum number of annotations for a cluster.
+     */
+    open var minimumCountForCluster: Int = 2
+    
     public init() {}
     
     /**
@@ -76,13 +81,18 @@ open class ClusterManager {
     }
     
     /**
-     The complete list of annotations associated.
+     The list of annotations associated.
      
      The objects in this array must adopt the MKAnnotation protocol. If no annotations are associated with the cluster manager, the value of this property is an empty array.
      */
     open var annotations: [MKAnnotation] {
         return tree.annotations(in: MKMapRectWorld)
     }
+    
+    /**
+     The list of visible annotations associated.
+     */
+    public var visibleAnnotations = Set<NSObject>()
     
     /**
      Reload the annotations on the map view.
@@ -95,6 +105,8 @@ open class ClusterManager {
         let (toAdd, toRemove) = clusteredAnnotations(mapView, zoomScale: zoomScale, visibleMapRect: visibleMapRect)
         mapView.removeAnnotations(toRemove)
         mapView.addAnnotations(toAdd)
+        visibleAnnotations.subtract(Set(toRemove as! [NSObject]))
+        visibleAnnotations.formUnion(Set(toAdd as! [NSObject]))
     }
     
     func clusteredAnnotations(_ mapView: MKMapView, zoomScale: ZoomScale, visibleMapRect: MKMapRect) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
@@ -129,7 +141,7 @@ open class ClusterManager {
                 }
                 
                 let count = annotations.count
-                if count > 1, Int(zoomLevel) <= self.zoomLevel {
+                if count >= minimumCountForCluster, Int(zoomLevel) <= self.zoomLevel {
                     let coordinate = CLLocationCoordinate2D(
                         latitude: CLLocationDegrees(totalLatitude) / CLLocationDegrees(count),
                         longitude: CLLocationDegrees(totalLongitude) / CLLocationDegrees(count)
@@ -145,21 +157,13 @@ open class ClusterManager {
             }
         }
         
-        let before = NSMutableSet(array: mapView.annotations)
-        before.remove(mapView.userLocation)
+        let before = Set(visibleAnnotations)
+        let after = Set(clusteredAnnotations as! [NSObject])
         
-        let after = NSSet(array: clusteredAnnotations)
+        let toRemove = before.subtracting(after)
+        let toAdd = after.subtracting(before)
         
-        let toKeep = NSMutableSet(set: before)
-        toKeep.intersect(after as Set<NSObject>)
-        
-        let toAdd = NSMutableSet(set: after)
-        toAdd.minus(toKeep as Set<NSObject>)
-        
-        let toRemove = NSMutableSet(set: before)
-        toRemove.minus(after as Set<NSObject>)
-        
-        return (toAdd: toAdd.allObjects as? [MKAnnotation] ?? [], toRemove: toRemove.allObjects as? [MKAnnotation] ?? [])
+        return (toAdd: Array(toAdd) as! [MKAnnotation], toRemove: Array(toRemove) as! [MKAnnotation])
     }
     
 }
