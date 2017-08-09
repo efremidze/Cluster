@@ -13,13 +13,6 @@ open class ClusterManager {
     
     var tree = QuadTree(rect: MKMapRectWorld)
     
-    let queue: OperationQueue = {
-        let queue = OperationQueue()
-        queue.maxConcurrentOperationCount = 1
-        queue.qualityOfService = .userInitiated
-        return queue
-    }()
-    
     /**
      Controls the level from which clustering will be enabled. Min value is 2 (max zoom out), max is 20 (max zoom in).
      */
@@ -28,9 +21,12 @@ open class ClusterManager {
             zoomLevel = zoomLevel.clamped(to: 2...20)
         }
     }
-
+    
+    /**
+     The minimum number of annotations for a cluster.
+     */
     open var minimumCountForCluster: Int = 2
-
+    
     public init() {}
     
     /**
@@ -85,7 +81,7 @@ open class ClusterManager {
     }
     
     /**
-     The complete list of annotations associated.
+     The list of annotations associated.
      
      The objects in this array must adopt the MKAnnotation protocol. If no annotations are associated with the cluster manager, the value of this property is an empty array.
      */
@@ -94,31 +90,26 @@ open class ClusterManager {
     }
     
     /**
+     The list of visible annotations associated.
+     */
+    public var visibleAnnotations = Set<NSObject>()
+    
+    /**
      Reload the annotations on the map view.
      
      - Parameters:
         - mapView: The map view object to reload.
      */
-    open func reload(_ mapView: MKMapView, visibleMapRect: MKMapRect, completion: (() -> Void)? = nil) {
+    open func reload(_ mapView: MKMapView, visibleMapRect: MKMapRect) {
         let zoomScale = ZoomScale(mapView.bounds.width) / visibleMapRect.size.width
-        let operation = BlockOperation()
-        operation.addExecutionBlock { [weak self, weak mapView] in
-            guard let strongSelf = self, let mapView = mapView else { return }
-            let (toAdd, toRemove) = strongSelf.clusteredAnnotations(mapView, zoomScale: zoomScale, visibleMapRect: visibleMapRect, operation: operation)
-            if !operation.isCancelled {
-                DispatchQueue.main.async { [weak mapView] in
-                    guard let mapView = mapView else { return }
-                    mapView.removeAnnotations(toRemove)
-                    mapView.addAnnotations(toAdd)
-                    completion?()
-                }
-            }
-        }
-        queue.cancelAllOperations()
-        queue.addOperation(operation)
+        let (toAdd, toRemove) = clusteredAnnotations(mapView, zoomScale: zoomScale, visibleMapRect: visibleMapRect)
+        mapView.removeAnnotations(toRemove)
+        mapView.addAnnotations(toAdd)
+        visibleAnnotations.subtract(Set(toRemove as! [NSObject]))
+        visibleAnnotations.formUnion(Set(toAdd as! [NSObject]))
     }
     
-    func clusteredAnnotations(_ mapView: MKMapView, zoomScale: ZoomScale, visibleMapRect: MKMapRect, operation: Operation) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
+    func clusteredAnnotations(_ mapView: MKMapView, zoomScale: ZoomScale, visibleMapRect: MKMapRect) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
         guard !zoomScale.isInfinite else { return (toAdd: [], toRemove: []) }
         
         let zoomLevel = zoomScale.zoomLevel()
@@ -132,8 +123,8 @@ open class ClusterManager {
         
         var clusteredAnnotations = [MKAnnotation]()
         
-        for x in minX...maxX where !operation.isCancelled {
-            for y in minY...maxY where !operation.isCancelled {
+        for x in minX...maxX {
+            for y in minY...maxY {
                 var mapRect = MKMapRect(x: Double(x) / scaleFactor, y: Double(y) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
                 if mapRect.origin.x > MKMapPointMax.x {
                     mapRect.origin.x -= MKMapPointMax.x
@@ -142,11 +133,22 @@ open class ClusterManager {
                 var totalLatitude: Double = 0
                 var totalLongitude: Double = 0
                 var annotations = [MKAnnotation]()
+                var hash = [CLLocationCoordinate2D: [MKAnnotation]]()
                 
                 for node in tree.annotations(in: mapRect) {
                     totalLatitude += node.coordinate.latitude
                     totalLongitude += node.coordinate.longitude
                     annotations.append(node)
+                    hash[node.coordinate, default: [MKAnnotation]()] += [node]
+                }
+                
+                for value in hash.values {
+                    for (index, node) in value.enumerated() {
+                        let distanceFromContestedLocation = 3 * Double(value.count) / 2
+                        let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
+                        let bearing = radiansBetweenAnnotations * Double(index)
+                        (node as? Annotation)?.coordinate = node.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
+                    }
                 }
                 
                 let count = annotations.count
@@ -158,6 +160,7 @@ open class ClusterManager {
                     let cluster = ClusterAnnotation()
                     cluster.coordinate = coordinate
                     cluster.annotations = annotations
+                    cluster.type = (annotations.first as? Annotation)?.type
                     clusteredAnnotations.append(cluster)
                 } else {
                     clusteredAnnotations += annotations
@@ -165,15 +168,13 @@ open class ClusterManager {
             }
         }
         
-        if operation.isCancelled { return (toAdd: [], toRemove: []) }
-
-        let before = Set<NSObject>(mapView.annotations as! Array<NSObject>)
-        let after = Set<NSObject>(clusteredAnnotations as! Array<NSObject>)
-
+        let before = Set(visibleAnnotations)
+        let after = Set(clusteredAnnotations as! [NSObject])
+        
         let toRemove = before.subtracting(after)
         let toAdd = after.subtracting(before)
-
-        return (toAdd: Array(toAdd) as! Array<MKAnnotation>, toRemove: Array(toRemove) as! Array<MKAnnotation>)
+        
+        return (toAdd: Array(toAdd) as! [MKAnnotation], toRemove: Array(toRemove) as! [MKAnnotation])
     }
     
 }

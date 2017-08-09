@@ -19,26 +19,6 @@ open class ClusterAnnotation: Annotation {
     open var annotations = [MKAnnotation]()
 }
 
-extension ClusterAnnotation {
-    open override var hashValue: Int {
-        return annotations.reduce(0) { (partialHashValue, annotation) -> Int in
-            partialHashValue ^ annotation.hash
-        }
-    }
-    override open func isEqual(_ object: Any?) -> Bool {
-        guard let object = object as? ClusterAnnotation else {
-            return false
-        }
-        guard annotations.count == object.annotations.count else {
-            return false
-        }
-        let inequalAnnotationPair = zip(annotations, object.annotations).first(where: { annotation1, annotation2 in
-            return annotation1.coordinate != annotation2.coordinate
-        })
-        return inequalAnnotationPair == nil
-    }
-}
-
 public enum ClusterAnnotationType {
     case color(UIColor, radius: CGFloat)
     case image(UIImage?)
@@ -60,13 +40,7 @@ open class ClusterAnnotationView: MKAnnotationView {
         return label
     }()
     
-    override open var annotation: MKAnnotation? {
-        didSet {
-            configure()
-        }
-    }
-    
-    open let type: ClusterAnnotationType
+    public private(set) var type: ClusterAnnotationType
     
     /**
      Initializes and returns a new cluster annotation view.
@@ -81,14 +55,14 @@ open class ClusterAnnotationView: MKAnnotationView {
     public init(annotation: MKAnnotation?, reuseIdentifier: String?, type: ClusterAnnotationType) {
         self.type = type
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
-        configure()
+        configure(with: type)
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    open func configure() {
+    open func configure(with type: ClusterAnnotationType) {
         guard let annotation = annotation as? ClusterAnnotation else { return }
         
         switch type {

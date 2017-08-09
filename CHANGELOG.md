@@ -1,5 +1,12 @@
 # Change log
 
+## [Version 1.0.8](https://github.com/efremidze/Cluster/releases/tag/1.0.8)
+Released on 2017-08-09
+
+- Added multiple manager support
+- Fixed overlapping annotations
+- Removed multithreading
+
 ## [Version 1.0.7](https://github.com/efremidze/Cluster/releases/tag/1.0.7)
 Released on 2017-05-31
 
