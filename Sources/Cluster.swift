@@ -133,11 +133,22 @@ open class ClusterManager {
                 var totalLatitude: Double = 0
                 var totalLongitude: Double = 0
                 var annotations = [MKAnnotation]()
+                var hash = [CLLocationCoordinate2D: [MKAnnotation]]()
                 
                 for node in tree.annotations(in: mapRect) {
                     totalLatitude += node.coordinate.latitude
                     totalLongitude += node.coordinate.longitude
                     annotations.append(node)
+                    hash[node.coordinate, default: [MKAnnotation]()] += [node]
+                }
+                
+                for value in hash.values {
+                    for (index, node) in value.enumerated() {
+                        let distanceFromContestedLocation = 3 * Double(value.count) / 2
+                        let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
+                        let bearing = radiansBetweenAnnotations * Double(index)
+                        (node as? Annotation)?.coordinate = node.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
+                    }
                 }
                 
                 let count = annotations.count

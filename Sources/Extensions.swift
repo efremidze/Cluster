@@ -71,12 +71,6 @@ extension Comparable {
 private let radiusOfEarth: Double = 6372797.6
 
 extension CLLocationCoordinate2D {
-    func distributing(index: Int, count: Int) -> CLLocationCoordinate2D {
-        let distanceFromContestedLocation: Double = 3 * Double(count) / 2
-        let radiansBetweenAnnotations = (.pi * 2) / Double(count)
-        let bearing = radiansBetweenAnnotations * Double(index)
-        return coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
-    }
     func coordinate(onBearingInRadians bearing: Double, atDistanceInMeters distance: Double) -> CLLocationCoordinate2D {
         let distRadians = distance / radiusOfEarth // earth radius in meters
         
@@ -87,5 +81,12 @@ extension CLLocationCoordinate2D {
         let lon2 = lon1 + atan2(sin(bearing) * sin(distRadians) * cos(lat1), cos(distRadians) - sin(lat1) * sin(lat2))
         
         return CLLocationCoordinate2D(latitude: lat2 * 180 / .pi, longitude: lon2 * 180 / .pi)
+    }
+}
+
+extension Dictionary {
+    subscript(key: Key, `default` value: Value) -> Value {
+        mutating get { return self[key] ?? { self[key] = value; return value }() }
+        set { self[key] = newValue }
     }
 }
