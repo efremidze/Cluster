@@ -27,6 +27,11 @@ open class ClusterManager {
      */
     open var minimumCountForCluster: Int = 2
     
+    /**
+     Whether to remove invisible annotations.
+     */
+    open var shouldRemoveInvisibleAnnotations: Bool = true
+    
     public init() {}
     
     /**
@@ -171,8 +176,13 @@ open class ClusterManager {
         let before = Set(visibleAnnotations)
         let after = Set(clusteredAnnotations as! [NSObject])
         
-        let toRemove = before.subtracting(after)
+        var toRemove = before.subtracting(after)
         let toAdd = after.subtracting(before)
+        
+        if !shouldRemoveInvisibleAnnotations {
+            let nonRemoving = toRemove.filter { !visibleMapRect.contains(($0 as AnyObject).coordinate) }
+            toRemove.subtract(Set(nonRemoving))
+        }
         
         return (toAdd: Array(toAdd) as! [MKAnnotation], toRemove: Array(toRemove) as! [MKAnnotation])
     }
