@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 1.0.9](https://github.com/efremidze/Cluster/releases/tag/1.0.9)
+Released on 2017-08-17
+
+- Added option to retain invisible annotations
+
 ## [Version 1.0.8](https://github.com/efremidze/Cluster/releases/tag/1.0.8)
 Released on 2017-08-09
 
