@@ -144,7 +144,7 @@ open class ClusterManager {
                     totalLatitude += node.coordinate.latitude
                     totalLongitude += node.coordinate.longitude
                     annotations.append(node)
-                    hash[node.coordinate, default: [MKAnnotation]()] += [node]
+                    hash[node.coordinate, defaultValue: [MKAnnotation]()] += [node]
                 }
                 
                 for value in hash.values {
