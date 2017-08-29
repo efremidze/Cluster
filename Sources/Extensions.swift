@@ -85,7 +85,7 @@ extension CLLocationCoordinate2D {
 }
 
 extension Dictionary {
-    subscript(key: Key, `default` value: Value) -> Value {
+    subscript(key: Key, `defaultValue` value: Value) -> Value {
         mutating get { return self[key] ?? { self[key] = value; return value }() }
         set { self[key] = newValue }
     }
