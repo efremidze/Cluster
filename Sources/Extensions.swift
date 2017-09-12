@@ -97,13 +97,10 @@ extension Array where Element: MKAnnotation {
     func subtracted(_ other: [Element]) -> [Element] {
         return filter { item in !other.contains { $0.coordinate == item.coordinate } }
     }
-    
     mutating func subtract(_ other: [Element]) {
         self = self.subtracted(other)
     }
-    
     mutating func add(_ other: [Element]) {
         self.append(contentsOf: other)
     }
 }
-
