@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 1.0.10](https://github.com/efremidze/Cluster/releases/tag/1.0.10)
+Released on 2017-09-11
+
+- Changed Set to Array
+
 ## [Version 1.0.9](https://github.com/efremidze/Cluster/releases/tag/1.0.9)
 Released on 2017-08-17
 
