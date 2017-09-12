@@ -97,7 +97,7 @@ open class ClusterManager {
     /**
      The list of visible annotations associated.
      */
-    public var visibleAnnotations = Set<NSObject>()
+    public var visibleAnnotations = [MKAnnotation]()
     
     /**
      Reload the annotations on the map view.
@@ -110,8 +110,8 @@ open class ClusterManager {
         let (toAdd, toRemove) = clusteredAnnotations(mapView, zoomScale: zoomScale, visibleMapRect: visibleMapRect)
         mapView.removeAnnotations(toRemove)
         mapView.addAnnotations(toAdd)
-        visibleAnnotations.subtract(Set(toRemove as! [NSObject]))
-        visibleAnnotations.formUnion(Set(toAdd as! [NSObject]))
+        visibleAnnotations.subtract(toRemove)
+        visibleAnnotations.add(toAdd)
     }
     
     func clusteredAnnotations(_ mapView: MKMapView, zoomScale: ZoomScale, visibleMapRect: MKMapRect) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
@@ -173,18 +173,18 @@ open class ClusterManager {
             }
         }
         
-        let before = Set(visibleAnnotations)
-        let after = Set(clusteredAnnotations as! [NSObject])
+        let before = visibleAnnotations
+        let after = clusteredAnnotations
         
-        var toRemove = before.subtracting(after)
-        let toAdd = after.subtracting(before)
+        var toRemove = before.subtracted(after)
+        let toAdd = after.subtracted(before)
         
         if !shouldRemoveInvisibleAnnotations {
-            let nonRemoving = toRemove.filter { !visibleMapRect.contains(($0 as AnyObject).coordinate) }
-            toRemove.subtract(Set(nonRemoving))
+            let nonRemoving = toRemove.filter { !visibleMapRect.contains($0.coordinate) }
+            toRemove.subtract(nonRemoving)
         }
         
-        return (toAdd: Array(toAdd) as! [MKAnnotation], toRemove: Array(toRemove) as! [MKAnnotation])
+        return (toAdd: toAdd, toRemove: toRemove)
     }
     
 }

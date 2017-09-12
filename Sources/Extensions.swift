@@ -6,6 +6,7 @@
 //  Copyright © 2017 efremidze. All rights reserved.
 //
 
+import Foundation
 import MapKit
 
 extension MKMapRect {
@@ -32,13 +33,14 @@ extension MKMapRect {
 let CLLocationCoordinate2DMax = CLLocationCoordinate2D(latitude: 90, longitude: 180)
 let MKMapPointMax = MKMapPointForCoordinate(CLLocationCoordinate2DMax)
 
-extension CLLocationCoordinate2D: Hashable, Equatable {
+extension CLLocationCoordinate2D: Hashable {
     public var hashValue: Int {
         return latitude.hashValue ^ longitude.hashValue
     }
-    public static func ==(lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
-        return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
-    }
+}
+
+public func ==(lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
+    return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
 }
 
 typealias ZoomScale = Double
@@ -90,3 +92,18 @@ extension Dictionary {
         set { self[key] = newValue }
     }
 }
+
+extension Array where Element: MKAnnotation {
+    func subtracted(_ other: [Element]) -> [Element] {
+        return filter { item in !other.contains { $0.coordinate == item.coordinate } }
+    }
+    
+    mutating func subtract(_ other: [Element]) {
+        self = self.subtracted(other)
+    }
+    
+    mutating func add(_ other: [Element]) {
+        self.append(contentsOf: other)
+    }
+}
+
