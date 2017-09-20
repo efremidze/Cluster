@@ -4,7 +4,7 @@
 
 <p align="center">
 <a href="https://swift.org" target="_blank">
-<img alt="Language" src="https://img.shields.io/badge/Swift-3.1-orange.svg?style=flat">
+<img alt="Language" src="https://img.shields.io/badge/Swift-4-orange.svg?style=flat">
 </a>
 <a href="http://cocoapods.org/pods/Cluster" target="_blank">
 <img alt="Version" src="https://img.shields.io/cocoapods/v/Cluster.svg?style=flat">
