@@ -34,7 +34,7 @@ $ pod try Cluster
 
 - iOS 8.0+
 - Xcode 8.0+
-- Swift 3.0+
+- Swift 4 (Cluster 2.x), Swift 3 (Cluster 1.x)
 
 ## Usage
 
