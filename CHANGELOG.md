@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.0.0](https://github.com/efremidze/Cluster/releases/tag/2.0.0)
+Released on 2017-09-20
+
+- Updated to Swift 4
+
 ## [Version 1.0.10](https://github.com/efremidze/Cluster/releases/tag/1.0.10)
 Released on 2017-09-11
 
