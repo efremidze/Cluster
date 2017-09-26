@@ -86,13 +86,6 @@ extension CLLocationCoordinate2D {
     }
 }
 
-extension Dictionary {
-    subscript(key: Key, `defaultValue` value: Value) -> Value {
-        mutating get { return self[key] ?? { self[key] = value; return value }() }
-        set { self[key] = newValue }
-    }
-}
-
 extension Array where Element: MKAnnotation {
     func subtracted(_ other: [Element]) -> [Element] {
         return filter { item in !other.contains { $0.coordinate == item.coordinate } }
