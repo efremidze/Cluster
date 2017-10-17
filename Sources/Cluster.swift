@@ -100,6 +100,11 @@ open class ClusterManager {
     public var visibleAnnotations = [MKAnnotation]()
     
     /**
+     The list of annotations that will be exluded from clustering. All annotations in the list will be displayed as a single annotation despite of map zoom level.
+     */
+    public var exludedAnnotatios = [MKAnnotation]()
+    
+    /**
      Reload the annotations on the map view.
      
      - Parameters:
@@ -176,8 +181,8 @@ open class ClusterManager {
         let before = visibleAnnotations
         let after = clusteredAnnotations
         
-        var toRemove = before.subtracted(after)
-        let toAdd = after.subtracted(before)
+        var toRemove = before.subtracted(after).subtracted(exludedAnnotatios)
+        let toAdd = after.subtracted(before).subtracted(exludedAnnotatios)
         
         if !shouldRemoveInvisibleAnnotations {
             let nonRemoving = toRemove.filter { !visibleMapRect.contains($0.coordinate) }
