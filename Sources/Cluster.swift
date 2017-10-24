@@ -14,23 +14,40 @@ open class ClusterManager {
     var tree = QuadTree(rect: MKMapRectWorld)
     
     /**
-     Controls the level from which clustering will be enabled. Min value is 2 (max zoom out), max is 20 (max zoom in).
+     The size of each cell on the grid (The larger the size, the better the performance).
+     
+     If nil, automatically adjusts the cell size to zoom level. Defaults to nil.
      */
-    open var zoomLevel: Int = 20 {
-        didSet {
-            zoomLevel = zoomLevel.clamped(to: 2...20)
-        }
-    }
+    open var cellSize: Double?
+    
+    /**
+     The current zoom level of the visible map region.
+     
+     Min value is 0 (max zoom out), max is 20 (max zoom in).
+     */
+    open internal(set) var zoomLevel: Double = 0
+    
+    /**
+     The maximum zoom level before disabling clustering.
+     
+     Min value is 0 (max zoom out), max is 20 (max zoom in).
+     */
+    open var maxZoomLevel: Double = .maxZoomLevel
     
     /**
      The minimum number of annotations for a cluster.
      */
-    open var minimumCountForCluster: Int = 2
+    open var minCountForClustering: Int = 2
     
     /**
      Whether to remove invisible annotations.
      */
     open var shouldRemoveInvisibleAnnotations: Bool = true
+    
+    /**
+     Whether to center align cluster annotations.
+     */
+    open var shouldCenterAlignClusters: Bool = false
     
     public init() {}
     
@@ -106,20 +123,23 @@ open class ClusterManager {
         - mapView: The map view object to reload.
      */
     open func reload(_ mapView: MKMapView, visibleMapRect: MKMapRect) {
-        let zoomScale = ZoomScale(mapView.bounds.width) / visibleMapRect.size.width
-        let (toAdd, toRemove) = clusteredAnnotations(mapView, zoomScale: zoomScale, visibleMapRect: visibleMapRect)
-        mapView.removeAnnotations(toRemove)
-        mapView.addAnnotations(toAdd)
-        visibleAnnotations.subtract(toRemove)
-        visibleAnnotations.add(toAdd)
+        autoreleasepool {
+            let (toAdd, toRemove) = clusteredAnnotations(mapView, visibleMapRect: visibleMapRect)
+            mapView.removeAnnotations(toRemove)
+            mapView.addAnnotations(toAdd)
+            visibleAnnotations.subtract(toRemove)
+            visibleAnnotations.add(toAdd)
+        }
     }
     
-    func clusteredAnnotations(_ mapView: MKMapView, zoomScale: ZoomScale, visibleMapRect: MKMapRect) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
+    func clusteredAnnotations(_ mapView: MKMapView, visibleMapRect: MKMapRect) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
+        let mapRectWidth = Double(mapView.bounds.width)
+        let visibleMapRectWidth = visibleMapRect.size.width
+        let zoomScale = mapRectWidth / visibleMapRectWidth
         guard !zoomScale.isInfinite else { return (toAdd: [], toRemove: []) }
         
-        let zoomLevel = zoomScale.zoomLevel()
-        let cellSize = zoomLevel.cellSize()
-        let scaleFactor = zoomScale / cellSize
+        zoomLevel = zoomScale.zoomLevel
+        let scaleFactor = zoomScale / (cellSize ?? zoomScale.cellSize)
         
         let minX = Int(floor(visibleMapRect.minX * scaleFactor))
         let maxX = Int(floor(visibleMapRect.maxX * scaleFactor))
@@ -128,12 +148,17 @@ open class ClusterManager {
         
         var clusteredAnnotations = [MKAnnotation]()
         
+//        mapView.removeOverlays(mapView.overlays)
+//        mapView.add(MKBasePolyline(mapRect: visibleMapRect))
+        
         for x in minX...maxX {
             for y in minY...maxY {
                 var mapRect = MKMapRect(x: Double(x) / scaleFactor, y: Double(y) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
                 if mapRect.origin.x > MKMapPointMax.x {
                     mapRect.origin.x -= MKMapPointMax.x
                 }
+                
+//                mapView.add(MKPolyline(mapRect: mapRect))
                 
                 var totalLatitude: Double = 0
                 var totalLongitude: Double = 0
@@ -147,7 +172,7 @@ open class ClusterManager {
                     hash[node.coordinate, default: [MKAnnotation]()] += [node]
                 }
                 
-                for value in hash.values {
+                for value in hash.values where value.count > 1 {
                     for (index, node) in value.enumerated() {
                         let distanceFromContestedLocation = 3 * Double(value.count) / 2
                         let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
@@ -157,13 +182,16 @@ open class ClusterManager {
                 }
                 
                 let count = annotations.count
-                if count >= minimumCountForCluster, Int(zoomLevel) <= self.zoomLevel {
-                    let coordinate = CLLocationCoordinate2D(
-                        latitude: CLLocationDegrees(totalLatitude) / CLLocationDegrees(count),
-                        longitude: CLLocationDegrees(totalLongitude) / CLLocationDegrees(count)
-                    )
+                if count >= minCountForClustering, zoomLevel <= maxZoomLevel {
                     let cluster = ClusterAnnotation()
-                    cluster.coordinate = coordinate
+                    if shouldCenterAlignClusters {
+                        cluster.coordinate = MKCoordinateForMapPoint(MKMapPoint(x: mapRect.midX, y: mapRect.midY))
+                    } else {
+                        cluster.coordinate = CLLocationCoordinate2D(
+                            latitude: CLLocationDegrees(totalLatitude) / CLLocationDegrees(count),
+                            longitude: CLLocationDegrees(totalLongitude) / CLLocationDegrees(count)
+                        )
+                    }
                     cluster.annotations = annotations
                     cluster.type = (annotations.first as? Annotation)?.type
                     clusteredAnnotations.append(cluster)
@@ -188,3 +216,5 @@ open class ClusterManager {
     }
     
 }
+
+//public class MKBasePolyline: MKPolyline {}

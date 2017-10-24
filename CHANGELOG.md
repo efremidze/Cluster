@@ -1,5 +1,12 @@
 # Change log
 
+## [Version 2.0.1](https://github.com/efremidze/Cluster/releases/tag/2.0.1)
+Released on 2017-10-17
+
+- Added custom cell sizing
+- Added annotation center aligning
+- Fixed annotations moving when panning
+
 ## [Version 2.0.0](https://github.com/efremidze/Cluster/releases/tag/2.0.0)
 Released on 2017-09-20
 

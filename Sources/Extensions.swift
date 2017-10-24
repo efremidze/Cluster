@@ -22,8 +22,8 @@ extension MKMapRect {
     var midY: Double { return MKMapRectGetMidY(self) }
     var maxX: Double { return MKMapRectGetMaxX(self) }
     var maxY: Double { return MKMapRectGetMaxY(self) }
-    func intersects(_ rect: MKMapRect) -> Bool {
-        return MKMapRectIntersectsRect(self, rect)
+    func intersects(_ mapRect: MKMapRect) -> Bool {
+        return MKMapRectIntersectsRect(self, mapRect)
     }
     func contains(_ coordinate: CLLocationCoordinate2D) -> Bool {
         return MKMapRectContainsPoint(self, MKMapPointForCoordinate(coordinate))
@@ -43,20 +43,20 @@ public func ==(lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool
     return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
 }
 
-typealias ZoomScale = Double
-extension ZoomScale {
-    func zoomLevel() -> Double {
-        let totalTilesAtMaxZoom = MKMapSizeWorld.width / 256
-        let zoomLevelAtMaxZoom = log2(totalTilesAtMaxZoom)
-        return max(0, zoomLevelAtMaxZoom + floor(log2(self) + 0.5))
+extension Double {
+    static let maxZoomLevel: Double = 20
+    var zoomLevel: Double {
+        let maxZoomLevel = log2(MKMapSizeWorld.width / 256) // 20
+        let zoomLevel = floor(log2(self) + 0.5) // negative
+        return max(0, maxZoomLevel + zoomLevel) // max - current
     }
-    func cellSize() -> Double {
+    var cellSize: Double {
         switch self {
         case 13...15:
             return 64
         case 16...18:
             return 32
-        case 19 ..< .greatestFiniteMagnitude:
+        case 19...:
             return 16
         default: // Less than 13
             return 88
@@ -95,5 +95,18 @@ extension Array where Element: MKAnnotation {
     }
     mutating func add(_ other: [Element]) {
         self.append(contentsOf: other)
+    }
+}
+
+extension MKPolyline {
+    convenience init(mapRect: MKMapRect) {
+        let points = [
+            MKMapPoint(x: mapRect.minX, y: mapRect.minY),
+            MKMapPoint(x: mapRect.maxX, y: mapRect.minY),
+            MKMapPoint(x: mapRect.maxX, y: mapRect.maxY),
+            MKMapPoint(x: mapRect.minX, y: mapRect.maxY),
+            MKMapPoint(x: mapRect.minX, y: mapRect.minY)
+        ]
+        self.init(points: points, count: points.count)
     }
 }

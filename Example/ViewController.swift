@@ -20,9 +20,11 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         // When zoom level is quite close to the pins, disable clustering in order to show individual pins and allow the user to interact with them via callouts.
-        manager.zoomLevel = 17
-        manager.minimumCountForCluster = 3
+        manager.cellSize = nil
+        manager.maxZoomLevel = 17
+        manager.minCountForClustering = 3
         manager.shouldRemoveInvisibleAnnotations = false
+        manager.shouldCenterAlignClusters = true
         
         // Add annotations to the manager.
         let annotations: [Annotation] = (0..<1000).map { i in
@@ -101,6 +103,16 @@ extension ViewController: MKMapViewDelegate {
             views.forEach { $0.alpha = 1 }
         }, completion: nil)
     }
+    
+//    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+//        let view = MKPolylineRenderer(overlay: overlay)
+//        if overlay is MKBasePolyline {
+//            view.strokeColor = .blue
+//        } else {
+//            view.strokeColor = UIColor(red: 255/255, green: 149/255, blue: 0/255, alpha: 1)
+//        }
+//        return view
+//    }
 
 }
 
