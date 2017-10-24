@@ -30,10 +30,20 @@ You may want to see the [Example](Example/) first if you'd like to see the actua
 $ pod try Cluster
 ```
 
+## Features
+
+- [x] Adding/Removing Annotations
+- [x] Clustering Annotations
+- [x] Multiple Managers
+- [x] Dynamic Cluster Disabling
+- [x] Custom Cell Size
+- [x] Custom Annotation Views
+- [x] Animation Support
+
 ## Requirements
 
 - iOS 8.0+
-- Xcode 8.0+
+- Xcode 9.0+
 - Swift 4 (Cluster 2.x), Swift 3 (Cluster 1.x)
 
 ## Usage
