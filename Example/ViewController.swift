@@ -109,7 +109,7 @@ extension ViewController: MKMapViewDelegate {
 //        if overlay is MKBasePolyline {
 //            view.strokeColor = .blue
 //        } else {
-//            view.strokeColor = UIColor(red: 255/255, green: 149/255, blue: 0/255, alpha: 1)
+//            view.strokeColor = .red
 //        }
 //        return view
 //    }
