@@ -146,7 +146,7 @@ open class ClusterManager {
         let minY = Int(floor(visibleMapRect.minY * scaleFactor))
         let maxY = Int(floor(visibleMapRect.maxY * scaleFactor))
         
-        var clusteredAnnotations = [MKAnnotation]()
+        var allAnnotations = [MKAnnotation]()
         
 //        mapView.removeOverlays(mapView.overlays)
 //        mapView.add(MKBasePolyline(mapRect: visibleMapRect))
@@ -165,6 +165,7 @@ open class ClusterManager {
                 var annotations = [MKAnnotation]()
                 var hash = [CLLocationCoordinate2D: [MKAnnotation]]()
                 
+                // add annotations
                 for node in tree.annotations(in: mapRect) {
                     totalLatitude += node.coordinate.latitude
                     totalLongitude += node.coordinate.longitude
@@ -172,6 +173,7 @@ open class ClusterManager {
                     hash[node.coordinate, default: [MKAnnotation]()] += [node]
                 }
                 
+                // handle annotations on the same coordinate
                 for value in hash.values where value.count > 1 {
                     for (index, node) in value.enumerated() {
                         let distanceFromContestedLocation = 3 * Double(value.count) / 2
@@ -181,6 +183,7 @@ open class ClusterManager {
                     }
                 }
                 
+                // handle clustering
                 let count = annotations.count
                 if count >= minCountForClustering, zoomLevel <= maxZoomLevel {
                     let cluster = ClusterAnnotation()
@@ -194,15 +197,15 @@ open class ClusterManager {
                     }
                     cluster.annotations = annotations
                     cluster.type = (annotations.first as? Annotation)?.type
-                    clusteredAnnotations.append(cluster)
+                    allAnnotations += [cluster]
                 } else {
-                    clusteredAnnotations += annotations
+                    allAnnotations += annotations
                 }
             }
         }
         
         let before = visibleAnnotations
-        let after = clusteredAnnotations
+        let after = allAnnotations
         
         var toRemove = before.subtracted(after)
         let toAdd = after.subtracted(before)
