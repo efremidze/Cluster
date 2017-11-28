@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		71726C201F11A225003DCEFF /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71726C1F1F11A225003DCEFF /* Extensions.swift */; };
+		7174A8EB1FCCAEFE00D201F9 /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 7174A8E81FCCAEFD00D201F9 /* CHANGELOG.md */; };
+		7174A8EC1FCCAEFE00D201F9 /* Cluster.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 7174A8E91FCCAEFD00D201F9 /* Cluster.podspec */; };
+		7174A8ED1FCCAEFE00D201F9 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 7174A8EA1FCCAEFE00D201F9 /* README.md */; };
 		8B03BCB01EBE8A1500CC9EED /* QuadTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B03BCAF1EBE8A1500CC9EED /* QuadTree.swift */; };
 		8B5335101EA2C723005C0A31 /* Annotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B53350F1EA2C723005C0A31 /* Annotation.swift */; };
 		8B65CB041EA30BAB00753706 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B65CB031EA30BAB00753706 /* Extensions.swift */; };
@@ -48,6 +51,9 @@
 
 /* Begin PBXFileReference section */
 		71726C1F1F11A225003DCEFF /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		7174A8E81FCCAEFD00D201F9 /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
+		7174A8E91FCCAEFD00D201F9 /* Cluster.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cluster.podspec; sourceTree = "<group>"; };
+		7174A8EA1FCCAEFE00D201F9 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		8B03BCAF1EBE8A1500CC9EED /* QuadTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuadTree.swift; sourceTree = "<group>"; };
 		8B53350F1EA2C723005C0A31 /* Annotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Annotation.swift; sourceTree = "<group>"; };
 		8B65CB031EA30BAB00753706 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -86,6 +92,9 @@
 		8BFA2B551E9F7149001A80FB = {
 			isa = PBXGroup;
 			children = (
+				7174A8EA1FCCAEFE00D201F9 /* README.md */,
+				7174A8E81FCCAEFD00D201F9 /* CHANGELOG.md */,
+				7174A8E91FCCAEFD00D201F9 /* Cluster.podspec */,
 				8BFA2B611E9F7149001A80FB /* Cluster */,
 				8BFA2B6F1E9F715B001A80FB /* Example */,
 				8BFA2B601E9F7149001A80FB /* Products */,
@@ -226,6 +235,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7174A8ED1FCCAEFE00D201F9 /* README.md in Resources */,
+				7174A8EB1FCCAEFE00D201F9 /* CHANGELOG.md in Resources */,
+				7174A8EC1FCCAEFE00D201F9 /* Cluster.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
