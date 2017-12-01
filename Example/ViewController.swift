@@ -31,9 +31,9 @@ class ViewController: UIViewController {
             let annotation = Annotation()
             annotation.coordinate = CLLocationCoordinate2D(latitude: drand48() * 80 - 40, longitude: drand48() * 80 - 40)
             let color = UIColor(red: 255/255, green: 149/255, blue: 0/255, alpha: 1)
-            annotation.type = .color(color, radius: 25)
+            annotation.style = .color(color, radius: 25)
             // or
-            // annotation.type = .image(UIImage(named: "pin")?.filled(with: color)) // custom image
+            // annotation.style = .image(UIImage(named: "pin")?.filled(with: color)) // custom image
             return annotation
         }
         manager.add(annotations)
@@ -47,18 +47,18 @@ extension ViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if let annotation = annotation as? ClusterAnnotation {
-            guard let type = annotation.type else { return nil }
+            guard let style = annotation.style else { return nil }
             let identifier = "Cluster"
             var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
             if let view = view as? BorderedClusterAnnotationView {
                 view.annotation = annotation
-                view.configure(with: type)
+                view.configure(with: style)
             } else {
-                view = BorderedClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, type: type, borderColor: .white)
+                view = BorderedClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, style: style, borderColor: .white)
             }
             return view
         } else {
-            guard let annotation = annotation as? Annotation, let type = annotation.type else { return nil }
+            guard let annotation = annotation as? Annotation, let style = annotation.style else { return nil }
             let identifier = "Pin"
             var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView
             if let view = view {
@@ -66,7 +66,7 @@ extension ViewController: MKMapViewDelegate {
             } else {
                 view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
             }
-            if #available(iOS 9.0, *), case let .color(color, _) = type {
+            if #available(iOS 9.0, *), case let .color(color, _) = style {
                 view?.pinTintColor =  color
             } else {
                 view?.pinColor = .green
@@ -119,19 +119,19 @@ extension ViewController: MKMapViewDelegate {
 class BorderedClusterAnnotationView: ClusterAnnotationView {
     let borderColor: UIColor
     
-    init(annotation: MKAnnotation?, reuseIdentifier: String?, type: ClusterAnnotationType, borderColor: UIColor) {
+    init(annotation: MKAnnotation?, reuseIdentifier: String?, style: ClusterAnnotationStyle, borderColor: UIColor) {
         self.borderColor = borderColor
-        super.init(annotation: annotation, reuseIdentifier: reuseIdentifier, type: type)
+        super.init(annotation: annotation, reuseIdentifier: reuseIdentifier, style: style)
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func configure(with type: ClusterAnnotationType) {
-        super.configure(with: type)
+    override func configure(with style: ClusterAnnotationStyle) {
+        super.configure(with: style)
         
-        switch type {
+        switch style {
         case .image:
             layer.borderWidth = 0
         case .color:

@@ -9,15 +9,28 @@
 import MapKit
 
 open class Annotation: MKPointAnnotation {
-    open var type: ClusterAnnotationType?
+    open var style: ClusterAnnotationStyle?
 }
 
 open class ClusterAnnotation: Annotation {
     open var annotations = [MKAnnotation]()
 }
 
-public enum ClusterAnnotationType {
+/**
+ The style of the cluster annotation view.
+ */
+public enum ClusterAnnotationStyle {
+    /**
+     Displays the annotations as a circle.
+     
+     - `color`: The color of the annotation circle
+     - `radius`: The radius of the annotation circle
+     */
     case color(UIColor, radius: CGFloat)
+    
+    /**
+     Displays the annotation as an image.
+     */
     case image(UIImage?)
 }
 
@@ -37,7 +50,10 @@ open class ClusterAnnotationView: MKAnnotationView {
         return label
     }()
     
-    public private(set) var type: ClusterAnnotationType
+    /**
+     The style of the cluster annotation view.
+     */
+    public private(set) var style: ClusterAnnotationStyle
     
     /**
      Initializes and returns a new cluster annotation view.
@@ -45,24 +61,24 @@ open class ClusterAnnotationView: MKAnnotationView {
      - Parameters:
         - annotation: The annotation object to associate with the new view.
         - reuseIdentifier: If you plan to reuse the annotation view for similar types of annotations, pass a string to identify it. Although you can pass nil if you do not intend to reuse the view, reusing annotation views is generally recommended.
-        - type: The cluster annotation type to associate with the new view.
+        - style: The cluster annotation style to associate with the new view.
      
      - Returns: The initialized cluster annotation view.
      */
-    public init(annotation: MKAnnotation?, reuseIdentifier: String?, type: ClusterAnnotationType) {
-        self.type = type
+    public init(annotation: MKAnnotation?, reuseIdentifier: String?, style: ClusterAnnotationStyle) {
+        self.style = style
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
-        configure(with: type)
+        configure(with: style)
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    open func configure(with type: ClusterAnnotationType) {
+    open func configure(with style: ClusterAnnotationStyle) {
         guard let annotation = annotation as? ClusterAnnotation else { return }
         
-        switch type {
+        switch style {
         case let .image(image):
             backgroundColor = .clear
             self.image = image
@@ -85,7 +101,7 @@ open class ClusterAnnotationView: MKAnnotationView {
     override open func layoutSubviews() {
         super.layoutSubviews()
         
-        if case .color = type {
+        if case .color = style {
             layer.masksToBounds = true
             layer.cornerRadius = image == nil ? bounds.width / 2 : 0
             countLabel.frame = bounds
