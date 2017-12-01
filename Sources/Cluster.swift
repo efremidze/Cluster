@@ -45,9 +45,34 @@ open class ClusterManager {
     open var shouldRemoveInvisibleAnnotations: Bool = true
     
     /**
-     Whether to center align cluster annotations.
+     The position of the cluster annotation.
      */
-    open var shouldCenterAlignClusters: Bool = false
+    public enum ClusterPosition {
+        /**
+         Placed in the center of the grid.
+         */
+        case center
+        
+        /**
+         Placed on the coordinate of the annotation closest to center of the grid.
+         */
+        case nearCenter
+        
+        /**
+         Placed on the computed average of the coordinates of all annotations in a cluster.
+         */
+        case average
+        
+        /**
+         Placed on the coordinate of first annotation in a cluster.
+         */
+        case first
+    }
+    
+    /**
+     The position of the cluster annotation. The default is `.nearCenter`.
+     */
+    open var clusterPosition: ClusterPosition = .nearCenter
     
     public init() {}
     
@@ -187,13 +212,23 @@ open class ClusterManager {
                 let count = annotations.count
                 if count >= minCountForClustering, zoomLevel <= maxZoomLevel {
                     let cluster = ClusterAnnotation()
-                    if shouldCenterAlignClusters {
+                    switch clusterPosition {
+                    case .center:
                         cluster.coordinate = MKCoordinateForMapPoint(MKMapPoint(x: mapRect.midX, y: mapRect.midY))
-                    } else {
+                    case .nearCenter:
+                        let coordinate = MKCoordinateForMapPoint(MKMapPoint(x: mapRect.midX, y: mapRect.midY))
+                        if let annotation = annotations.min(by: { coordinate.distance(from: $0.coordinate) < coordinate.distance(from: $1.coordinate) }) {
+                            cluster.coordinate = annotation.coordinate
+                        }
+                    case .average:
                         cluster.coordinate = CLLocationCoordinate2D(
                             latitude: CLLocationDegrees(totalLatitude) / CLLocationDegrees(count),
                             longitude: CLLocationDegrees(totalLongitude) / CLLocationDegrees(count)
                         )
+                    case .first:
+                        if let annotation = annotations.first {
+                            cluster.coordinate = annotation.coordinate
+                        }
                     }
                     cluster.annotations = annotations
                     cluster.type = (annotations.first as? Annotation)?.type

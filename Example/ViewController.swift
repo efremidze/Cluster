@@ -24,7 +24,7 @@ class ViewController: UIViewController {
         manager.maxZoomLevel = 17
         manager.minCountForClustering = 3
         manager.shouldRemoveInvisibleAnnotations = false
-        manager.shouldCenterAlignClusters = true
+        manager.clusterPosition = .nearCenter
         
         // Add annotations to the manager.
         let annotations: [Annotation] = (0..<1000).map { i in

@@ -84,6 +84,12 @@ extension CLLocationCoordinate2D {
         
         return CLLocationCoordinate2D(latitude: lat2 * 180 / .pi, longitude: lon2 * 180 / .pi)
     }
+    var location: CLLocation {
+        return CLLocation(latitude: latitude, longitude: longitude)
+    }
+    func distance(from coordinate: CLLocationCoordinate2D) -> CLLocationDistance {
+        return location.distance(from: coordinate.location)
+    }
 }
 
 extension Array where Element: MKAnnotation {
