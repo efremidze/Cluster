@@ -1,5 +1,11 @@
 # Change log
 
+## [Version 2.1.0](https://github.com/efremidze/Cluster/releases/tag/2.1.0)
+Released on 2017-12-01
+
+- Bug fixes
+- Renamed ClusterAnnotationType to ClusterAnnotationStyle
+
 ## [Version 2.0.2](https://github.com/efremidze/Cluster/releases/tag/2.0.2)
 Released on 2017-11-28
 

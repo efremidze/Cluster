@@ -61,7 +61,7 @@ let clusterManager = ClusterManager()
 ```swift
 let annotation = Annotation()
 annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-annotation.type = .color(color, radius: 25) // .image(UIImage(named: "pin"))
+annotation.style = .color(color, radius: 25) // .image(UIImage(named: "pin"))
 clusterManager.add(annotation)
 ```
 
@@ -71,7 +71,7 @@ clusterManager.add(annotation)
 func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
     var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
     if view == nil {
-        view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, type: type)
+        view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, style: style)
     } else {
         view?.annotation = annotation
     }
@@ -84,6 +84,37 @@ func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnota
 ```swift
 func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
     clusterManager.reload(mapView, visibleMapRect: mapView.visibleMapRect)
+}
+```
+
+### Customization
+
+The `ClusterManager` exposes several properties to customize clustering:
+
+```swift
+var cellSize: Double? // The size of each cell on the grid (The larger the size, the better the performance).
+var zoomLevel: Double // The current zoom level of the visible map region.
+var maxZoomLevel: Double // The maximum zoom level before disabling clustering.
+var minCountForClustering: Int // The minimum number of annotations for a cluster. The default is `2`.
+var shouldRemoveInvisibleAnnotations: Bool // Whether to remove invisible annotations. The default is `true`.
+var clusterPosition: ClusterPosition // The position of the cluster annotation. The default is `.nearCenter`.
+```
+
+#### Annotations
+
+The `Annotation` class exposes a `style` property that allows you to customize the appearance.
+
+```swift
+var style: ClusterAnnotationStyle // The style of the cluster annotation view.
+```
+
+You can further customize the annotations by subclassing `ClusterAnnotationView` and overriding `configure`:
+
+```swift
+override func configure(with style: ClusterAnnotationStyle) {
+    super.configure(with: style)
+
+    // customize
 }
 ```
 
