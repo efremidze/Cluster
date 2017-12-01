@@ -87,7 +87,7 @@ func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
 }
 ```
 
-### Customization
+## Customization
 
 The `ClusterManager` exposes several properties to customize clustering:
 
@@ -100,7 +100,7 @@ var shouldRemoveInvisibleAnnotations: Bool // Whether to remove invisible annota
 var clusterPosition: ClusterPosition // The position of the cluster annotation. The default is `.nearCenter`.
 ```
 
-#### Annotations
+### Annotations
 
 The `Annotation` class exposes a `style` property that allows you to customize the appearance.
 
