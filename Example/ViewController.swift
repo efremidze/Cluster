@@ -26,10 +26,13 @@ class ViewController: UIViewController {
         manager.shouldRemoveInvisibleAnnotations = false
         manager.clusterPosition = .nearCenter
         
+        let center = CLLocationCoordinate2D(latitude: 37.787994, longitude: -122.407437) // region center
+        let delta = 0.1 // region span
+        
         // Add annotations to the manager.
-        let annotations: [Annotation] = (0..<1000).map { i in
+        let annotations: [Annotation] = (0..<100).map { i in
             let annotation = Annotation()
-            annotation.coordinate = CLLocationCoordinate2D(latitude: drand48() * 80 - 40, longitude: drand48() * 80 - 40)
+            annotation.coordinate = CLLocationCoordinate2D(latitude: center.latitude + drand48() * delta - delta / 2, longitude: center.longitude + drand48() * delta - delta / 2)
             let color = UIColor(red: 255/255, green: 149/255, blue: 0/255, alpha: 1)
             annotation.style = .color(color, radius: 25)
             // or
@@ -38,7 +41,7 @@ class ViewController: UIViewController {
         }
         manager.add(annotations)
         
-        mapView.centerCoordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
+        mapView.region = .init(center: center, span: .init(latitudeDelta: delta, longitudeDelta: delta))
     }
     
 }
