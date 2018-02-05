@@ -94,7 +94,7 @@ extension CLLocationCoordinate2D {
 
 extension Array where Element: MKAnnotation {
     func subtracted(_ other: [Element]) -> [Element] {
-        return filter { item in !other.contains { $0 === item } }
+        return filter { item in !other.contains { $0.isEqual(item) } }
     }
     mutating func subtract(_ other: [Element]) {
         self = self.subtracted(other)
