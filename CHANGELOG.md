@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.1.2](https://github.com/efremidze/Cluster/releases/tag/2.1.2)
+Released on 2018-02-05
+
+- Comparison fix
+
 ## [Version 2.1.1](https://github.com/efremidze/Cluster/releases/tag/2.1.1)
 Released on 2018-01-28
 
