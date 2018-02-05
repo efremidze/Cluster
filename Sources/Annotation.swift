@@ -14,6 +14,27 @@ open class Annotation: MKPointAnnotation {
 
 open class ClusterAnnotation: Annotation {
     open var annotations = [MKAnnotation]()
+
+    open override func isEqual(_ object: Any?) -> Bool {
+        guard let object = object as? ClusterAnnotation else { return false }
+
+        if self === object {
+            return true
+        }
+
+        if coordinate != object.coordinate {
+            return false
+        }
+
+        let rhsAnnotations = object.annotations
+
+        if annotations.count != rhsAnnotations.count {
+            return false
+        }
+
+        return annotations.subtracted(rhsAnnotations).count == 0
+    }
+
 }
 
 /**
