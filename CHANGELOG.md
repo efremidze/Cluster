@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.1.3](https://github.com/efremidze/Cluster/releases/tag/2.1.3)
+Released on 2018-03-30
+
+- Swift 4.1 Support
+
 ## [Version 2.1.2](https://github.com/efremidze/Cluster/releases/tag/2.1.2)
 Released on 2018-02-05
 
