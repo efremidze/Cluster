@@ -146,21 +146,35 @@ open class ClusterManager {
      
      - Parameters:
         - mapView: The map view object to reload.
+        - visibleMapRect: The area currently displayed by the map view.
      */
+    @available(*, deprecated: 2.1.4, message: "Use reload(mapView:)")
     open func reload(_ mapView: MKMapView, visibleMapRect: MKMapRect) {
-        autoreleasepool {
-            let (toAdd, toRemove) = clusteredAnnotations(mapView, visibleMapRect: visibleMapRect)
-            mapView.removeAnnotations(toRemove)
-            mapView.addAnnotations(toAdd)
-            visibleAnnotations.subtract(toRemove)
-            visibleAnnotations.add(toAdd)
+        reload(mapView: mapView)
+    }
+    
+    /**
+     Reload the annotations on the map view.
+     
+     - Parameters:
+        - mapView: The map view object to reload.
+     */
+    open func reload(mapView: MKMapView) {
+        let mapBounds = mapView.bounds
+        let visibleMapRect = mapView.visibleMapRect
+        let visibleMapRectWidth = visibleMapRect.size.width
+        let zoomScale = Double(mapBounds.width) / visibleMapRectWidth
+        DispatchQueue.global(qos: .userInitiated).async { [unowned self, unowned mapView] in
+            autoreleasepool {
+                let (toAdd, toRemove) = self.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: visibleMapRect)
+                DispatchQueue.main.async { [unowned self, unowned mapView] in
+                    self.display(mapView: mapView, toAdd: toAdd, toRemove: toRemove)
+                }
+            }
         }
     }
     
-    func clusteredAnnotations(_ mapView: MKMapView, visibleMapRect: MKMapRect) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
-        let mapRectWidth = Double(mapView.bounds.width)
-        let visibleMapRectWidth = visibleMapRect.size.width
-        let zoomScale = mapRectWidth / visibleMapRectWidth
+    open func clusteredAnnotations(zoomScale: Double, visibleMapRect: MKMapRect) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
         guard !zoomScale.isInfinite else { return (toAdd: [], toRemove: []) }
         
         zoomLevel = zoomScale.zoomLevel
@@ -251,6 +265,13 @@ open class ClusterManager {
         }
         
         return (toAdd: toAdd, toRemove: toRemove)
+    }
+    
+    open func display(mapView: MKMapView, toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
+        mapView.removeAnnotations(toRemove)
+        mapView.addAnnotations(toAdd)
+        visibleAnnotations.subtract(toRemove)
+        visibleAnnotations.add(toAdd)
     }
     
 }
