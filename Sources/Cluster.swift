@@ -74,6 +74,22 @@ open class ClusterManager {
      */
     open var clusterPosition: ClusterPosition = .nearCenter
     
+    /**
+     The list of annotations associated.
+     
+     The objects in this array must adopt the MKAnnotation protocol. If no annotations are associated with the cluster manager, the value of this property is an empty array.
+     */
+    open var annotations: [MKAnnotation] {
+        return tree.annotations(in: MKMapRectWorld)
+    }
+    
+    /**
+     The list of visible annotations associated.
+     */
+    open var visibleAnnotations = [MKAnnotation]()
+    
+    open var queue = OperationQueue()
+    
     public init() {}
     
     /**
@@ -128,20 +144,6 @@ open class ClusterManager {
     }
     
     /**
-     The list of annotations associated.
-     
-     The objects in this array must adopt the MKAnnotation protocol. If no annotations are associated with the cluster manager, the value of this property is an empty array.
-     */
-    open var annotations: [MKAnnotation] {
-        return tree.annotations(in: MKMapRectWorld)
-    }
-    
-    /**
-     The list of visible annotations associated.
-     */
-    public var visibleAnnotations = [MKAnnotation]()
-    
-    /**
      Reload the annotations on the map view.
      
      - Parameters:
@@ -164,9 +166,11 @@ open class ClusterManager {
         let visibleMapRect = mapView.visibleMapRect
         let visibleMapRectWidth = visibleMapRect.size.width
         let zoomScale = Double(mapBounds.width) / visibleMapRectWidth
-        DispatchQueue.global(qos: .userInitiated).async { [unowned self, unowned mapView] in
+        queue.cancelAllOperations()
+        queue.addOperation { [unowned self, unowned mapView] operation in
             autoreleasepool {
                 let (toAdd, toRemove) = self.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: visibleMapRect)
+                guard !operation.isCancelled else { return }
                 DispatchQueue.main.async { [unowned self, unowned mapView] in
                     self.display(mapView: mapView, toAdd: toAdd, toRemove: toRemove)
                 }

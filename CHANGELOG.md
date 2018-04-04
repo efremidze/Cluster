@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.1.5](https://github.com/efremidze/Cluster/releases/tag/2.1.5)
+Released on 2018-04-04
+
+- Fixed queuing
+
 ## [Version 2.1.4](https://github.com/efremidze/Cluster/releases/tag/2.1.4)
 Released on 2018-04-03
 
