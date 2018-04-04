@@ -116,3 +116,14 @@ extension MKPolyline {
         self.init(points: points, count: points.count)
     }
 }
+
+extension OperationQueue {
+    func addOperation(_ block: @escaping (BlockOperation) -> Void) {
+        let operation = BlockOperation()
+        operation.addExecutionBlock { [weak operation] in
+            guard let operation = operation else { return }
+            block(operation)
+        }
+        self.addOperation(operation)
+    }
+}
