@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.1.4](https://github.com/efremidze/Cluster/releases/tag/2.1.4)
+Released on 2018-04-03
+
+- Moved clustering to background thread
+
 ## [Version 2.1.3](https://github.com/efremidze/Cluster/releases/tag/2.1.3)
 Released on 2018-03-30
 
