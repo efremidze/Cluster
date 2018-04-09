@@ -122,6 +122,7 @@ open class ClusterManager {
      */
     open func remove(_ annotation: MKAnnotation) {
         tree.remove(annotation)
+        visibleAnnotations.remove(annotation)
     }
     
     /**
@@ -141,9 +142,7 @@ open class ClusterManager {
      */
     open func removeAll() {
         tree = QuadTree(rect: MKMapRectWorld)
-
-        // Empty visible annotations array so future changes are detected correctly when reloading
-        visibleAnnotations.removeAll()
+        visibleAnnotations = []
     }
     
     /**
@@ -165,23 +164,32 @@ open class ClusterManager {
         - mapView: The map view object to reload.
      */
     open func reload(mapView: MKMapView) {
+        reload(mapView: mapView) { finished in }
+    }
+    
+    open func reload(mapView: MKMapView, completion: @escaping (Bool) -> Void) {
         let mapBounds = mapView.bounds
         let visibleMapRect = mapView.visibleMapRect
         let visibleMapRectWidth = visibleMapRect.size.width
         let zoomScale = Double(mapBounds.width) / visibleMapRectWidth
         queue.cancelAllOperations()
-        queue.addOperation { [unowned self, unowned mapView] operation in
-            autoreleasepool {
-                let (toAdd, toRemove) = self.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: visibleMapRect)
-                guard !operation.isCancelled else { return }
-                DispatchQueue.main.async { [unowned self, unowned mapView] in
+        queue.addOperation { [weak self, weak mapView] operation in
+            guard let `self` = self, let mapView = mapView else { return }
+            autoreleasepool { () -> Void in
+                let (toAdd, toRemove) = self.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: visibleMapRect, operation: operation)
+                guard !operation.isCancelled else { return completion(false) }
+                DispatchQueue.main.async { [weak self, weak mapView] in
+                    guard let `self` = self, let mapView = mapView else { return }
                     self.display(mapView: mapView, toAdd: toAdd, toRemove: toRemove)
+                    completion(true)
                 }
             }
         }
     }
     
-    open func clusteredAnnotations(zoomScale: Double, visibleMapRect: MKMapRect) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
+    open func clusteredAnnotations(zoomScale: Double, visibleMapRect: MKMapRect, operation: Operation? = nil) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
+        let isCancelled: (Operation?) -> Bool = { return $0?.isCancelled ?? false }
+        
         guard !zoomScale.isInfinite else { return (toAdd: [], toRemove: []) }
         
         zoomLevel = zoomScale.zoomLevel
@@ -199,6 +207,7 @@ open class ClusterManager {
         
         for x in minX...maxX {
             for y in minY...maxY {
+                guard !isCancelled(operation) else { return (toAdd: [], toRemove: []) }
                 var mapRect = MKMapRect(x: Double(x) / scaleFactor, y: Double(y) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
                 if mapRect.origin.x > MKMapPointMax.x {
                     mapRect.origin.x -= MKMapPointMax.x
@@ -275,6 +284,7 @@ open class ClusterManager {
     }
     
     open func display(mapView: MKMapView, toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
+        assert(Thread.isMainThread, "This function must be called from the main thread.")
         mapView.removeAnnotations(toRemove)
         mapView.addAnnotations(toAdd)
         visibleAnnotations.subtract(toRemove)

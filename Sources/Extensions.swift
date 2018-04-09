@@ -102,6 +102,10 @@ extension Array where Element: MKAnnotation {
     mutating func add(_ other: [Element]) {
         self.append(contentsOf: other)
     }
+    @discardableResult
+    mutating func remove(_ element: Element) -> Element? {
+        return index { $0.isEqual(element) }.map { remove(at: $0) }
+    }
 }
 
 extension MKPolyline {

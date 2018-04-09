@@ -83,7 +83,9 @@ func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnota
 
 ```swift
 func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-    clusterManager.reload(mapView, visibleMapRect: mapView.visibleMapRect)
+    clusterManager.reload(mapView) { finished in
+        // handle completion
+    }
 }
 ```
 
