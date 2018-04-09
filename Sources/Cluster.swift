@@ -141,6 +141,9 @@ open class ClusterManager {
      */
     open func removeAll() {
         tree = QuadTree(rect: MKMapRectWorld)
+
+        // Empty visible annotations array so future changes are detected correctly when reloading
+        visibleAnnotations.removeAll()
     }
     
     /**
