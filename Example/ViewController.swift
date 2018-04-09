@@ -29,7 +29,7 @@ class ViewController: UIViewController {
         let delta = 0.1 // region span
         
         // Add annotations to the manager.
-        let annotations: [Annotation] = (0..<100).map { i in
+        let annotations: [Annotation] = (0..<100000).map { i in
             let annotation = Annotation()
             annotation.coordinate = CLLocationCoordinate2D(latitude: center.latitude + drand48() * delta - delta / 2, longitude: center.longitude + drand48() * delta - delta / 2)
             let color = UIColor(red: 255/255, green: 149/255, blue: 0/255, alpha: 1)
@@ -78,7 +78,12 @@ extension ViewController: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        manager.reload(mapView: mapView)
+        manager.reload(mapView: mapView) { finished in
+            print(mapView.annotations.count)
+            self.manager.reload(mapView: mapView) { finished in
+                print(mapView.annotations.count)
+            }
+        }
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
