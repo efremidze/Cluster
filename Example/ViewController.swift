@@ -23,7 +23,6 @@ class ViewController: UIViewController {
         manager.cellSize = nil
         manager.maxZoomLevel = 17
         manager.minCountForClustering = 3
-        manager.shouldRemoveInvisibleAnnotations = false
         manager.clusterPosition = .nearCenter
         
         let center = CLLocationCoordinate2D(latitude: 37.787994, longitude: -122.407437) // region center
