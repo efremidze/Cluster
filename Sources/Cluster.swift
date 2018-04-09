@@ -87,6 +87,7 @@ open class ClusterManager {
      The list of visible annotations associated.
      */
     open var visibleAnnotations = [MKAnnotation]()
+//    open var visibleAnnotations = QuadTree(rect: MKMapRectWorld)
     
     open var queue = OperationQueue()
     
@@ -280,6 +281,9 @@ open class ClusterManager {
             toRemove.subtract(nonRemoving)
         }
         
+        visibleAnnotations.subtract(toRemove)
+        visibleAnnotations.add(toAdd)
+        
         return (toAdd: toAdd, toRemove: toRemove)
     }
     
@@ -287,8 +291,6 @@ open class ClusterManager {
         assert(Thread.isMainThread, "This function must be called from the main thread.")
         mapView.removeAnnotations(toRemove)
         mapView.addAnnotations(toAdd)
-        visibleAnnotations.subtract(toRemove)
-        visibleAnnotations.add(toAdd)
     }
     
 }
