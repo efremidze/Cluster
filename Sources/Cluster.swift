@@ -83,13 +83,17 @@ open class ClusterManager {
         return tree.annotations(in: MKMapRectWorld)
     }
     
-    /**
-     The list of visible annotations associated.
-     */
+//    var visibleTree = QuadTree(rect: MKMapRectWorld)
+//
+//    /**
+//     The list of visible annotations associated.
+//     */
+//    open var visibleAnnotations: [MKAnnotation] {
+//        return visibleTree.annotations(in: MKMapRectWorld)
+//    }
     open var visibleAnnotations = [MKAnnotation]()
-//    open var visibleAnnotations = QuadTree(rect: MKMapRectWorld)
     
-    open var queue = OperationQueue()
+    var queue = OperationQueue()
     
     public init() {}
     
@@ -123,7 +127,7 @@ open class ClusterManager {
      */
     open func remove(_ annotation: MKAnnotation) {
         tree.remove(annotation)
-        visibleAnnotations.remove(annotation)
+//        visibleTree.remove(annotation)
     }
     
     /**
@@ -143,7 +147,7 @@ open class ClusterManager {
      */
     open func removeAll() {
         tree = QuadTree(rect: MKMapRectWorld)
-        visibleAnnotations = []
+//        visibleTree = QuadTree(rect: MKMapRectWorld)
     }
     
     /**
@@ -269,6 +273,9 @@ open class ClusterManager {
                 }
             }
         }
+        
+//        var toRemove = [MKAnnotation]()
+//        var toAdd = [MKAnnotation]()
         
         let before = visibleAnnotations
         let after = allAnnotations

@@ -125,15 +125,10 @@ extension QuadTreeNode: AnnotationsContainer {
     }
     
     func annotations(in rect: MKMapRect) -> [MKAnnotation] {
-        
-        // if the node's rect and the given rect don't intersect, return an empty array,
-        // because there can't be any points that lie the node's (or its children's) rect and
-        // in the given rect
         guard self.rect.intersects(rect) else { return [] }
         
         var result = [MKAnnotation]()
         
-        // collect the node's points that lie in the rect
         for annotation in annotations where rect.contains(annotation.coordinate) {
             result.append(annotation)
         }
@@ -141,7 +136,6 @@ extension QuadTreeNode: AnnotationsContainer {
         switch type {
         case .leaf: break
         case .internal(let children):
-            // recursively add children's points that lie in the rect
             for childNode in children {
                 result.append(contentsOf: childNode.annotations(in: rect))
             }

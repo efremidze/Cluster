@@ -8,6 +8,25 @@
 
 import MapKit
 
+extension Equatable where Self: MKAnnotation {}
+
+public func ==(lhs: MKAnnotation, rhs: MKAnnotation) -> Bool {
+    return lhs.coordinate == rhs.coordinate
+}
+
+public func ==(lhs: ClusterAnnotation, rhs: ClusterAnnotation) -> Bool {
+    if lhs === rhs {
+        return true
+    }
+    if lhs.coordinate != rhs.coordinate {
+        return false
+    }
+    if lhs.annotations.count != rhs.annotations.count {
+        return false
+    }
+    return lhs.annotations.map { $0.coordinate } == rhs.annotations.map { $0.coordinate }
+}
+
 open class Annotation: MKPointAnnotation {
     open var style: ClusterAnnotationStyle?
 }
@@ -26,15 +45,20 @@ open class ClusterAnnotation: Annotation {
             return false
         }
 
-        let rhsAnnotations = object.annotations
-
-        if annotations.count != rhsAnnotations.count {
+        if annotations.count != object.annotations.count {
             return false
         }
 
-        return annotations.subtracted(rhsAnnotations).count == 0
+        return annotations.map { $0.coordinate } == object.annotations.map { $0.coordinate }
     }
-
+    
+//    override open var hashValue: Int {
+//        return annotations.map { $0.coordinate }
+//    }
+    
+//    override var hashValue: Int {
+//        return name.hashValue ^ capital.hashValue ^ visited.hashValue
+//    }
 }
 
 /**
