@@ -79,10 +79,7 @@ extension ViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         manager.reload(mapView: mapView) { finished in
-            print(mapView.annotations.count)
-            self.manager.reload(mapView: mapView) { finished in
-                print(mapView.annotations.count)
-            }
+            print(finished)
         }
     }
     
