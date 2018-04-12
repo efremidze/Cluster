@@ -83,14 +83,9 @@ open class ClusterManager {
         return tree.annotations(in: MKMapRectWorld)
     }
     
-//    var visibleTree = QuadTree(rect: MKMapRectWorld)
-//
-//    /**
-//     The list of visible annotations associated.
-//     */
-//    open var visibleAnnotations: [MKAnnotation] {
-//        return visibleTree.annotations(in: MKMapRectWorld)
-//    }
+    /**
+     The list of visible annotations associated.
+     */
     open var visibleAnnotations = [MKAnnotation]()
     
     var queue = OperationQueue()
@@ -127,7 +122,7 @@ open class ClusterManager {
      */
     open func remove(_ annotation: MKAnnotation) {
         tree.remove(annotation)
-//        visibleTree.remove(annotation)
+        visibleAnnotations.remove(annotation)
     }
     
     /**
@@ -147,7 +142,7 @@ open class ClusterManager {
      */
     open func removeAll() {
         tree = QuadTree(rect: MKMapRectWorld)
-//        visibleTree = QuadTree(rect: MKMapRectWorld)
+        visibleAnnotations = []
     }
     
     /**
@@ -212,7 +207,6 @@ open class ClusterManager {
         
         for x in minX...maxX {
             for y in minY...maxY {
-                guard !isCancelled(operation) else { return (toAdd: [], toRemove: []) }
                 var mapRect = MKMapRect(x: Double(x) / scaleFactor, y: Double(y) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
                 if mapRect.origin.x > MKMapPointMax.x {
                     mapRect.origin.x -= MKMapPointMax.x
@@ -274,8 +268,7 @@ open class ClusterManager {
             }
         }
         
-//        var toRemove = [MKAnnotation]()
-//        var toAdd = [MKAnnotation]()
+        guard !isCancelled(operation) else { return (toAdd: [], toRemove: []) }
         
         let before = visibleAnnotations
         let after = allAnnotations
