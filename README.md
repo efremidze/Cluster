@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="Images/logo.png" width="890" alt="Cluster" />
+    <img src="https://github.com/efremidze/Cluster/blob/master/Images/logo.png" width="890" alt="Cluster" />
 </p>
 
 <p align="center">
