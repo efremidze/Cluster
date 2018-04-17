@@ -103,8 +103,8 @@ extension Array where Element: MKAnnotation {
         self.append(contentsOf: other)
     }
     @discardableResult
-    mutating func remove(_ element: Element) -> Element? {
-        return index { $0.isEqual(element) }.map { remove(at: $0) }
+    mutating func remove(_ item: Element) -> Element? {
+        return index { $0.isEqual(item) }.map { remove(at: $0) }
     }
 }
 
