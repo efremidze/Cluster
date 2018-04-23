@@ -188,7 +188,7 @@ open class ClusterManager {
     }
     
     open func clusteredAnnotations(zoomScale: Double, visibleMapRect: MKMapRect, operation: Operation? = nil) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
-        let isCancelled: (Operation?) -> Bool = { return $0?.isCancelled ?? false }
+        var isCancelled: Bool { return operation?.isCancelled ?? false }
         
         guard !zoomScale.isInfinite else { return (toAdd: [], toRemove: []) }
         
@@ -268,7 +268,7 @@ open class ClusterManager {
             }
         }
         
-        guard !isCancelled(operation) else { return (toAdd: [], toRemove: []) }
+        guard !isCancelled else { return (toAdd: [], toRemove: []) }
         
         let before = visibleAnnotations
         let after = allAnnotations
