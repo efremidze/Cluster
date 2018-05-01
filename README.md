@@ -135,16 +135,16 @@ To install with [Carthage](https://github.com/Carthage/Carthage), simply add thi
 github "efremidze/Cluster"
 ```
 
-## Mentions
-
-- [Natasha The Robot's Newsleter 128](https://swiftnews.curated.co/issues/128#start)
-- [Top 5 iOS Libraries May 2017](https://medium.cobeisfresh.com/top-5-ios-libraries-may-2017-6e3ac5077473)
-
 ## Communication
 
 - If you **found a bug**, open an issue.
 - If you **have a feature request**, open an issue.
 - If you **want to contribute**, submit a pull request.
+
+## Mentions
+
+- [Natasha The Robot's Newsleter 128](https://swiftnews.curated.co/issues/128#start)
+- [Top 5 iOS Libraries May 2017](https://medium.cobeisfresh.com/top-5-ios-libraries-may-2017-6e3ac5077473)
 
 ## Credits
 
