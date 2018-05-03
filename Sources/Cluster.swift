@@ -190,7 +190,7 @@ open class ClusterManager {
     open func clusteredAnnotations(zoomScale: Double, visibleMapRect: MKMapRect, operation: Operation? = nil) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
         var isCancelled: Bool { return operation?.isCancelled ?? false }
         
-        guard !zoomScale.isInfinite else { return (toAdd: [], toRemove: []) }
+        guard !zoomScale.isInfinite, !zoomScale.isNaN else { return (toAdd: [], toRemove: []) }
         
         zoomLevel = zoomScale.zoomLevel
         let scaleFactor = zoomScale / (cellSize ?? zoomScale.cellSize)
