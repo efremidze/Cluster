@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.2.1](https://github.com/efremidze/Cluster/releases/tag/2.2.1)
+Released on 2018-05-03
+
+- Crash fix
+
 ## [Version 2.2.0](https://github.com/efremidze/Cluster/releases/tag/2.2.0)
 Released on 2018-04-12
 
