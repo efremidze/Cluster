@@ -1,6 +1,4 @@
-<p align="center">
-    <img src="https://github.com/efremidze/Cluster/blob/master/Images/logo.png" width="890" alt="Cluster" />
-</p>
+![Cluster](https://raw.githubusercontent.com/efremidze/Cluster/master/Images/logo.png)
 
 <p align="center">
 <a href="https://swift.org" target="_blank">
