@@ -37,6 +37,7 @@ $ pod try Cluster
 - [x] Custom Cell Size
 - [x] Custom Annotation Views
 - [x] Animation Support
+- [x] [Documentation](https://efremidze.github.io/Cluster)
 
 ## Requirements
 
