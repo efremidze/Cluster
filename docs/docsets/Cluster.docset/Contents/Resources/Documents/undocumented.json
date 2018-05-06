@@ -1,0 +1,152 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/Annotation.swift",
+      "line": 11,
+      "symbol": "Annotation",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/Annotation.swift",
+      "line": 12,
+      "symbol": "Annotation.style",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/Annotation.swift",
+      "line": 15,
+      "symbol": "ClusterAnnotation",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/Annotation.swift",
+      "line": 16,
+      "symbol": "ClusterAnnotation.annotations",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/Annotation.swift",
+      "line": 18,
+      "symbol": "ClusterAnnotation.isEqual(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/Annotation.swift",
+      "line": 55,
+      "symbol": "ClusterAnnotationView",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/Annotation.swift",
+      "line": 57,
+      "symbol": "ClusterAnnotationView.countLabel",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/Annotation.swift",
+      "line": 92,
+      "symbol": "ClusterAnnotationView.init(coder:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/Annotation.swift",
+      "line": 96,
+      "symbol": "ClusterAnnotationView.configure(with:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/Annotation.swift",
+      "line": 119,
+      "symbol": "ClusterAnnotationView.layoutSubviews()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/Cluster.swift",
+      "line": 12,
+      "symbol": "ClusterManager",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/Cluster.swift",
+      "line": 93,
+      "symbol": "ClusterManager.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/Cluster.swift",
+      "line": 170,
+      "symbol": "ClusterManager.reload(mapView:completion:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/Cluster.swift",
+      "line": 190,
+      "symbol": "ClusterManager.clusteredAnnotations(zoomScale:visibleMapRect:operation:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/Cluster.swift",
+      "line": 290,
+      "symbol": "ClusterManager.display(mapView:toAdd:toRemove:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/Extensions.swift",
+      "line": 42,
+      "symbol": "==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/QuadTree.swift",
+      "line": 149,
+      "symbol": "QuadTree",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/QuadTree.swift",
+      "line": 153,
+      "symbol": "QuadTree.init(rect:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/QuadTree.swift",
+      "line": 158,
+      "symbol": "QuadTree.add(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/QuadTree.swift",
+      "line": 163,
+      "symbol": "QuadTree.remove(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/home/Documents/Cluster/Sources/QuadTree.swift",
+      "line": 167,
+      "symbol": "QuadTree.annotations(in:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/home/Documents/Cluster"
+}
