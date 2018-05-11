@@ -1,6 +1,9 @@
 ![Cluster](https://raw.githubusercontent.com/efremidze/Cluster/master/Images/logo.png)
 
 <p align="center">
+<a href="https://travis-ci.org/efremidze/Cluster" target="_blank">
+<img alt="Build Status" src="https://travis-ci.org/efremidze/Cluster.svg?style=flat">
+</a>
 <a href="https://swift.org" target="_blank">
 <img alt="Language" src="https://img.shields.io/badge/Swift-4-orange.svg?style=flat">
 </a>
