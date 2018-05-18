@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.2.3](https://github.com/efremidze/Cluster/releases/tag/2.2.3)
+Released on 2018-05-18
+
+- Updated Podspec
+
 ## [Version 2.2.2](https://github.com/efremidze/Cluster/releases/tag/2.2.2)
 Released on 2018-05-06
 
