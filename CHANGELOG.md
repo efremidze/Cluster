@@ -1,5 +1,55 @@
 # Change log
 
+## [Version 2.2.4](https://github.com/efremidze/Cluster/releases/tag/2.2.4)
+Released on 2018-06-15
+
+- Added same coordinate handling options
+
+## [Version 2.2.3](https://github.com/efremidze/Cluster/releases/tag/2.2.3)
+Released on 2018-05-18
+
+- Updated Podspec
+
+## [Version 2.2.2](https://github.com/efremidze/Cluster/releases/tag/2.2.2)
+Released on 2018-05-06
+
+- Added documentation
+
+## [Version 2.2.1](https://github.com/efremidze/Cluster/releases/tag/2.2.1)
+Released on 2018-05-03
+
+- Crash fix
+
+## [Version 2.2.0](https://github.com/efremidze/Cluster/releases/tag/2.2.0)
+Released on 2018-04-12
+
+- Comparison improvements
+
+## [Version 2.1.5](https://github.com/efremidze/Cluster/releases/tag/2.1.5)
+Released on 2018-04-04
+
+- Fixed queuing
+
+## [Version 2.1.4](https://github.com/efremidze/Cluster/releases/tag/2.1.4)
+Released on 2018-04-03
+
+- Moved clustering to background thread
+
+## [Version 2.1.3](https://github.com/efremidze/Cluster/releases/tag/2.1.3)
+Released on 2018-03-30
+
+- Swift 4.1 Support
+
+## [Version 2.1.2](https://github.com/efremidze/Cluster/releases/tag/2.1.2)
+Released on 2018-02-05
+
+- Comparison fix
+
+## [Version 2.1.1](https://github.com/efremidze/Cluster/releases/tag/2.1.1)
+Released on 2018-01-28
+
+- Comparison improvement
+
 ## [Version 2.1.0](https://github.com/efremidze/Cluster/releases/tag/2.1.0)
 Released on 2017-12-01
 

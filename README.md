@@ -1,8 +1,9 @@
-<p align="center">
-    <img src="Images/logo.png" width="890" alt="Cluster" />
-</p>
+![Cluster](https://raw.githubusercontent.com/efremidze/Cluster/master/Images/logo.png)
 
 <p align="center">
+<a href="https://travis-ci.org/efremidze/Cluster" target="_blank">
+<img alt="Build Status" src="https://travis-ci.org/efremidze/Cluster.svg?style=flat">
+</a>
 <a href="https://swift.org" target="_blank">
 <img alt="Language" src="https://img.shields.io/badge/Swift-4-orange.svg?style=flat">
 </a>
@@ -39,6 +40,7 @@ $ pod try Cluster
 - [x] Custom Cell Size
 - [x] Custom Annotation Views
 - [x] Animation Support
+- [x] [Documentation](https://efremidze.github.io/Cluster)
 
 ## Requirements
 
@@ -83,7 +85,9 @@ func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnota
 
 ```swift
 func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-    clusterManager.reload(mapView, visibleMapRect: mapView.visibleMapRect)
+    clusterManager.reload(mapView) { finished in
+        // handle completion
+    }
 }
 ```
 
@@ -97,6 +101,7 @@ var zoomLevel: Double // The current zoom level of the visible map region.
 var maxZoomLevel: Double // The maximum zoom level before disabling clustering.
 var minCountForClustering: Int // The minimum number of annotations for a cluster. The default is `2`.
 var shouldRemoveInvisibleAnnotations: Bool // Whether to remove invisible annotations. The default is `true`.
+var shouldDistributeAnnotationsOnSameCoordinate: Bool // Whether to arrange annotations in a circle if they have the same coordinate. The default is `true`.
 var clusterPosition: ClusterPosition // The position of the cluster annotation. The default is `.nearCenter`.
 ```
 
@@ -139,10 +144,16 @@ github "efremidze/Cluster"
 - If you **have a feature request**, open an issue.
 - If you **want to contribute**, submit a pull request.
 
+## Mentions
+
+- [Natasha The Robot's Newsleter 128](https://swiftnews.curated.co/issues/128#start)
+- [Top 5 iOS Libraries May 2017](https://medium.cobeisfresh.com/top-5-ios-libraries-may-2017-6e3ac5077473)
+
 ## Credits
 
 * https://github.com/ribl/FBAnnotationClusteringSwift
 * https://github.com/choefele/CCHMapClusterController
+* https://github.com/googlemaps/google-maps-ios-utils
 
 ## License
 

@@ -94,13 +94,17 @@ extension CLLocationCoordinate2D {
 
 extension Array where Element: MKAnnotation {
     func subtracted(_ other: [Element]) -> [Element] {
-        return filter { item in !other.contains { type(of: $0) == type(of: item) && $0.coordinate == item.coordinate } }
+        return filter { item in !other.contains { $0.isEqual(item) } }
     }
     mutating func subtract(_ other: [Element]) {
         self = self.subtracted(other)
     }
     mutating func add(_ other: [Element]) {
         self.append(contentsOf: other)
+    }
+    @discardableResult
+    mutating func remove(_ item: Element) -> Element? {
+        return index { $0.isEqual(item) }.map { remove(at: $0) }
     }
 }
 
@@ -114,5 +118,16 @@ extension MKPolyline {
             MKMapPoint(x: mapRect.minX, y: mapRect.minY)
         ]
         self.init(points: points, count: points.count)
+    }
+}
+
+extension OperationQueue {
+    func addOperation(_ block: @escaping (BlockOperation) -> Void) {
+        let operation = BlockOperation()
+        operation.addExecutionBlock { [weak operation] in
+            guard let operation = operation else { return }
+            block(operation)
+        }
+        self.addOperation(operation)
     }
 }

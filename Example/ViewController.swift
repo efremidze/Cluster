@@ -23,14 +23,13 @@ class ViewController: UIViewController {
         manager.cellSize = nil
         manager.maxZoomLevel = 17
         manager.minCountForClustering = 3
-        manager.shouldRemoveInvisibleAnnotations = false
         manager.clusterPosition = .nearCenter
         
         let center = CLLocationCoordinate2D(latitude: 37.787994, longitude: -122.407437) // region center
         let delta = 0.1 // region span
         
         // Add annotations to the manager.
-        let annotations: [Annotation] = (0..<100).map { i in
+        let annotations: [Annotation] = (0..<100000).map { i in
             let annotation = Annotation()
             annotation.coordinate = CLLocationCoordinate2D(latitude: center.latitude + drand48() * delta - delta / 2, longitude: center.longitude + drand48() * delta - delta / 2)
             let color = UIColor(red: 255/255, green: 149/255, blue: 0/255, alpha: 1)
@@ -79,7 +78,9 @@ extension ViewController: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        manager.reload(mapView, visibleMapRect: mapView.visibleMapRect)
+        manager.reload(mapView: mapView) { finished in
+            print(finished)
+        }
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
