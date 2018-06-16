@@ -116,8 +116,8 @@ var style: ClusterAnnotationStyle // The style of the cluster annotation view.
 You can further customize the annotations by subclassing `ClusterAnnotationView` and overriding `configure`:
 
 ```swift
-override func configure(with style: ClusterAnnotationStyle) {
-    super.configure(with: style)
+override func configure() {
+    super.configure()
 
     // customize
 }

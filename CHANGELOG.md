@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.2.5](https://github.com/efremidze/Cluster/releases/tag/2.2.5)
+Released on 2018-06-15
+
+- Updated configuration
+
 ## [Version 2.2.4](https://github.com/efremidze/Cluster/releases/tag/2.2.4)
 Released on 2018-06-15
 

@@ -54,7 +54,8 @@ extension ViewController: MKMapViewDelegate {
             var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
             if let view = view as? BorderedClusterAnnotationView {
                 view.annotation = annotation
-                view.configure(with: style)
+                view.style = style
+                view.configure()
             } else {
                 view = BorderedClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, style: style, borderColor: .white)
             }
@@ -132,8 +133,8 @@ class BorderedClusterAnnotationView: ClusterAnnotationView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func configure(with style: ClusterAnnotationStyle) {
-        super.configure(with: style)
+    override func configure() {
+        super.configure()
         
         switch style {
         case .image:
