@@ -16,7 +16,7 @@ open class ClusterManager {
     /**
      The size of each cell on the grid (The larger the size, the better the performance).
      
-     If nil, automatically adjusts the cell size to zoom level. Defaults to nil.
+     If nil, automatically adjusts the cell size to zoom level. The default is nil.
      */
     open var cellSize: Double?
     
@@ -30,19 +30,30 @@ open class ClusterManager {
     /**
      The maximum zoom level before disabling clustering.
      
-     Min value is 0 (max zoom out), max is 20 (max zoom in).
+     Min value is 0 (max zoom out), max is 20 (max zoom in). The default is 20.
      */
     open var maxZoomLevel: Double = .maxZoomLevel
     
     /**
      The minimum number of annotations for a cluster.
+     
+     The default is 2.
      */
     open var minCountForClustering: Int = 2
     
     /**
      Whether to remove invisible annotations.
+     
+     The default is true.
      */
     open var shouldRemoveInvisibleAnnotations: Bool = true
+    
+    /**
+     Whether to arrange annotations in a circle if they have the same coordinate.
+     
+     The default is true.
+     */
+    open var shouldDistributeAnnotationsOnSameCoordinate: Bool = true
     
     /**
      The position of the cluster annotation.
@@ -228,7 +239,7 @@ open class ClusterManager {
                 }
                 
                 // handle annotations on the same coordinate
-                for value in hash.values where value.count > 1 {
+                for value in hash.values where shouldDistributeAnnotationsOnSameCoordinate && value.count > 1 {
                     for (index, node) in value.enumerated() {
                         let distanceFromContestedLocation = 3 * Double(value.count) / 2
                         let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
