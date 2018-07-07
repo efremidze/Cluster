@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.2.6](https://github.com/efremidze/Cluster/releases/tag/2.2.6)
+Released on 2018-07-07
+
+- Fixed Swift 3.3 bug
+
 ## [Version 2.2.5](https://github.com/efremidze/Cluster/releases/tag/2.2.5)
 Released on 2018-06-15
 

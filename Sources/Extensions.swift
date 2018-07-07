@@ -122,7 +122,7 @@ extension MKPolyline {
 }
 
 extension OperationQueue {
-    func addOperation(_ block: @escaping (BlockOperation) -> Void) {
+    func addBlockOperation(_ block: @escaping (BlockOperation) -> Void) {
         let operation = BlockOperation()
         operation.addExecutionBlock { [weak operation] in
             guard let operation = operation else { return }

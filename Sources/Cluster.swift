@@ -184,7 +184,7 @@ open class ClusterManager {
         let visibleMapRectWidth = visibleMapRect.size.width
         let zoomScale = Double(mapBounds.width) / visibleMapRectWidth
         queue.cancelAllOperations()
-        queue.addOperation { [weak self, weak mapView] operation in
+        queue.addBlockOperation { [weak self, weak mapView] operation in
             guard let `self` = self, let mapView = mapView else { return }
             autoreleasepool { () -> Void in
                 let (toAdd, toRemove) = self.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: visibleMapRect, operation: operation)
