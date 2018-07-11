@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.2.7](https://github.com/efremidze/Cluster/releases/tag/2.2.7)
+Released on 2018-07-10
+
+- Added tests
+
 ## [Version 2.2.6](https://github.com/efremidze/Cluster/releases/tag/2.2.6)
 Released on 2018-07-07
 
