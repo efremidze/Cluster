@@ -16,22 +16,13 @@ extension MKMapRect {
     init(x: Double, y: Double, width: Double, height: Double) {
         self.init(origin: MKMapPoint(x: x, y: y), size: MKMapSize(width: width, height: height))
     }
-    var minX: Double { return MKMapRectGetMinX(self) }
-    var minY: Double { return MKMapRectGetMinY(self) }
-    var midX: Double { return MKMapRectGetMidX(self) }
-    var midY: Double { return MKMapRectGetMidY(self) }
-    var maxX: Double { return MKMapRectGetMaxX(self) }
-    var maxY: Double { return MKMapRectGetMaxY(self) }
-    func intersects(_ rect: MKMapRect) -> Bool {
-        return MKMapRectIntersectsRect(self, rect)
-    }
     func contains(_ coordinate: CLLocationCoordinate2D) -> Bool {
-        return MKMapRectContainsPoint(self, MKMapPointForCoordinate(coordinate))
+        return contains(MKMapPoint(coordinate))
     }
 }
 
 let CLLocationCoordinate2DMax = CLLocationCoordinate2D(latitude: 90, longitude: 180)
-let MKMapPointMax = MKMapPointForCoordinate(CLLocationCoordinate2DMax)
+let MKMapPointMax = MKMapPoint(CLLocationCoordinate2DMax)
 
 extension CLLocationCoordinate2D: Hashable {
     public var hashValue: Int {
@@ -46,7 +37,7 @@ public func ==(lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool
 typealias ZoomScale = Double
 extension ZoomScale {
     func zoomLevel() -> Double {
-        let totalTilesAtMaxZoom = MKMapSizeWorld.width / 256
+        let totalTilesAtMaxZoom = MKMapSize.world.width / 256
         let zoomLevelAtMaxZoom = log2(totalTilesAtMaxZoom)
         return max(0, zoomLevelAtMaxZoom + floor(log2(self) + 0.5))
     }

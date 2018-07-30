@@ -11,7 +11,7 @@ import MapKit
 
 open class ClusterManager {
     
-    var tree = QuadTree(rect: MKMapRectWorld)
+    var tree = QuadTree(rect: MKMapRect.world)
     
     /**
      Controls the level from which clustering will be enabled. Min value is 2 (max zoom out), max is 20 (max zoom in).
@@ -82,7 +82,7 @@ open class ClusterManager {
      Removes all the annotation objects from the cluster manager.
      */
     open func removeAll() {
-        tree = QuadTree(rect: MKMapRectWorld)
+        tree = QuadTree(rect: MKMapRect.world)
     }
     
     /**
@@ -91,7 +91,7 @@ open class ClusterManager {
      The objects in this array must adopt the MKAnnotation protocol. If no annotations are associated with the cluster manager, the value of this property is an empty array.
      */
     open var annotations: [MKAnnotation] {
-        return tree.annotations(in: MKMapRectWorld)
+        return tree.annotations(in: MKMapRect.world)
     }
     
     /**
