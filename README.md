@@ -125,6 +125,12 @@ override func configure() {
 }
 ```
 
+## Removing Annotations
+
+To remove annotations, you can call `remove(_ annotation: MKAnnotation)`. However the annotations will still display until you call `reload()`.
+
+In the case that `shouldRemoveInvisibleAnnotations` is set to `false`, annotations that have been removed may still appear on map until calling `reload()` on visible region.
+
 ## Installation
 
 ### CocoaPods

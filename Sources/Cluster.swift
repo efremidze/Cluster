@@ -133,7 +133,6 @@ open class ClusterManager {
      */
     open func remove(_ annotation: MKAnnotation) {
         tree.remove(annotation)
-        visibleAnnotations.remove(annotation)
     }
     
     /**
@@ -153,7 +152,6 @@ open class ClusterManager {
      */
     open func removeAll() {
         tree = QuadTree(rect: MKMapRectWorld)
-        visibleAnnotations = []
     }
     
     /**

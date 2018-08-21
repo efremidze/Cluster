@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.2.8](https://github.com/efremidze/Cluster/releases/tag/2.2.8)
+Released on 2018-08-21
+
+- Fixed remove annotations
+
 ## [Version 2.2.7](https://github.com/efremidze/Cluster/releases/tag/2.2.7)
 Released on 2018-07-10
 

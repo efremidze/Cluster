@@ -7,7 +7,9 @@
 //
 
 import XCTest
-import Cluster
+import MapKit
+
+@testable import Cluster
 
 class Tests: XCTestCase {
     
@@ -37,6 +39,19 @@ class Tests: XCTestCase {
 
 extension Tests {
     
+    var mapRect: MKMapRect {
+        return MKMapRect(x: 42906844.828649245, y: 103677256.9496724, width: 74565.404444441199, height: 132626.99937182665)
+    }
+    var center: CLLocationCoordinate2D {
+        return CLLocationCoordinate2D(latitude: 37.787994, longitude: -122.407437)
+    }
+    var delta: Double {
+        return 0.1
+    }
+    var zoomScale: Double {
+        return 0.01
+    }
+    
     func testAnnotation() {
         let identifier = "identifier"
         let color: UIColor = .red
@@ -64,6 +79,32 @@ extension Tests {
         } else {
             XCTAssertTrue(false)
         }
+    }
+    
+    func testAddRemoveAnnotation() {
+        let manager = ClusterManager()
+        
+        let annotations: [Annotation] = (0..<1000).map { i in
+            let annotation = Annotation()
+            annotation.coordinate = CLLocationCoordinate2D(latitude: center.latitude + drand48() * delta - delta / 2, longitude: center.longitude + drand48() * delta - delta / 2)
+            return annotation
+        }
+        manager.add(annotations)
+        
+        let (toAdd, toRemove) = manager.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: mapRect)
+        
+        XCTAssertTrue(!toAdd.isEmpty)
+        XCTAssertTrue(toRemove.isEmpty)
+        
+        manager.removeAll()
+        
+        let (toAdd2, toRemove2) = manager.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: mapRect)
+        
+        XCTAssertTrue(toAdd2.isEmpty)
+        XCTAssertTrue(!toRemove2.isEmpty)
+        
+        XCTAssertEqual(toAdd.count, toRemove2.count)
+        XCTAssertEqual(toAdd2.count, toRemove.count)
     }
     
 }

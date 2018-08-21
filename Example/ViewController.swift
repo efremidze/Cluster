@@ -16,18 +16,22 @@ class ViewController: UIViewController {
     
     let manager = ClusterManager()
     
+    let center = CLLocationCoordinate2D(latitude: 37.787994, longitude: -122.407437) // region center
+    let delta = 0.1 // region span
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // When zoom level is quite close to the pins, disable clustering in order to show individual pins and allow the user to interact with them via callouts.
+        mapView.region = .init(center: center, span: .init(latitudeDelta: delta, longitudeDelta: delta))
         manager.cellSize = nil
         manager.maxZoomLevel = 17
         manager.minCountForClustering = 3
         manager.clusterPosition = .nearCenter
-        
-        let center = CLLocationCoordinate2D(latitude: 37.787994, longitude: -122.407437) // region center
-        let delta = 0.1 // region span
-        
+        addAnnotations()
+    }
+    
+    @IBAction func addAnnotations(_ sender: UIButton? = nil) {
         // Add annotations to the manager.
         let annotations: [Annotation] = (0..<100000).map { i in
             let annotation = Annotation()
@@ -39,8 +43,12 @@ class ViewController: UIViewController {
             return annotation
         }
         manager.add(annotations)
-        
-        mapView.region = .init(center: center, span: .init(latitudeDelta: delta, longitudeDelta: delta))
+        manager.reload(mapView: mapView)
+    }
+    
+    @IBAction func removeAnnotations(_ sender: UIButton? = nil) {
+        manager.removeAll()
+        manager.reload(mapView: mapView)
     }
     
 }
@@ -69,10 +77,10 @@ extension ViewController: MKMapViewDelegate {
             } else {
                 view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
             }
-            if #available(iOS 9.0, *), case let .color(color, _) = style {
-                view?.pinTintColor =  color
+            if case let .color(color, _) = style {
+                view?.pinTintColor = color
             } else {
-                view?.pinColor = .green
+                view?.pinTintColor = .green
             }
             return view
         }
