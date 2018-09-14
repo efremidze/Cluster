@@ -11,7 +11,7 @@ import MapKit
 
 open class ClusterManager {
     
-    var tree = QuadTree(rect: MKMapRectWorld)
+    var tree = QuadTree(rect: MKMapRect.world)
     
     /**
      The size of each cell on the grid (The larger the size, the better the performance).
@@ -91,7 +91,7 @@ open class ClusterManager {
      The objects in this array must adopt the MKAnnotation protocol. If no annotations are associated with the cluster manager, the value of this property is an empty array.
      */
     open var annotations: [MKAnnotation] {
-        return tree.annotations(in: MKMapRectWorld)
+        return tree.annotations(in: MKMapRect.world)
     }
     
     /**
@@ -151,7 +151,7 @@ open class ClusterManager {
      Removes all the annotation objects from the cluster manager.
      */
     open func removeAll() {
-        tree = QuadTree(rect: MKMapRectWorld)
+        tree = QuadTree(rect: MKMapRect.world)
     }
     
     /**
@@ -252,9 +252,9 @@ open class ClusterManager {
                     let cluster = ClusterAnnotation()
                     switch clusterPosition {
                     case .center:
-                        cluster.coordinate = MKCoordinateForMapPoint(MKMapPoint(x: mapRect.midX, y: mapRect.midY))
+                        cluster.coordinate = MKMapPoint(x: mapRect.midX, y: mapRect.midY).coordinate
                     case .nearCenter:
-                        let coordinate = MKCoordinateForMapPoint(MKMapPoint(x: mapRect.midX, y: mapRect.midY))
+                        let coordinate = MKMapPoint(x: mapRect.midX, y: mapRect.midY).coordinate
                         if let annotation = annotations.min(by: { coordinate.distance(from: $0.coordinate) < coordinate.distance(from: $1.coordinate) }) {
                             cluster.coordinate = annotation.coordinate
                         }
