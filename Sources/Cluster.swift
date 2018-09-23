@@ -99,6 +99,13 @@ open class ClusterManager {
      */
     open var visibleAnnotations = [MKAnnotation]()
     
+    /**
+     The list of nested visible annotations associated.
+     */
+    open var visibleNestedAnnotations: [MKAnnotation] {
+        return visibleAnnotations.reduce([MKAnnotation](), { $0 + (($1 as? ClusterAnnotation)?.annotations ?? [$1]) })
+    }
+    
     var queue = OperationQueue()
     
     public init() {}
@@ -183,12 +190,11 @@ open class ClusterManager {
         let zoomScale = Double(mapBounds.width) / visibleMapRectWidth
         queue.cancelAllOperations()
         queue.addBlockOperation { [weak self, weak mapView] operation in
-            guard let `self` = self, let mapView = mapView else { return }
+            guard let `self` = self, let mapView = mapView else { return completion(false) }
             autoreleasepool { () -> Void in
                 let (toAdd, toRemove) = self.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: visibleMapRect, operation: operation)
-                guard !operation.isCancelled else { return completion(false) }
                 DispatchQueue.main.async { [weak self, weak mapView] in
-                    guard let `self` = self, let mapView = mapView else { return }
+                    guard !operation.isCancelled, let `self` = self, let mapView = mapView else { return completion(false) }
                     self.display(mapView: mapView, toAdd: toAdd, toRemove: toRemove)
                     completion(true)
                 }
