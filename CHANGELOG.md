@@ -1,5 +1,11 @@
 # Change log
 
+## [Version 2.2.9](https://github.com/efremidze/Cluster/releases/tag/2.2.9)
+Released on 2018-09-23
+
+- Added code coverage
+- Bug fixes
+
 ## [Version 2.2.8](https://github.com/efremidze/Cluster/releases/tag/2.2.8)
 Released on 2018-08-21
 
