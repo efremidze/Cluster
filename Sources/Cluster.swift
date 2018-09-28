@@ -18,6 +18,7 @@ open class ClusterManager {
      
      If nil, automatically adjusts the cell size to zoom level. The default is nil.
      */
+    @available(*, deprecated: 2.3.0, message: "Use cellSize(forZoomLevel:)")
     open var cellSize: Double?
     
     /**
@@ -32,7 +33,7 @@ open class ClusterManager {
      
      Min value is 0 (max zoom out), max is 20 (max zoom in). The default is 20.
      */
-    open var maxZoomLevel: Double = .maxZoomLevel
+    open var maxZoomLevel: Double = 20
     
     /**
      The minimum number of annotations for a cluster.
@@ -183,6 +184,13 @@ open class ClusterManager {
         reload(mapView: mapView) { finished in }
     }
     
+    /**
+     Reload the annotations on the map view.
+     
+     - Parameters:
+        - mapView: The map view object to reload.
+        - completion: A closure to be executed when the reload finishes. The closure has no return value and takes a single Boolean argument that indicates whether or not the reload actually finished before the completion handler was called.
+     */
     open func reload(mapView: MKMapView, completion: @escaping (Bool) -> Void) {
         let mapBounds = mapView.bounds
         let visibleMapRect = mapView.visibleMapRect
@@ -208,7 +216,7 @@ open class ClusterManager {
         guard !zoomScale.isInfinite, !zoomScale.isNaN else { return (toAdd: [], toRemove: []) }
         
         zoomLevel = zoomScale.zoomLevel
-        let scaleFactor = zoomScale / (cellSize ?? zoomScale.cellSize)
+        let scaleFactor = zoomScale / (cellSize ?? cellSize(for: zoomLevel))
         
         let minX = Int(floor(visibleMapRect.minX * scaleFactor))
         let maxX = Int(floor(visibleMapRect.maxX * scaleFactor))
@@ -306,6 +314,27 @@ open class ClusterManager {
         assert(Thread.isMainThread, "This function must be called from the main thread.")
         mapView.removeAnnotations(toRemove)
         mapView.addAnnotations(toAdd)
+    }
+    
+    /**
+     The size of each cell on the grid (The larger the size, the better the performance) at a given zoom level.
+     
+     - Parameters:
+        - zoomLevel: The zoom level of the visible map region.
+     
+     - Returns: The cell size at the given zoom level.
+     */
+    open func cellSize(for zoomLevel: Double) -> Double {
+        switch zoomLevel {
+        case 13...15:
+            return 64
+        case 16...18:
+            return 32
+        case 19...:
+            return 16
+        default:
+            return 88
+        }
     }
     
 }
