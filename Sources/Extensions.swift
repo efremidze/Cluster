@@ -28,6 +28,9 @@ extension MKMapRect {
     func contains(_ coordinate: CLLocationCoordinate2D) -> Bool {
         return MKMapRectContainsPoint(self, MKMapPointForCoordinate(coordinate))
     }
+    func union(_ mapRect: MKMapRect, coordinate: CLLocationCoordinate2D) -> MKMapRect {
+        return MKMapRectUnion(mapRect, MKMapRect(origin: MKMapPointForCoordinate(coordinate), size: MKMapRectNull.size))
+    }
 }
 
 let CLLocationCoordinate2DMax = CLLocationCoordinate2D(latitude: 90, longitude: 180)
@@ -116,5 +119,16 @@ extension OperationQueue {
             block(operation)
         }
         self.addOperation(operation)
+    }
+}
+
+extension Double {
+    enum ComparisonOutcome {
+        case equal, less, greater
+    }
+    func compare(to other: Double) -> ComparisonOutcome {
+        if self > other { return .greater }
+        if self < other { return .less }
+        return .equal
     }
 }
