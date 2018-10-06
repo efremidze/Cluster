@@ -9,6 +9,10 @@
 import CoreLocation
 import MapKit
 
+public protocol ClusterManagerDelegate: class {
+    func shouldExcludeFromClustering(annotation: MKAnnotation) -> Bool
+}
+
 open class ClusterManager {
     
     var tree = QuadTree(rect: MKMapRectWorld)
@@ -108,6 +112,7 @@ open class ClusterManager {
     }
     
     var queue = OperationQueue()
+    public weak var delegate: ClusterManagerDelegate?
     
     public init() {}
     
@@ -243,7 +248,21 @@ open class ClusterManager {
                 var hash = [CLLocationCoordinate2D: [MKAnnotation]]()
                 
                 // add annotations
-                for node in tree.annotations(in: mapRect) {
+                var annotationsInRect = [MKAnnotation]()
+                var annotationsToExclude = [MKAnnotation]()
+                
+                for annotation in tree.annotations(in: mapRect) {
+                    if delegate?.shouldExcludeFromClustering(annotation: annotation) ?? false {
+                        annotationsToExclude.append(annotation)
+                    }
+                    else {
+                        annotationsInRect.append(annotation)
+                    }
+                }
+                
+                allAnnotations += annotationsToExclude
+                
+                for node in annotationsInRect {
                     totalLatitude += node.coordinate.latitude
                     totalLongitude += node.coordinate.longitude
                     annotations.append(node)
