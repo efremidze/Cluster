@@ -111,7 +111,12 @@ open class ClusterManager {
         return visibleAnnotations.reduce([MKAnnotation](), { $0 + (($1 as? ClusterAnnotation)?.annotations ?? [$1]) })
     }
     
-    var queue = OperationQueue()
+    var queue: OperationQueue = {
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        return queue
+    }()
+    
     public weak var delegate: ClusterManagerDelegate?
     
     public init() {}
@@ -123,6 +128,7 @@ open class ClusterManager {
         - annotation: An annotation object. The object must conform to the MKAnnotation protocol.
      */
     open func add(_ annotation: MKAnnotation) {
+        queue.cancelAllOperations()
         tree.add(annotation)
     }
     
@@ -145,6 +151,7 @@ open class ClusterManager {
         - annotation: An annotation object. The object must conform to the MKAnnotation protocol.
      */
     open func remove(_ annotation: MKAnnotation) {
+        queue.cancelAllOperations()
         tree.remove(annotation)
     }
     
@@ -164,6 +171,7 @@ open class ClusterManager {
      Removes all the annotation objects from the cluster manager.
      */
     open func removeAll() {
+        queue.cancelAllOperations()
         tree = QuadTree(rect: MKMapRectWorld)
     }
     
@@ -207,7 +215,7 @@ open class ClusterManager {
             autoreleasepool { () -> Void in
                 let (toAdd, toRemove) = self.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: visibleMapRect, operation: operation)
                 DispatchQueue.main.async { [weak self, weak mapView] in
-                    guard !operation.isCancelled, let `self` = self, let mapView = mapView else { return completion(false) }
+                    guard let `self` = self, let mapView = mapView else { return completion(false) }
                     self.display(mapView: mapView, toAdd: toAdd, toRemove: toRemove)
                     completion(true)
                 }
