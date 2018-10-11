@@ -107,7 +107,7 @@ open class ClusterManager {
         return visibleAnnotations.reduce([MKAnnotation](), { $0 + (($1 as? ClusterAnnotation)?.annotations ?? [$1]) })
     }
     
-    var queue = OperationQueue()
+    open var queue = OperationQueue.serial
     
     public init() {}
     
@@ -118,6 +118,7 @@ open class ClusterManager {
         - annotation: An annotation object. The object must conform to the MKAnnotation protocol.
      */
     open func add(_ annotation: MKAnnotation) {
+        queue.cancelAllOperations()
         tree.add(annotation)
     }
     
@@ -140,6 +141,7 @@ open class ClusterManager {
         - annotation: An annotation object. The object must conform to the MKAnnotation protocol.
      */
     open func remove(_ annotation: MKAnnotation) {
+        queue.cancelAllOperations()
         tree.remove(annotation)
     }
     
@@ -159,6 +161,7 @@ open class ClusterManager {
      Removes all the annotation objects from the cluster manager.
      */
     open func removeAll() {
+        queue.cancelAllOperations()
         tree = QuadTree(rect: MKMapRectWorld)
     }
     
@@ -179,19 +182,9 @@ open class ClusterManager {
      
      - Parameters:
         - mapView: The map view object to reload.
-     */
-    open func reload(mapView: MKMapView) {
-        reload(mapView: mapView) { finished in }
-    }
-    
-    /**
-     Reload the annotations on the map view.
-     
-     - Parameters:
-        - mapView: The map view object to reload.
         - completion: A closure to be executed when the reload finishes. The closure has no return value and takes a single Boolean argument that indicates whether or not the reload actually finished before the completion handler was called.
      */
-    open func reload(mapView: MKMapView, completion: @escaping (Bool) -> Void) {
+    open func reload(mapView: MKMapView, completion: @escaping (Bool) -> Void = { finished in }) {
         let mapBounds = mapView.bounds
         let visibleMapRect = mapView.visibleMapRect
         let visibleMapRectWidth = visibleMapRect.size.width
@@ -202,7 +195,7 @@ open class ClusterManager {
             autoreleasepool { () -> Void in
                 let (toAdd, toRemove) = self.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: visibleMapRect, operation: operation)
                 DispatchQueue.main.async { [weak self, weak mapView] in
-                    guard !operation.isCancelled, let `self` = self, let mapView = mapView else { return completion(false) }
+                    guard let `self` = self, let mapView = mapView else { return completion(false) }
                     self.display(mapView: mapView, toAdd: toAdd, toRemove: toRemove)
                     completion(true)
                 }
@@ -213,7 +206,7 @@ open class ClusterManager {
     open func clusteredAnnotations(zoomScale: Double, visibleMapRect: MKMapRect, operation: Operation? = nil) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
         var isCancelled: Bool { return operation?.isCancelled ?? false }
         
-        guard !zoomScale.isInfinite, !zoomScale.isNaN else { return (toAdd: [], toRemove: []) }
+        guard !isCancelled, !zoomScale.isInfinite, !zoomScale.isNaN else { return (toAdd: [], toRemove: []) }
         
         zoomLevel = zoomScale.zoomLevel
         let scaleFactor = zoomScale / (cellSize ?? cellSize(for: zoomLevel))
