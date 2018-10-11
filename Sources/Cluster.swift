@@ -111,11 +111,7 @@ open class ClusterManager {
         return visibleAnnotations.reduce([MKAnnotation](), { $0 + (($1 as? ClusterAnnotation)?.annotations ?? [$1]) })
     }
     
-    var queue: OperationQueue = {
-        let queue = OperationQueue()
-        queue.maxConcurrentOperationCount = 1
-        return queue
-    }()
+    open var queue = OperationQueue.serial
     
     public weak var delegate: ClusterManagerDelegate?
     
@@ -192,19 +188,9 @@ open class ClusterManager {
      
      - Parameters:
         - mapView: The map view object to reload.
-     */
-    open func reload(mapView: MKMapView) {
-        reload(mapView: mapView) { finished in }
-    }
-    
-    /**
-     Reload the annotations on the map view.
-     
-     - Parameters:
-        - mapView: The map view object to reload.
         - completion: A closure to be executed when the reload finishes. The closure has no return value and takes a single Boolean argument that indicates whether or not the reload actually finished before the completion handler was called.
      */
-    open func reload(mapView: MKMapView, completion: @escaping (Bool) -> Void) {
+    open func reload(mapView: MKMapView, completion: @escaping (Bool) -> Void = { finished in }) {
         let mapBounds = mapView.bounds
         let visibleMapRect = mapView.visibleMapRect
         let visibleMapRectWidth = visibleMapRect.size.width
@@ -226,7 +212,7 @@ open class ClusterManager {
     open func clusteredAnnotations(zoomScale: Double, visibleMapRect: MKMapRect, operation: Operation? = nil) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
         var isCancelled: Bool { return operation?.isCancelled ?? false }
         
-        guard !zoomScale.isInfinite, !zoomScale.isNaN else { return (toAdd: [], toRemove: []) }
+        guard !isCancelled, !zoomScale.isInfinite, !zoomScale.isNaN else { return (toAdd: [], toRemove: []) }
         
         zoomLevel = zoomScale.zoomLevel
         let scaleFactor = zoomScale / (cellSize ?? cellSize(for: zoomLevel))

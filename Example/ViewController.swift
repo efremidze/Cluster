@@ -19,14 +19,13 @@ class ViewController: UIViewController {
     let center = CLLocationCoordinate2D(latitude: 37.787994, longitude: -122.407437) // region center
     let delta = 0.1 // region span
     let color = UIColor(red: 255/255, green: 149/255, blue: 0/255, alpha: 1)
-    lazy var image = UIImage(named: "pin")?.filled(with: color)
+    lazy var image = UIImage(named: "pin2")?.filled(with: color)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // When zoom level is quite close to the pins, disable clustering in order to show individual pins and allow the user to interact with them via callouts.
         mapView.region = .init(center: center, span: .init(latitudeDelta: delta, longitudeDelta: delta))
-        manager.cellSize = nil
         manager.maxZoomLevel = 17
         manager.minCountForClustering = 3
         manager.clusterPosition = .nearCenter
@@ -56,16 +55,13 @@ extension ViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if let annotation = annotation as? ClusterAnnotation {
             let identifier = "Cluster"
-            var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? ClusterAnnotationView
+            var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? BorderedClusterAnnotationView
             if let view = view {
                 view.annotation = annotation
             } else {
-                view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                view = BorderedClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier)
             }
             view?.countLabel.backgroundColor = color
-            view?.countLabel.layer.borderColor = UIColor.white.cgColor
-            view?.countLabel.layer.borderWidth = 1.5
-            view?.radii = [(5, 12), (10, 16), (15, 20)]
             return view
         } else {
             let identifier = "Pin"
