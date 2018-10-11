@@ -10,7 +10,44 @@ import CoreLocation
 import MapKit
 
 public protocol ClusterManagerDelegate: class {
-    func shouldExcludeFromClustering(annotation: MKAnnotation) -> Bool
+    /**
+     The size of each cell on the grid (The larger the size, the better the performance) at a given zoom level.
+     
+     - Parameters:
+        - zoomLevel: The zoom level of the visible map region.
+     
+     - Returns: The cell size at the given zoom level.
+     */
+    func cellSize(for zoomLevel: Double) -> Double
+    
+    /**
+     Whether to cluster the given annotation.
+     
+     - Parameters:
+        - annotation: An annotation object. The object must conform to the MKAnnotation protocol.
+
+     - Returns: `true` to clusterize the given annotation.
+     */
+    func shouldClusterAnnotation(_ annotation: MKAnnotation) -> Bool
+}
+
+public extension ClusterManagerDelegate {
+    func cellSize(for zoomLevel: Double) -> Double {
+        switch zoomLevel {
+        case 13...15:
+            return 64
+        case 16...18:
+            return 32
+        case 19...:
+            return 16
+        default:
+            return 88
+        }
+    }
+    
+    func shouldClusterAnnotation(_ annotation: MKAnnotation) -> Bool {
+        return true
+    }
 }
 
 open class ClusterManager {
@@ -113,7 +150,7 @@ open class ClusterManager {
     
     open var queue = OperationQueue.serial
     
-    public weak var delegate: ClusterManagerDelegate?
+    open weak var delegate: ClusterManagerDelegate?
     
     public init() {}
     
@@ -215,7 +252,7 @@ open class ClusterManager {
         guard !isCancelled, !zoomScale.isInfinite, !zoomScale.isNaN else { return (toAdd: [], toRemove: []) }
         
         zoomLevel = zoomScale.zoomLevel
-        let scaleFactor = zoomScale / (cellSize ?? cellSize(for: zoomLevel))
+        let scaleFactor = zoomScale / (cellSize ?? delegate?.cellSize(for: zoomLevel) ?? 1)
         
         let minX = Int(floor(visibleMapRect.minX * scaleFactor))
         let maxX = Int(floor(visibleMapRect.maxX * scaleFactor))
@@ -242,25 +279,15 @@ open class ClusterManager {
                 var hash = [CLLocationCoordinate2D: [MKAnnotation]]()
                 
                 // add annotations
-                var annotationsInRect = [MKAnnotation]()
-                var annotationsToExclude = [MKAnnotation]()
-                
-                for annotation in tree.annotations(in: mapRect) {
-                    if delegate?.shouldExcludeFromClustering(annotation: annotation) ?? false {
-                        annotationsToExclude.append(annotation)
+                for node in tree.annotations(in: mapRect) {
+                    if delegate?.shouldClusterAnnotation(node) ?? true {
+                        totalLatitude += node.coordinate.latitude
+                        totalLongitude += node.coordinate.longitude
+                        annotations.append(node)
+                        hash[node.coordinate, default: [MKAnnotation]()] += [node]
+                    } else {
+                        allAnnotations.append(node)
                     }
-                    else {
-                        annotationsInRect.append(annotation)
-                    }
-                }
-                
-                allAnnotations += annotationsToExclude
-                
-                for node in annotationsInRect {
-                    totalLatitude += node.coordinate.latitude
-                    totalLongitude += node.coordinate.longitude
-                    annotations.append(node)
-                    hash[node.coordinate, default: [MKAnnotation]()] += [node]
                 }
                 
                 // handle annotations on the same coordinate
@@ -326,27 +353,6 @@ open class ClusterManager {
         assert(Thread.isMainThread, "This function must be called from the main thread.")
         mapView.removeAnnotations(toRemove)
         mapView.addAnnotations(toAdd)
-    }
-    
-    /**
-     The size of each cell on the grid (The larger the size, the better the performance) at a given zoom level.
-     
-     - Parameters:
-        - zoomLevel: The zoom level of the visible map region.
-     
-     - Returns: The cell size at the given zoom level.
-     */
-    open func cellSize(for zoomLevel: Double) -> Double {
-        switch zoomLevel {
-        case 13...15:
-            return 64
-        case 16...18:
-            return 32
-        case 19...:
-            return 16
-        default:
-            return 88
-        }
     }
     
 }
