@@ -15,26 +15,17 @@ extension MKMapRect {
     }
     init(x: Double, y: Double, width: Double, height: Double) {
         self.init(origin: MKMapPoint(x: x, y: y), size: MKMapSize(width: width, height: height))
-    }
-    var minX: Double { return MKMapRectGetMinX(self) }
-    var minY: Double { return MKMapRectGetMinY(self) }
-    var midX: Double { return MKMapRectGetMidX(self) }
-    var midY: Double { return MKMapRectGetMidY(self) }
-    var maxX: Double { return MKMapRectGetMaxX(self) }
-    var maxY: Double { return MKMapRectGetMaxY(self) }
-    func intersects(_ mapRect: MKMapRect) -> Bool {
-        return MKMapRectIntersectsRect(self, mapRect)
-    }
+	}
     func contains(_ coordinate: CLLocationCoordinate2D) -> Bool {
-        return MKMapRectContainsPoint(self, MKMapPointForCoordinate(coordinate))
+        return self.contains(MKMapPoint.init(coordinate))
     }
     func union(_ mapRect: MKMapRect, coordinate: CLLocationCoordinate2D) -> MKMapRect {
-        return MKMapRectUnion(mapRect, MKMapRect(origin: MKMapPointForCoordinate(coordinate), size: MKMapRectNull.size))
+        return mapRect.union(MKMapRect(origin: MKMapPoint.init(coordinate), size: MKMapRect.null.size))
     }
 }
 
 let CLLocationCoordinate2DMax = CLLocationCoordinate2D(latitude: 90, longitude: 180)
-let MKMapPointMax = MKMapPointForCoordinate(CLLocationCoordinate2DMax)
+let MKMapPointMax = MKMapPoint.init(CLLocationCoordinate2DMax)
 
 extension CLLocationCoordinate2D: Hashable {
     public var hashValue: Int {
@@ -48,7 +39,7 @@ public func ==(lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool
 
 extension Double {
     var zoomLevel: Double {
-        let maxZoomLevel = log2(MKMapSizeWorld.width / 256) // 20
+        let maxZoomLevel = log2(MKMapSize.world.width / 256) // 20
         let zoomLevel = floor(log2(self) + 0.5) // negative
         return max(0, maxZoomLevel + zoomLevel) // max - current
     }

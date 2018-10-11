@@ -26,7 +26,6 @@ class ViewController: UIViewController {
         
         // When zoom level is quite close to the pins, disable clustering in order to show individual pins and allow the user to interact with them via callouts.
         mapView.region = .init(center: center, span: .init(latitudeDelta: delta, longitudeDelta: delta))
-        manager.cellSize = nil
         manager.maxZoomLevel = 17
         manager.minCountForClustering = 3
         manager.clusterPosition = .nearCenter
@@ -96,14 +95,14 @@ extension ViewController: MKMapViewDelegate {
         guard let annotation = view.annotation else { return }
         
         if let cluster = annotation as? ClusterAnnotation {
-            var zoomRect = MKMapRectNull
+            var zoomRect = MKMapRect.null
             for annotation in cluster.annotations {
-                let annotationPoint = MKMapPointForCoordinate(annotation.coordinate)
-                let pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, 0, 0)
-                if MKMapRectIsNull(zoomRect) {
+                let annotationPoint = MKMapPoint.init(annotation.coordinate)
+                let pointRect = MKMapRect.init(x: annotationPoint.x, y: annotationPoint.y, width: 0, height: 0)
+                if zoomRect.isNull {
                     zoomRect = pointRect
                 } else {
-                    zoomRect = MKMapRectUnion(zoomRect, pointRect)
+                    zoomRect = zoomRect.union(pointRect)
                 }
             }
             mapView.setVisibleMapRect(zoomRect, animated: true)
