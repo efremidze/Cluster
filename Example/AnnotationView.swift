@@ -10,18 +10,7 @@ import UIKit
 import MapKit
 import Cluster
 
-class ImageClusterAnnotationView: ClusterAnnotationView {
-    override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
-        super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
-        
-        countLabel.frame.origin.y -= 4
-    }
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-class BorderedClusterAnnotationView: ClusterAnnotationView {
+class CountClusterAnnotationView: ClusterAnnotationView {
     override func configure() {
         super.configure()
         
@@ -43,5 +32,16 @@ class BorderedClusterAnnotationView: ClusterAnnotationView {
         } else {
             return 20
         }
+    }
+}
+
+class ImageCountClusterAnnotationView: ClusterAnnotationView {
+    override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
+        super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
+        
+        countLabel.frame.origin.y -= 4
+    }
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

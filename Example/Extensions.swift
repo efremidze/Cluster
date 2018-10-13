@@ -26,4 +26,11 @@ extension UIImage {
         return newImage
     }
     
+    static let annotation = UIImage(named: "pin")?.filled(with: .annotation)
+    static let annotation2 = UIImage(named: "pin2")?.filled(with: .annotation)
+    
+}
+
+extension UIColor {
+    static let annotation = UIColor(red: 255/255, green: 149/255, blue: 0/255, alpha: 1)
 }

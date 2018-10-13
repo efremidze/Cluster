@@ -13,20 +13,18 @@ import Cluster
 class ViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var segmentedControl: UISegmentedControl!
     
     let manager = ClusterManager()
     
-    let center = CLLocationCoordinate2D(latitude: 37.787994, longitude: -122.407437) // region center
-    let delta = 0.1 // region span
-    let color = UIColor(red: 255/255, green: 149/255, blue: 0/255, alpha: 1)
-    lazy var image = UIImage(named: "pin2")?.filled(with: color)
+    let region = (center: CLLocationCoordinate2D(latitude: 37.787994, longitude: -122.407437), delta: 0.1)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // When zoom level is quite close to the pins, disable clustering in order to show individual pins and allow the user to interact with them via callouts.
         manager.delegate = self
-        mapView.region = .init(center: center, span: .init(latitudeDelta: delta, longitudeDelta: delta))
+        mapView.region = .init(center: region.center, span: .init(latitudeDelta: region.delta, longitudeDelta: region.delta))
         manager.maxZoomLevel = 17
         manager.minCountForClustering = 3
         manager.clusterPosition = .nearCenter
@@ -37,7 +35,7 @@ class ViewController: UIViewController {
         // Add annotations to the manager.
         let annotations: [Annotation] = (0..<100000).map { i in
             let annotation = Annotation()
-            annotation.coordinate = CLLocationCoordinate2D(latitude: center.latitude + drand48() * delta - delta / 2, longitude: center.longitude + drand48() * delta - delta / 2)
+            annotation.coordinate = CLLocationCoordinate2D(latitude: region.center.latitude + drand48() * region.delta - region.delta / 2, longitude: region.center.longitude + drand48() * region.delta - region.delta / 2)
             return annotation
         }
         manager.add(annotations)
@@ -49,31 +47,38 @@ class ViewController: UIViewController {
         manager.reload(mapView: mapView)
     }
     
+    @IBAction func valueChanged(_ sender: UISegmentedControl) {
+        removeAnnotations()
+        addAnnotations()
+    }
+    
 }
 
 extension ViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if let annotation = annotation as? ClusterAnnotation {
-            let identifier = "Cluster"
-            var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? BorderedClusterAnnotationView
-            if let view = view {
-                view.annotation = annotation
+            let index = segmentedControl.selectedSegmentIndex
+            let identifier = "Cluster\(index)"
+            let annotationView: MKAnnotationView
+            if let existingView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) {
+                annotationView = existingView
             } else {
-                view = BorderedClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                annotationView = Selection(rawValue: index)!.annotationView(annotation: annotation, reuseIdentifier: identifier)
             }
-            view?.countLabel.backgroundColor = color
-            return view
+            annotationView.annotation = annotation
+            return annotationView
         } else {
             let identifier = "Pin"
-            var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView
-            if let view = view {
-                view.annotation = annotation
+            let annotationView: MKPinAnnotationView
+            if let existingView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView {
+                annotationView = existingView
             } else {
-                view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                annotationView.pinTintColor = .annotation
             }
-            view?.pinTintColor = color
-            return view
+            annotationView.annotation = annotation
+            return annotationView
         }
     }
     
@@ -121,3 +126,27 @@ extension ViewController: MKMapViewDelegate {
 }
 
 extension ViewController: ClusterManagerDelegate {}
+
+extension ViewController {
+    enum Selection: Int {
+        case count, imageCount, image
+        
+        func annotationView(annotation: MKAnnotation?, reuseIdentifier: String?) -> MKAnnotationView {
+            switch self {
+            case .count:
+                let annotationView = CountClusterAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
+                annotationView.countLabel.backgroundColor = .annotation
+                return annotationView
+            case .imageCount:
+                let annotationView = ImageCountClusterAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
+                annotationView.countLabel.textColor = .annotation
+                annotationView.image = .annotation2
+                return annotationView
+            case .image:
+                let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
+                annotationView.image = .annotation
+                return annotationView
+            }
+        }
+    }
+}
