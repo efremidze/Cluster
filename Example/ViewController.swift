@@ -64,7 +64,8 @@ extension ViewController: MKMapViewDelegate {
             if let existingView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) {
                 annotationView = existingView
             } else {
-                annotationView = Selection(rawValue: index)!.annotationView(annotation: annotation, reuseIdentifier: identifier)
+                let selection = Selection(rawValue: index)!
+                annotationView = selection.annotationView(annotation: annotation, reuseIdentifier: identifier)
             }
             annotationView.annotation = annotation
             return annotationView

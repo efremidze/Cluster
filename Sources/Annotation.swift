@@ -42,7 +42,7 @@ open class ClusterAnnotationView: MKAnnotationView {
         label.textColor = .white
         label.textAlignment = .center
         label.adjustsFontSizeToFitWidth = true
-        label.minimumScaleFactor = 2
+        label.minimumScaleFactor = 0.5
         label.baselineAdjustment = .alignCenters
         self.addSubview(label)
         return label

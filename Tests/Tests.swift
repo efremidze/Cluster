@@ -54,28 +54,13 @@ extension Tests {
     
     func testAnnotation() {
         let identifier = "identifier"
-        let color: UIColor = .red
-        let radius: CGFloat = 20
-        let image = UIImage()
         let annotation = ClusterAnnotation()
-        
-        var style = ClusterAnnotationStyle.color(color, radius: radius)
-        var annotationView = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, style: style)
-        
+        let text = "\(annotation.annotations.count)"
+        let annotationView = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier)
         XCTAssertEqual(annotationView.reuseIdentifier, identifier)
-        if case ClusterAnnotationStyle.color(let _color, let _radius) = annotationView.style {
-            XCTAssertEqual(_color, color)
-            XCTAssertEqual(_radius, radius)
-        } else {
-            XCTAssertTrue(false)
-        }
-        
-        style = ClusterAnnotationStyle.image(image)
-        annotationView = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, style: style)
-        
-        XCTAssertEqual(annotationView.reuseIdentifier, identifier)
-        if case ClusterAnnotationStyle.image(let _image) = annotationView.style {
-            XCTAssertEqual(_image, image)
+        if let _annotation = annotationView.annotation as? ClusterAnnotation {
+            XCTAssertEqual(_annotation, annotation)
+            XCTAssertEqual(annotationView.countLabel.text, text)
         } else {
             XCTAssertTrue(false)
         }

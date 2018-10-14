@@ -36,12 +36,11 @@ class CountClusterAnnotationView: ClusterAnnotationView {
 }
 
 class ImageCountClusterAnnotationView: ClusterAnnotationView {
-    override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
-        super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
+    override func layoutSubviews() {
+        super.layoutSubviews()
         
-        countLabel.frame.origin.y -= 4
-    }
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        countLabel.frame.size.width -= 6
+        countLabel.frame.origin.x += 3
+        countLabel.frame.origin.y -= 6
     }
 }
