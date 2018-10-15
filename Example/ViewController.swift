@@ -23,7 +23,6 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         // When zoom level is quite close to the pins, disable clustering in order to show individual pins and allow the user to interact with them via callouts.
-        manager.delegate = self
         mapView.region = .init(center: region.center, span: .init(latitudeDelta: region.delta, longitudeDelta: region.delta))
         manager.maxZoomLevel = 17
         manager.minCountForClustering = 3
@@ -125,8 +124,6 @@ extension ViewController: MKMapViewDelegate {
 //    }
 
 }
-
-extension ViewController: ClusterManagerDelegate {}
 
 extension ViewController {
     enum Selection: Int {

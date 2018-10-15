@@ -33,16 +33,7 @@ public protocol ClusterManagerDelegate: class {
 
 public extension ClusterManagerDelegate {
     func cellSize(for zoomLevel: Double) -> Double {
-        switch zoomLevel {
-        case 13...15:
-            return 64
-        case 16...18:
-            return 32
-        case 19...:
-            return 16
-        default:
-            return 88
-        }
+        return 0
     }
     
     func shouldClusterAnnotation(_ annotation: MKAnnotation) -> Bool {
@@ -252,7 +243,7 @@ open class ClusterManager {
         guard !isCancelled, !zoomScale.isInfinite, !zoomScale.isNaN else { return (toAdd: [], toRemove: []) }
         
         zoomLevel = zoomScale.zoomLevel
-        let scaleFactor = zoomScale / (cellSize ?? delegate?.cellSize(for: zoomLevel) ?? 1)
+        let scaleFactor = zoomScale / cellSize(for: zoomLevel)
         
         let minX = Int(floor(visibleMapRect.minX * scaleFactor))
         let maxX = Int(floor(visibleMapRect.maxX * scaleFactor))
@@ -353,6 +344,22 @@ open class ClusterManager {
         assert(Thread.isMainThread, "This function must be called from the main thread.")
         mapView.removeAnnotations(toRemove)
         mapView.addAnnotations(toAdd)
+    }
+    
+    func cellSize(for zoomLevel: Double) -> Double {
+        if let cellSize = delegate?.cellSize(for: zoomLevel), cellSize > 0 {
+            return cellSize
+        }
+        switch zoomLevel {
+        case 13...15:
+            return 64
+        case 16...18:
+            return 32
+        case 19...:
+            return 16
+        default:
+            return 88
+        }
     }
     
 }
