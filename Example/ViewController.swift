@@ -24,9 +24,11 @@ class ViewController: UIViewController {
         
         // When zoom level is quite close to the pins, disable clustering in order to show individual pins and allow the user to interact with them via callouts.
         mapView.region = .init(center: region.center, span: .init(latitudeDelta: region.delta, longitudeDelta: region.delta))
+        manager.delegate = self
         manager.maxZoomLevel = 17
         manager.minCountForClustering = 3
         manager.clusterPosition = .nearCenter
+        manager.add(MeAnnotation(coordinate: region.center))
         addAnnotations()
     }
     
@@ -68,6 +70,17 @@ extension ViewController: MKMapViewDelegate {
             }
             annotationView.annotation = annotation
             return annotationView
+        } else if let annotation = annotation as? MeAnnotation {
+            let identifier = "Me"
+            let annotationView: MKAnnotationView
+            if let existingView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) {
+                annotationView = existingView
+            } else {
+                annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                annotationView.image = .me
+            }
+            annotationView.annotation = annotation
+            return annotationView
         } else {
             let identifier = "Pin"
             let annotationView: MKPinAnnotationView
@@ -75,7 +88,7 @@ extension ViewController: MKMapViewDelegate {
                 annotationView = existingView
             } else {
                 annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-                annotationView.pinTintColor = .annotation
+                annotationView.pinTintColor = .green
             }
             annotationView.annotation = annotation
             return annotationView
@@ -125,6 +138,18 @@ extension ViewController: MKMapViewDelegate {
 
 }
 
+extension ViewController: ClusterManagerDelegate {
+    
+    func cellSize(for zoomLevel: Double) -> Double {
+        return 0 // default
+    }
+    
+    func shouldClusterAnnotation(_ annotation: MKAnnotation) -> Bool {
+        return !(annotation is MeAnnotation)
+    }
+    
+}
+
 extension ViewController {
     enum Selection: Int {
         case count, imageCount, image
@@ -133,18 +158,20 @@ extension ViewController {
             switch self {
             case .count:
                 let annotationView = CountClusterAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
-                annotationView.countLabel.backgroundColor = .annotation
+                annotationView.countLabel.backgroundColor = .green
                 return annotationView
             case .imageCount:
                 let annotationView = ImageCountClusterAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
-                annotationView.countLabel.textColor = .annotation
-                annotationView.image = .annotation2
+                annotationView.countLabel.textColor = .green
+                annotationView.image = .pin2
                 return annotationView
             case .image:
                 let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
-                annotationView.image = .annotation
+                annotationView.image = .pin
                 return annotationView
             }
         }
     }
 }
+
+class MeAnnotation: Annotation {}

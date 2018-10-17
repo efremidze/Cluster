@@ -8,7 +8,12 @@
 
 import MapKit
 
-public typealias Annotation = MKPointAnnotation
+open class Annotation: MKPointAnnotation {
+    public convenience init(coordinate: CLLocationCoordinate2D) {
+        self.init()
+        self.coordinate = coordinate
+    }
+}
 
 open class ClusterAnnotation: Annotation {
     open var annotations = [MKAnnotation]()
