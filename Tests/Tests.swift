@@ -52,7 +52,7 @@ extension Tests {
         return 0.01
     }
     
-    func testAnnotation() {
+    func testAnnotations() {
         let identifier = "identifier"
         let annotation = ClusterAnnotation()
         let text = "\(annotation.annotations.count)"
@@ -66,7 +66,7 @@ extension Tests {
         }
     }
     
-    func testAddRemoveAnnotation() {
+    func testAddAndRemoveAllAnnotations() {
         let manager = ClusterManager()
         
         manager.addAnnotations(count: 1000, center: center, delta: delta)
@@ -87,7 +87,7 @@ extension Tests {
         XCTAssertEqual(toAdd2.count, toRemove.count)
     }
     
-    func testAddRemoveAnnotation2() {
+    func testAddAndRemoveAnnotations() {
         let manager = ClusterManager()
         
         let annotations = manager.addAnnotations(count: 1000, center: center, delta: delta)
@@ -109,7 +109,7 @@ extension Tests {
     }
     
     
-    func testAddAnnotationCenter() {
+    func testClusterPositionCenter() {
         let manager = ClusterManager()
         manager.clusterPosition = .center
         
@@ -120,7 +120,7 @@ extension Tests {
         XCTAssertTrue(manager.visibleNestedAnnotations.count == 1000)
     }
     
-    func testAddAnnotationNearCenter() {
+    func testClusterPositionNearCenter() {
         let manager = ClusterManager()
         manager.clusterPosition = .nearCenter
         
@@ -131,7 +131,7 @@ extension Tests {
         XCTAssertTrue(manager.visibleNestedAnnotations.count == 1000)
     }
     
-    func testAddAnnotationAverage() {
+    func testClusterPositionAverage() {
         let manager = ClusterManager()
         manager.clusterPosition = .average
         
@@ -142,7 +142,7 @@ extension Tests {
         XCTAssertTrue(manager.visibleNestedAnnotations.count == 1000)
     }
     
-    func testAddAnnotationFirst() {
+    func testClusterPositionFirst() {
         let manager = ClusterManager()
         manager.clusterPosition = .first
         
@@ -153,7 +153,7 @@ extension Tests {
         XCTAssertTrue(manager.visibleNestedAnnotations.count == 1000)
     }
     
-    func testAddAnnotationSameCoordinate() {
+    func testSameCoordinate() {
         let manager = ClusterManager()
         manager.shouldDistributeAnnotationsOnSameCoordinate = false
         
@@ -164,7 +164,7 @@ extension Tests {
         XCTAssertTrue(manager.visibleNestedAnnotations.count == 1000)
     }
     
-    func testAddAnnotationRemoveInvisibleAnnotations() {
+    func testRemoveInvisibleAnnotations() {
         let manager = ClusterManager()
         manager.shouldRemoveInvisibleAnnotations = false
         
@@ -175,7 +175,7 @@ extension Tests {
         XCTAssertTrue(manager.visibleNestedAnnotations.count == 1000)
     }
     
-    func testAddAnnotationMinCountForClustering() {
+    func testMinCountForClustering() {
         let manager = ClusterManager()
         manager.minCountForClustering = 10
         
@@ -186,7 +186,7 @@ extension Tests {
         XCTAssertTrue(manager.visibleNestedAnnotations.count == 1000)
     }
     
-    func testAddAnnotationOperationCancel() {
+    func testCancelOperation() {
         let manager = ClusterManager()
         manager.addAnnotations(count: 1000, center: center, delta: delta)
         
@@ -206,7 +206,7 @@ extension Tests {
         XCTAssertTrue(manager.visibleNestedAnnotations.count == 1000)
     }
     
-    func testMutableClass() {
+    func testMultipleOperations() {
         let manager = ClusterManager()
         manager.addAnnotations(count: 1000, center: center, delta: delta)
         

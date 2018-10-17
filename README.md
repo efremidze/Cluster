@@ -93,12 +93,23 @@ func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
 }
 ```
 
+## ClusterManagerDelegate
+
+The  `ClusterManagerDelegate` protocol manages displaying annotations. 
+
+```swift
+// The size of each cell on the grid at a given zoom level.
+func cellSize(for zoomLevel: Double) -> Double { ... }
+
+// Whether to cluster the given annotation.
+func shouldClusterAnnotation(_ annotation: MKAnnotation) -> Bool { ... }
+```
+
 ## Customization
 
 The `ClusterManager` exposes several properties to customize clustering:
 
 ```swift
-var cellSize: Double? // The size of each cell on the grid (The larger the size, the better the performance).
 var zoomLevel: Double // The current zoom level of the visible map region.
 var maxZoomLevel: Double // The maximum zoom level before disabling clustering.
 var minCountForClustering: Int // The minimum number of annotations for a cluster. The default is `2`.
