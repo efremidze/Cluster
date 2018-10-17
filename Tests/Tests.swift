@@ -69,12 +69,7 @@ extension Tests {
     func testAddRemoveAnnotation() {
         let manager = ClusterManager()
         
-        let annotations: [Annotation] = (0..<1000).map { i in
-            let annotation = Annotation()
-            annotation.coordinate = CLLocationCoordinate2D(latitude: center.latitude + drand48() * delta - delta / 2, longitude: center.longitude + drand48() * delta - delta / 2)
-            return annotation
-        }
-        manager.add(annotations)
+        manager.addAnnotations(count: 1000, center: center, delta: delta)
         
         let (toAdd, toRemove) = manager.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: mapRect)
         
@@ -95,12 +90,7 @@ extension Tests {
     func testAddRemoveAnnotation2() {
         let manager = ClusterManager()
         
-        let annotations: [Annotation] = (0..<1000).map { i in
-            let annotation = Annotation()
-            annotation.coordinate = CLLocationCoordinate2D(latitude: center.latitude + drand48() * delta - delta / 2, longitude: center.longitude + drand48() * delta - delta / 2)
-            return annotation
-        }
-        manager.add(annotations)
+        let annotations = manager.addAnnotations(count: 1000, center: center, delta: delta)
         
         let (toAdd, toRemove) = manager.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: mapRect)
         
@@ -117,18 +107,13 @@ extension Tests {
         XCTAssertEqual(toAdd.count, toRemove2.count)
         XCTAssertEqual(toAdd2.count, toRemove.count)
     }
-
+    
     
     func testAddAnnotationCenter() {
         let manager = ClusterManager()
         manager.clusterPosition = .center
         
-        let annotations: [Annotation] = (0..<1000).map { i in
-            let annotation = Annotation()
-            annotation.coordinate = CLLocationCoordinate2D(latitude: center.latitude + drand48() * delta - delta / 2, longitude: center.longitude + drand48() * delta - delta / 2)
-            return annotation
-        }
-        manager.add(annotations)
+        manager.addAnnotations(count: 1000, center: center, delta: delta)
         
         _ = manager.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: mapRect)
         
@@ -139,12 +124,7 @@ extension Tests {
         let manager = ClusterManager()
         manager.clusterPosition = .nearCenter
         
-        let annotations: [Annotation] = (0..<1000).map { i in
-            let annotation = Annotation()
-            annotation.coordinate = CLLocationCoordinate2D(latitude: center.latitude + drand48() * delta - delta / 2, longitude: center.longitude + drand48() * delta - delta / 2)
-            return annotation
-        }
-        manager.add(annotations)
+        manager.addAnnotations(count: 1000, center: center, delta: delta)
         
         _ = manager.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: mapRect)
         
@@ -155,12 +135,7 @@ extension Tests {
         let manager = ClusterManager()
         manager.clusterPosition = .average
         
-        let annotations: [Annotation] = (0..<1000).map { i in
-            let annotation = Annotation()
-            annotation.coordinate = CLLocationCoordinate2D(latitude: center.latitude + drand48() * delta - delta / 2, longitude: center.longitude + drand48() * delta - delta / 2)
-            return annotation
-        }
-        manager.add(annotations)
+        manager.addAnnotations(count: 1000, center: center, delta: delta)
         
         _ = manager.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: mapRect)
         
@@ -171,12 +146,7 @@ extension Tests {
         let manager = ClusterManager()
         manager.clusterPosition = .first
         
-        let annotations: [Annotation] = (0..<1000).map { i in
-            let annotation = Annotation()
-            annotation.coordinate = CLLocationCoordinate2D(latitude: center.latitude + drand48() * delta - delta / 2, longitude: center.longitude + drand48() * delta - delta / 2)
-            return annotation
-        }
-        manager.add(annotations)
+        manager.addAnnotations(count: 1000, center: center, delta: delta)
         
         _ = manager.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: mapRect)
         
@@ -187,12 +157,7 @@ extension Tests {
         let manager = ClusterManager()
         manager.shouldDistributeAnnotationsOnSameCoordinate = false
         
-        let annotations: [Annotation] = (0..<1000).map { i in
-            let annotation = Annotation()
-            annotation.coordinate = CLLocationCoordinate2D(latitude: center.latitude + drand48() * delta - delta / 2, longitude: center.longitude + drand48() * delta - delta / 2)
-            return annotation
-        }
-        manager.add(annotations)
+        manager.addAnnotations(count: 1000, center: center, delta: delta)
         
         _ = manager.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: mapRect)
         
@@ -203,12 +168,7 @@ extension Tests {
         let manager = ClusterManager()
         manager.shouldRemoveInvisibleAnnotations = false
         
-        let annotations: [Annotation] = (0..<1000).map { i in
-            let annotation = Annotation()
-            annotation.coordinate = CLLocationCoordinate2D(latitude: center.latitude + drand48() * delta - delta / 2, longitude: center.longitude + drand48() * delta - delta / 2)
-            return annotation
-        }
-        manager.add(annotations)
+        manager.addAnnotations(count: 1000, center: center, delta: delta)
         
         _ = manager.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: mapRect)
         
@@ -219,12 +179,7 @@ extension Tests {
         let manager = ClusterManager()
         manager.minCountForClustering = 10
         
-        let annotations: [Annotation] = (0..<1000).map { i in
-            let annotation = Annotation()
-            annotation.coordinate = CLLocationCoordinate2D(latitude: center.latitude + drand48() * delta - delta / 2, longitude: center.longitude + drand48() * delta - delta / 2)
-            return annotation
-        }
-        manager.add(annotations)
+        manager.addAnnotations(count: 1000, center: center, delta: delta)
         
         _ = manager.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: mapRect)
         
@@ -233,13 +188,7 @@ extension Tests {
     
     func testAddAnnotationOperationCancel() {
         let manager = ClusterManager()
-        
-        let annotations: [Annotation] = (0..<1000).map { i in
-            let annotation = Annotation()
-            annotation.coordinate = CLLocationCoordinate2D(latitude: center.latitude + drand48() * delta - delta / 2, longitude: center.longitude + drand48() * delta - delta / 2)
-            return annotation
-        }
-        manager.add(annotations)
+        manager.addAnnotations(count: 1000, center: center, delta: delta)
         
         let expectation = self.expectation(description: "Clustering")
         
@@ -251,14 +200,49 @@ extension Tests {
             expectation.fulfill()
         }
         
-        waitForExpectations(timeout: 5, handler: nil)
+        let result = XCTWaiter.wait(for: [expectation], timeout: 10)
         
+        XCTAssertTrue(result == .completed)
+        XCTAssertTrue(manager.visibleNestedAnnotations.count == 1000)
+    }
+    
+    func testMutableClass() {
+        let manager = ClusterManager()
+        manager.addAnnotations(count: 1000, center: center, delta: delta)
+        
+        let expectation = self.expectation(description: "Clustering")
+        expectation.assertForOverFulfill = true
+        
+        for i in 0...100 {
+            DispatchQueue.global().async {
+                manager.clusteredAnnotations(zoomScale: self.zoomScale, visibleMapRect: self.mapRect) { finished in
+                    if i == 100 {
+                        expectation.fulfill()
+                    }
+                }
+            }
+        }
+        
+        let result = XCTWaiter.wait(for: [expectation], timeout: 10)
+        
+        XCTAssertTrue(result == .completed)
         XCTAssertTrue(manager.visibleNestedAnnotations.count == 1000)
     }
     
 }
 
 extension ClusterManager {
+    @discardableResult
+    func addAnnotations(count: Int, center: CLLocationCoordinate2D, delta: Double) -> [MKAnnotation] {
+        let annotations: [Annotation] = (0..<count).map { i in
+            let annotation = Annotation()
+            annotation.coordinate = CLLocationCoordinate2D(latitude: center.latitude + drand48() * delta - delta / 2, longitude: center.longitude + drand48() * delta - delta / 2)
+            return annotation
+        }
+        add(annotations)
+        return annotations
+    }
+    
     func clusteredAnnotations(zoomScale: Double, visibleMapRect: MKMapRect, completion: @escaping (Bool) -> Void) {
         queue.cancelAllOperations()
         queue.addBlockOperation { [weak self] operation in
