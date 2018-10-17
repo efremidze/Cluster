@@ -17,11 +17,11 @@ class CountClusterAnnotationView: ClusterAnnotationView {
         guard let annotation = annotation as? ClusterAnnotation else { return }
         let count = annotation.annotations.count
         let diameter = radius(for: count) * 2
-        countLabel.frame.size = CGSize(width: diameter, height: diameter)
-        countLabel.layer.cornerRadius = countLabel.frame.width / 2
-        countLabel.layer.masksToBounds = true
-        countLabel.layer.borderColor = UIColor.white.cgColor
-        countLabel.layer.borderWidth = 1.5
+        self.frame.size = CGSize(width: diameter, height: diameter)
+        self.layer.cornerRadius = self.frame.width / 2
+        self.layer.masksToBounds = true
+        self.layer.borderColor = UIColor.white.cgColor
+        self.layer.borderWidth = 1.5
     }
     
     func radius(for count: Int) -> CGFloat {
