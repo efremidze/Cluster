@@ -112,6 +112,11 @@ extension MKPolyline {
 }
 
 extension OperationQueue {
+    static var serial: OperationQueue {
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        return queue
+    }
     func addBlockOperation(_ block: @escaping (BlockOperation) -> Void) {
         let operation = BlockOperation()
         operation.addExecutionBlock { [weak operation] in

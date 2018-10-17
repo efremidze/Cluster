@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -27,43 +27,60 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="uPa-Oh-vfR"/>
                                 </connections>
                             </mapView>
-                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="v5V-ka-axk">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="HLU-fC-qvl">
+                                <rect key="frame" x="8" y="593" width="359" height="66"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bhd-RE-cC2">
-                                        <rect key="frame" x="0.0" y="0.0" width="187.5" height="44"/>
-                                        <state key="normal" title="Add Annotations"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="v5V-ka-axk">
+                                        <rect key="frame" x="0.0" y="0.0" width="359" height="30"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bhd-RE-cC2">
+                                                <rect key="frame" x="0.0" y="0.0" width="179.5" height="30"/>
+                                                <state key="normal" title="Add Annotations"/>
+                                                <connections>
+                                                    <action selector="addAnnotations:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eFg-wr-vVP"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hi9-Vw-vaI">
+                                                <rect key="frame" x="179.5" y="0.0" width="179.5" height="30"/>
+                                                <state key="normal" title="Remove Annotations"/>
+                                                <connections>
+                                                    <action selector="removeAnnotations:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Jbd-zc-foj"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="tintColor" red="0.0" green="0.47843137254901957" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="rQL-cw-w6d"/>
+                                        </constraints>
+                                    </stackView>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Dbt-Vy-s68">
+                                        <rect key="frame" x="0.0" y="38" width="359" height="29"/>
+                                        <segments>
+                                            <segment title="Count"/>
+                                            <segment title="Image + Count"/>
+                                            <segment title="Image"/>
+                                        </segments>
                                         <connections>
-                                            <action selector="addAnnotations:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eFg-wr-vVP"/>
+                                            <action selector="valueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="bDc-uz-kzN"/>
                                         </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hi9-Vw-vaI">
-                                        <rect key="frame" x="187.5" y="0.0" width="187.5" height="44"/>
-                                        <state key="normal" title="Remove Annotations"/>
-                                        <connections>
-                                            <action selector="removeAnnotations:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Jbd-zc-foj"/>
-                                        </connections>
-                                    </button>
+                                    </segmentedControl>
                                 </subviews>
-                                <color key="tintColor" red="0.0" green="0.47843137254901957" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="rQL-cw-w6d"/>
-                                </constraints>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="v5V-ka-axk" secondAttribute="trailing" id="2eh-54-W8B"/>
                             <constraint firstItem="3zT-a5-WPz" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="2p5-KU-1PT"/>
-                            <constraint firstItem="v5V-ka-axk" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="8FM-TI-WUM"/>
                             <constraint firstAttribute="trailing" secondItem="3zT-a5-WPz" secondAttribute="trailing" id="H7l-mx-gBA"/>
+                            <constraint firstAttribute="bottom" secondItem="HLU-fC-qvl" secondAttribute="bottom" constant="8" id="HDh-dT-rrg"/>
                             <constraint firstItem="3zT-a5-WPz" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="Mus-hi-94d"/>
                             <constraint firstAttribute="bottom" secondItem="3zT-a5-WPz" secondAttribute="bottom" id="aSu-0m-Hye"/>
-                            <constraint firstItem="zH5-KM-KSj" firstAttribute="top" secondItem="v5V-ka-axk" secondAttribute="bottom" id="r1z-3E-jMY"/>
+                            <constraint firstAttribute="trailing" secondItem="HLU-fC-qvl" secondAttribute="trailing" constant="8" id="i1l-IP-7ZX"/>
+                            <constraint firstItem="HLU-fC-qvl" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="8" id="ifh-m2-V5X"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="mapView" destination="3zT-a5-WPz" id="MB0-Mk-kac"/>
+                        <outlet property="segmentedControl" destination="Dbt-Vy-s68" id="NhA-gx-mdt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
