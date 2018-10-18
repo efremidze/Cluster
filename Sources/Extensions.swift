@@ -35,23 +35,10 @@ public func ==(lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool
 }
 
 extension Double {
-    static let maxZoomLevel: Double = 20
     var zoomLevel: Double {
         let maxZoomLevel = log2(MKMapSize.world.width / 256) // 20
         let zoomLevel = floor(log2(self) + 0.5) // negative
         return max(0, maxZoomLevel + zoomLevel) // max - current
-    }
-    var cellSize: Double {
-        switch self {
-        case 13...15:
-            return 64
-        case 16...18:
-            return 32
-        case 19...:
-            return 16
-        default: // Less than 13
-            return 88
-        }
     }
 }
 
@@ -113,6 +100,11 @@ extension MKPolyline {
 }
 
 extension OperationQueue {
+    static var serial: OperationQueue {
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        return queue
+    }
     func addBlockOperation(_ block: @escaping (BlockOperation) -> Void) {
         let operation = BlockOperation()
         operation.addExecutionBlock { [weak operation] in
@@ -120,5 +112,16 @@ extension OperationQueue {
             block(operation)
         }
         self.addOperation(operation)
+    }
+}
+
+extension Double {
+    enum ComparisonOutcome {
+        case equal, less, greater
+    }
+    func compare(to other: Double) -> ComparisonOutcome {
+        if self > other { return .greater }
+        if self < other { return .less }
+        return .equal
     }
 }

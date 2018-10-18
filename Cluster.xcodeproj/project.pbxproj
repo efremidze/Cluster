@@ -23,6 +23,7 @@
 		8BFA2B801E9F7184001A80FB /* Cluster.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BFA2B5F1E9F7149001A80FB /* Cluster.framework */; };
 		8BFA2B811E9F7184001A80FB /* Cluster.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8BFA2B5F1E9F7149001A80FB /* Cluster.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8BFA2B861E9F71BD001A80FB /* Cluster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFA2B851E9F71BD001A80FB /* Cluster.swift */; };
+		F4619D1B216C95FC00018B20 /* AnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4619D1A216C95FC00018B20 /* AnnotationView.swift */; };
 		F4AF970720F5EF1C008DB4E5 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AF970620F5EF1C008DB4E5 /* Tests.swift */; };
 		F4AF970920F5EF1C008DB4E5 /* Cluster.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BFA2B5F1E9F7149001A80FB /* Cluster.framework */; };
 /* End PBXBuildFile section */
@@ -84,6 +85,7 @@
 		8BFA2B7A1E9F715B001A80FB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8BFA2B7C1E9F715B001A80FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8BFA2B851E9F71BD001A80FB /* Cluster.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cluster.swift; sourceTree = "<group>"; };
+		F4619D1A216C95FC00018B20 /* AnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationView.swift; sourceTree = "<group>"; };
 		F4AF970420F5EF1C008DB4E5 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4AF970620F5EF1C008DB4E5 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		F4AF970820F5EF1C008DB4E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 			children = (
 				8BFA2B701E9F715B001A80FB /* AppDelegate.swift */,
 				8BFA2B721E9F715B001A80FB /* ViewController.swift */,
+				F4619D1A216C95FC00018B20 /* AnnotationView.swift */,
 				71726C1F1F11A225003DCEFF /* Extensions.swift */,
 				8BFA2B741E9F715B001A80FB /* Main.storyboard */,
 				8BFA2B771E9F715B001A80FB /* Assets.xcassets */,
@@ -340,6 +343,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8BFA2B731E9F715B001A80FB /* ViewController.swift in Sources */,
+				F4619D1B216C95FC00018B20 /* AnnotationView.swift in Sources */,
 				71726C201F11A225003DCEFF /* Extensions.swift in Sources */,
 				8BFA2B711E9F715B001A80FB /* AppDelegate.swift in Sources */,
 			);
@@ -446,6 +450,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-function-bodies=100 -Xfrontend -warn-long-expression-type-checking=100";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -502,6 +507,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-function-bodies=100 -Xfrontend -warn-long-expression-type-checking=100";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.2;

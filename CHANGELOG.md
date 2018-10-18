@@ -1,5 +1,19 @@
 # Change log
 
+## [Version 2.3.0](https://github.com/efremidze/Cluster/releases/tag/2.3.0)
+Released on 2018-10-17
+
+- Fixed race condition
+- Added ClusterManagerDelegate
+- Refactored CusterAnnotationView
+- Improved example
+
+## [Version 2.2.9](https://github.com/efremidze/Cluster/releases/tag/2.2.9)
+Released on 2018-09-23
+
+- Added code coverage
+- Bug fixes
+
 ## [Version 2.2.8](https://github.com/efremidze/Cluster/releases/tag/2.2.8)
 Released on 2018-08-21
 
