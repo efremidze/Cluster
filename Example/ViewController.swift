@@ -126,13 +126,11 @@ extension ViewController: MKMapViewDelegate {
         }, completion: nil)
     }
     
+    /// Displays overlays to debug cell size
 //    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
 //        let view = MKPolylineRenderer(overlay: overlay)
-//        if overlay is MKBasePolyline {
-//            view.strokeColor = .blue
-//        } else {
-//            view.strokeColor = .red
-//        }
+//        view.strokeColor = .red
+//        view.lineWidth = 1
 //        return view
 //    }
 

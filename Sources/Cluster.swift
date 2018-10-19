@@ -46,14 +46,6 @@ open class ClusterManager {
     var tree = QuadTree(rect: .world)
     
     /**
-     The size of each cell on the grid (The larger the size, the better the performance).
-     
-     If nil, automatically adjusts the cell size to zoom level. The default is nil.
-     */
-    @available(*, deprecated: 2.3.0, message: "Use cellSize(forZoomLevel:)")
-    open var cellSize: Double?
-    
-    /**
      The current zoom level of the visible map region.
      
      Min value is 0 (max zoom out), max is 20 (max zoom in).
@@ -138,6 +130,8 @@ open class ClusterManager {
     open var visibleNestedAnnotations: [MKAnnotation] {
         return visibleAnnotations.reduce([MKAnnotation](), { $0 + (($1 as? ClusterAnnotation)?.annotations ?? [$1]) })
     }
+    
+    var overlays = [MKPolyline]()
     
     open var queue = OperationQueue.serial
     
@@ -252,8 +246,8 @@ open class ClusterManager {
         
         var allAnnotations = [MKAnnotation]()
         
-//        mapView.removeOverlays(mapView.overlays)
-//        mapView.add(MKBasePolyline(mapRect: visibleMapRect))
+        overlays.removeAll()
+        overlays.append(MKPolyline(mapRect: visibleMapRect))
         
         for x in minX...maxX {
             for y in minY...maxY {
@@ -262,7 +256,7 @@ open class ClusterManager {
                     mapRect.origin.x -= MKMapPointMax.x
                 }
                 
-//                mapView.add(MKPolyline(mapRect: mapRect))
+                overlays.append(MKPolyline(mapRect: mapRect))
                 
                 var totalLatitude: Double = 0
                 var totalLongitude: Double = 0
@@ -344,6 +338,8 @@ open class ClusterManager {
         assert(Thread.isMainThread, "This function must be called from the main thread.")
         mapView.removeAnnotations(toRemove)
         mapView.addAnnotations(toAdd)
+        mapView.removeOverlays(mapView.overlays)
+        mapView.addOverlays(overlays)
     }
     
     func cellSize(for zoomLevel: Double) -> Double {
@@ -363,5 +359,3 @@ open class ClusterManager {
     }
     
 }
-
-//public class MKBasePolyline: MKPolyline {}
