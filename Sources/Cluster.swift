@@ -338,8 +338,8 @@ open class ClusterManager {
         assert(Thread.isMainThread, "This function must be called from the main thread.")
         mapView.removeAnnotations(toRemove)
         mapView.addAnnotations(toAdd)
-        mapView.removeOverlays(mapView.overlays)
-        mapView.addOverlays(overlays)
+//        mapView.removeOverlays(mapView.overlays)
+//        mapView.addOverlays(overlays)
     }
     
     func cellSize(for zoomLevel: Double) -> Double {
