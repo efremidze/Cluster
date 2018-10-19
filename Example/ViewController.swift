@@ -105,14 +105,14 @@ extension ViewController: MKMapViewDelegate {
         guard let annotation = view.annotation else { return }
         
         if let cluster = annotation as? ClusterAnnotation {
-            var zoomRect = MKMapRectNull
+            var zoomRect = MKMapRect.null
             for annotation in cluster.annotations {
-                let annotationPoint = MKMapPointForCoordinate(annotation.coordinate)
-                let pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, 0, 0)
-                if MKMapRectIsNull(zoomRect) {
+                let annotationPoint = MKMapPoint(annotation.coordinate)
+                let pointRect = MKMapRect(x: annotationPoint.x, y: annotationPoint.y, width: 0, height: 0)
+                if zoomRect.isNull {
                     zoomRect = pointRect
                 } else {
-                    zoomRect = MKMapRectUnion(zoomRect, pointRect)
+                    zoomRect = zoomRect.union(pointRect)
                 }
             }
             mapView.setVisibleMapRect(zoomRect, animated: true)

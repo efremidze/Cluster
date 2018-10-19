@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.4.0](https://github.com/efremidze/Cluster/releases/tag/2.4.0)
+Released on 2018-10-18
+
+- Swift 4.2 Support
+
 ## [Version 2.3.0](https://github.com/efremidze/Cluster/releases/tag/2.3.0)
 Released on 2018-10-17
 
