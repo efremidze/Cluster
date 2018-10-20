@@ -252,17 +252,12 @@ open class ClusterManager {
         
         var allAnnotations = [MKAnnotation]()
         
-//        mapView.removeOverlays(mapView.overlays)
-//        mapView.add(MKBasePolyline(mapRect: visibleMapRect))
-        
         for x in minX...maxX {
             for y in minY...maxY {
                 var mapRect = MKMapRect(x: Double(x) / scaleFactor, y: Double(y) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
                 if mapRect.origin.x > MKMapPointMax.x {
                     mapRect.origin.x -= MKMapPointMax.x
                 }
-                
-//                mapView.add(MKPolyline(mapRect: mapRect))
                 
                 var totalLatitude: Double = 0
                 var totalLongitude: Double = 0
@@ -363,5 +358,3 @@ open class ClusterManager {
     }
     
 }
-
-//public class MKBasePolyline: MKPolyline {}
