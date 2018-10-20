@@ -236,82 +236,64 @@ open class ClusterManager {
         
         guard !isCancelled, !zoomScale.isInfinite, !zoomScale.isNaN else { return (toAdd: [], toRemove: []) }
         
-        zoomLevel = zoomScale.zoomLevel
-        let scaleFactor = zoomScale / cellSize(for: zoomLevel)
-        
-        let minX = Int(floor(visibleMapRect.minX * scaleFactor))
-        let maxX = Int(floor(visibleMapRect.maxX * scaleFactor))
-        let minY = Int(floor(visibleMapRect.minY * scaleFactor))
-        let maxY = Int(floor(visibleMapRect.maxY * scaleFactor))
+        let mapRects = self.mapRects(zoomScale: zoomScale, visibleMapRect: visibleMapRect)
         
         var allAnnotations = [MKAnnotation]()
         
-        overlays.removeAll()
-        overlays.append(MKPolyline(mapRect: visibleMapRect))
-        
-        for x in minX...maxX {
-            for y in minY...maxY {
-                var mapRect = MKMapRect(x: Double(x) / scaleFactor, y: Double(y) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
-                if mapRect.origin.x > MKMapPointMax.x {
-                    mapRect.origin.x -= MKMapPointMax.x
-                }
-                
-                overlays.append(MKPolyline(mapRect: mapRect))
-                
-                var totalLatitude: Double = 0
-                var totalLongitude: Double = 0
-                var annotations = [MKAnnotation]()
-                var hash = [CLLocationCoordinate2D: [MKAnnotation]]()
-                
-                // add annotations
-                for node in tree.annotations(in: mapRect) {
-                    if delegate?.shouldClusterAnnotation(node) ?? true {
-                        totalLatitude += node.coordinate.latitude
-                        totalLongitude += node.coordinate.longitude
-                        annotations.append(node)
-                        hash[node.coordinate, default: [MKAnnotation]()] += [node]
-                    } else {
-                        allAnnotations.append(node)
-                    }
-                }
-                
-                // handle annotations on the same coordinate
-                for value in hash.values where shouldDistributeAnnotationsOnSameCoordinate && value.count > 1 {
-                    for (index, node) in value.enumerated() {
-                        let distanceFromContestedLocation = 3 * Double(value.count) / 2
-                        let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
-                        let bearing = radiansBetweenAnnotations * Double(index)
-                        (node as? Annotation)?.coordinate = node.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
-                    }
-                }
-                
-                // handle clustering
-                let count = annotations.count
-                if count >= minCountForClustering, zoomLevel <= maxZoomLevel {
-                    let cluster = ClusterAnnotation()
-                    switch clusterPosition {
-                    case .center:
-                        cluster.coordinate = MKMapPoint(x: mapRect.midX, y: mapRect.midY).coordinate
-                    case .nearCenter:
-                        let coordinate = MKMapPoint(x: mapRect.midX, y: mapRect.midY).coordinate
-                        if let annotation = annotations.min(by: { coordinate.distance(from: $0.coordinate) < coordinate.distance(from: $1.coordinate) }) {
-                            cluster.coordinate = annotation.coordinate
-                        }
-                    case .average:
-                        cluster.coordinate = CLLocationCoordinate2D(
-                            latitude: CLLocationDegrees(totalLatitude) / CLLocationDegrees(count),
-                            longitude: CLLocationDegrees(totalLongitude) / CLLocationDegrees(count)
-                        )
-                    case .first:
-                        if let annotation = annotations.first {
-                            cluster.coordinate = annotation.coordinate
-                        }
-                    }
-                    cluster.annotations = annotations
-                    allAnnotations += [cluster]
+        for mapRect in mapRects {
+            var totalLatitude: Double = 0
+            var totalLongitude: Double = 0
+            var annotations = [MKAnnotation]()
+            var hash = [CLLocationCoordinate2D: [MKAnnotation]]()
+            
+            // add annotations
+            for node in tree.annotations(in: mapRect) {
+                if delegate?.shouldClusterAnnotation(node) ?? true {
+                    totalLatitude += node.coordinate.latitude
+                    totalLongitude += node.coordinate.longitude
+                    annotations.append(node)
+                    hash[node.coordinate, default: [MKAnnotation]()] += [node]
                 } else {
-                    allAnnotations += annotations
+                    allAnnotations.append(node)
                 }
+            }
+            
+            // handle annotations on the same coordinate
+            for value in hash.values where shouldDistributeAnnotationsOnSameCoordinate && value.count > 1 {
+                for (index, node) in value.enumerated() {
+                    let distanceFromContestedLocation = 3 * Double(value.count) / 2
+                    let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
+                    let bearing = radiansBetweenAnnotations * Double(index)
+                    (node as? Annotation)?.coordinate = node.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
+                }
+            }
+            
+            // handle clustering
+            let count = annotations.count
+            if count >= minCountForClustering, zoomLevel <= maxZoomLevel {
+                let cluster = ClusterAnnotation()
+                switch clusterPosition {
+                case .center:
+                    cluster.coordinate = MKMapPoint(x: mapRect.midX, y: mapRect.midY).coordinate
+                case .nearCenter:
+                    let coordinate = MKMapPoint(x: mapRect.midX, y: mapRect.midY).coordinate
+                    if let annotation = annotations.min(by: { coordinate.distance(from: $0.coordinate) < coordinate.distance(from: $1.coordinate) }) {
+                        cluster.coordinate = annotation.coordinate
+                    }
+                case .average:
+                    cluster.coordinate = CLLocationCoordinate2D(
+                        latitude: CLLocationDegrees(totalLatitude) / CLLocationDegrees(count),
+                        longitude: CLLocationDegrees(totalLongitude) / CLLocationDegrees(count)
+                    )
+                case .first:
+                    if let annotation = annotations.first {
+                        cluster.coordinate = annotation.coordinate
+                    }
+                }
+                cluster.annotations = annotations
+                allAnnotations += [cluster]
+            } else {
+                allAnnotations += annotations
             }
         }
         
@@ -332,6 +314,39 @@ open class ClusterManager {
         visibleAnnotations.add(toAdd)
         
         return (toAdd: toAdd, toRemove: toRemove)
+    }
+    
+    func addOverlays(zoomScale: Double, visibleMapRect: MKMapRect) {
+        overlays.removeAll()
+        overlays.append(MKPolyline(mapRect: visibleMapRect))
+        
+        let mapRects = self.mapRects(zoomScale: zoomScale, visibleMapRect: visibleMapRect)
+        
+        for mapRect in mapRects {
+            overlays.append(MKPolyline(mapRect: mapRect))
+        }
+    }
+    
+    func mapRects(zoomScale: Double, visibleMapRect: MKMapRect) -> [MKMapRect] {
+        zoomLevel = zoomScale.zoomLevel
+        let scaleFactor = zoomScale / cellSize(for: zoomLevel)
+        
+        let minX = Int(floor(visibleMapRect.minX * scaleFactor))
+        let maxX = Int(floor(visibleMapRect.maxX * scaleFactor))
+        let minY = Int(floor(visibleMapRect.minY * scaleFactor))
+        let maxY = Int(floor(visibleMapRect.maxY * scaleFactor))
+        
+        var mapRects = [MKMapRect]()
+        for x in minX...maxX {
+            for y in minY...maxY {
+                var mapRect = MKMapRect(x: Double(x) / scaleFactor, y: Double(y) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
+                if mapRect.origin.x > MKMapPointMax.x {
+                    mapRect.origin.x -= MKMapPointMax.x
+                }
+                mapRects.append(mapRect)
+            }
+        }
+        return mapRects
     }
     
     open func display(mapView: MKMapView, toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
