@@ -225,11 +225,11 @@ open class ClusterManager {
         let zoomScale = Double(mapBounds.width) / visibleMapRectWidth
         queue.cancelAllOperations()
         queue.addBlockOperation { [weak self, weak mapView] operation in
-            guard let `self` = self, let mapView = mapView else { return completion(false) }
+            guard let self = self, let mapView = mapView else { return completion(false) }
             autoreleasepool { () -> Void in
                 let (toAdd, toRemove) = self.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: visibleMapRect, operation: operation)
                 DispatchQueue.main.async { [weak self, weak mapView] in
-                    guard let `self` = self, let mapView = mapView else { return completion(false) }
+                    guard let self = self, let mapView = mapView else { return completion(false) }
                     self.display(mapView: mapView, toAdd: toAdd, toRemove: toRemove)
                     completion(true)
                 }
@@ -240,7 +240,7 @@ open class ClusterManager {
     open func clusteredAnnotations(zoomScale: Double, visibleMapRect: MKMapRect, operation: Operation? = nil) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
         var isCancelled: Bool { return operation?.isCancelled ?? false }
         
-        guard !isCancelled, !zoomScale.isInfinite, !zoomScale.isNaN else { return (toAdd: [], toRemove: []) }
+        guard !isCancelled else { return (toAdd: [], toRemove: []) }
         
         let mapRects = self.mapRects(zoomScale: zoomScale, visibleMapRect: visibleMapRect)
         
@@ -323,6 +323,8 @@ open class ClusterManager {
     }
     
     func mapRects(zoomScale: Double, visibleMapRect: MKMapRect) -> [MKMapRect] {
+        guard !zoomScale.isInfinite, !zoomScale.isNaN else { return [] }
+        
         zoomLevel = zoomScale.zoomLevel
         let scaleFactor = zoomScale / cellSize(for: zoomLevel)
         
