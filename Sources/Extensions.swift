@@ -43,13 +43,13 @@ public func ==(lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool
     return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
 }
 
-extension Double {
-    static let maxZoomLevel: Double = 20
+extension MKMapView {
     var zoomLevel: Double {
-        let maxZoomLevel = log2(MKMapSizeWorld.width / 256) // 20
-        let zoomLevel = floor(log2(self) + 0.5) // negative
-        return max(0, maxZoomLevel + zoomLevel) // max - current
+        return floor(log2(360 * Double(frame.width / 256) / region.span.longitudeDelta))
     }
+}
+
+extension Double {
     var cellSize: Double {
         switch self {
         case 13...15:

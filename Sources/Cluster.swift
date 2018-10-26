@@ -9,30 +9,13 @@
 import CoreLocation
 import MapKit
 
-open class ClusterManager {
-    
-    var tree = QuadTree(rect: MKMapRectWorld)
-    
-    /**
-     The size of each cell on the grid (The larger the size, the better the performance).
-     
-     If nil, automatically adjusts the cell size to zoom level. The default is nil.
-     */
-    open var cellSize: Double?
-    
-    /**
-     The current zoom level of the visible map region.
-     
-     Min value is 0 (max zoom out), max is 20 (max zoom in).
-     */
-    open internal(set) var zoomLevel: Double = 0
-    
+open class Configuration {
     /**
      The maximum zoom level before disabling clustering.
      
      Min value is 0 (max zoom out), max is 20 (max zoom in). The default is 20.
      */
-    open var maxZoomLevel: Double = .maxZoomLevel
+    open var maxZoomLevel: Double = 20
     
     /**
      The minimum number of annotations for a cluster.
@@ -54,6 +37,8 @@ open class ClusterManager {
      The default is true.
      */
     open var shouldDistributeAnnotationsOnSameCoordinate: Bool = true
+    
+    open var marginFactor: Double = -1
     
     /**
      The position of the cluster annotation.
@@ -84,6 +69,33 @@ open class ClusterManager {
      The position of the cluster annotation. The default is `.nearCenter`.
      */
     open var clusterPosition: ClusterPosition = .nearCenter
+    
+    /**
+     The size of each cell on the grid (The larger the size, the better the performance).
+     
+     If nil, automatically adjusts the cell size to zoom level. The default is nil.
+     */
+    open var cellSize: (_ zoomScale: Double) -> CGSize = { CGSize(width: $0.cellSize, height: $0.cellSize) }
+}
+
+public protocol ClusterManagerDelegate: class {
+    func clusterManager(_ manager: ClusterManager, cellSizeFor zoomScale: Double) -> CGSize
+}
+
+open class ClusterManager {
+    
+    var tree = QuadTree(rect: MKMapRectWorld)
+    
+    open let configuration = Configuration()
+    
+    open weak var delegate: ClusterManagerDelegate?
+    
+    /**
+     The current zoom level of the visible map region.
+     
+     Min value is 0 (max zoom out), max is 20 (max zoom in).
+     */
+    open internal(set) var zoomLevel: Double = 0
     
     /**
      The list of annotations associated.
@@ -181,6 +193,7 @@ open class ClusterManager {
         let visibleMapRect = mapView.visibleMapRect
         let visibleMapRectWidth = visibleMapRect.size.width
         let zoomScale = Double(mapBounds.width) / visibleMapRectWidth
+        print(mapView.zoomLevel)
         queue.cancelAllOperations()
         queue.addBlockOperation { [weak self, weak mapView] operation in
             guard let `self` = self, let mapView = mapView else { return }
@@ -199,15 +212,17 @@ open class ClusterManager {
     open func clusteredAnnotations(zoomScale: Double, visibleMapRect: MKMapRect, operation: Operation? = nil) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
         var isCancelled: Bool { return operation?.isCancelled ?? false }
         
-        guard !zoomScale.isInfinite, !zoomScale.isNaN else { return (toAdd: [], toRemove: []) }
+        guard !MKMapRectIsNull(visibleMapRect), !MKMapRectIsEmpty(visibleMapRect) else { return (toAdd: [], toRemove: []) }
         
-        zoomLevel = zoomScale.zoomLevel
-        let scaleFactor = zoomScale / (cellSize ?? zoomScale.cellSize)
-        
-        let minX = Int(floor(visibleMapRect.minX * scaleFactor))
-        let maxX = Int(floor(visibleMapRect.maxX * scaleFactor))
-        let minY = Int(floor(visibleMapRect.minY * scaleFactor))
-        let maxY = Int(floor(visibleMapRect.maxY * scaleFactor))
+//        zoomLevel = zoomScale.zoomLevel
+        zoomLevel = 0
+        let scaleFactorX = zoomScale / Double(configuration.cellSize(zoomScale).width)
+        let scaleFactorY = zoomScale / Double(configuration.cellSize(zoomScale).height)
+
+        let minX = Int(floor(visibleMapRect.minX * scaleFactorX))
+        let maxX = Int(floor(visibleMapRect.maxX * scaleFactorX))
+        let minY = Int(floor(visibleMapRect.minY * scaleFactorY))
+        let maxY = Int(floor(visibleMapRect.maxY * scaleFactorY))
         
         var allAnnotations = [MKAnnotation]()
         
@@ -216,7 +231,7 @@ open class ClusterManager {
         
         for x in minX...maxX {
             for y in minY...maxY {
-                var mapRect = MKMapRect(x: Double(x) / scaleFactor, y: Double(y) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
+                var mapRect = MKMapRect(x: Double(x) / scaleFactorX, y: Double(y) / scaleFactorY, width: 1 / scaleFactorX, height: 1 / scaleFactorY)
                 if mapRect.origin.x > MKMapPointMax.x {
                     mapRect.origin.x -= MKMapPointMax.x
                 }
@@ -237,7 +252,7 @@ open class ClusterManager {
                 }
                 
                 // handle annotations on the same coordinate
-                for value in hash.values where shouldDistributeAnnotationsOnSameCoordinate && value.count > 1 {
+                for value in hash.values where configuration.shouldDistributeAnnotationsOnSameCoordinate && value.count > 1 {
                     for (index, node) in value.enumerated() {
                         let distanceFromContestedLocation = 3 * Double(value.count) / 2
                         let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
@@ -248,9 +263,9 @@ open class ClusterManager {
                 
                 // handle clustering
                 let count = annotations.count
-                if count >= minCountForClustering, zoomLevel <= maxZoomLevel {
+                if count >= configuration.minCountForClustering, zoomLevel <= configuration.maxZoomLevel {
                     let cluster = ClusterAnnotation()
-                    switch clusterPosition {
+                    switch configuration.clusterPosition {
                     case .center:
                         cluster.coordinate = MKCoordinateForMapPoint(MKMapPoint(x: mapRect.midX, y: mapRect.midY))
                     case .nearCenter:
@@ -285,7 +300,7 @@ open class ClusterManager {
         var toRemove = before.subtracted(after)
         let toAdd = after.subtracted(before)
         
-        if !shouldRemoveInvisibleAnnotations {
+        if !configuration.shouldRemoveInvisibleAnnotations {
             let nonRemoving = toRemove.filter { !visibleMapRect.contains($0.coordinate) }
             toRemove.subtract(nonRemoving)
         }
