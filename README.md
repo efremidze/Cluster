@@ -173,6 +173,7 @@ github "efremidze/Cluster"
 * https://github.com/ribl/FBAnnotationClusteringSwift
 * https://github.com/choefele/CCHMapClusterController
 * https://github.com/googlemaps/google-maps-ios-utils
+* https://github.com/hulab/ClusterKit
 
 ## License
 
