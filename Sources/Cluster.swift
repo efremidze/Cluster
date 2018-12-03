@@ -258,68 +258,66 @@ open class ClusterManager {
         var allAnnotations = [MKAnnotation]()
         
         dispatchQueue.sync {
-
-        for mapRect in mapRects {
-            var totalLatitude: Double = 0
-            var totalLongitude: Double = 0
-            var annotations = [MKAnnotation]()
-            var hash = [CLLocationCoordinate2D: [MKAnnotation]]()
-            
-            // add annotations
-            for node in tree.annotations(in: mapRect) {
-                if delegate?.shouldClusterAnnotation(node) ?? true {
-                    totalLatitude += node.coordinate.latitude
-                    totalLongitude += node.coordinate.longitude
-                    annotations.append(node)
-                    hash[node.coordinate, default: [MKAnnotation]()] += [node]
+            for mapRect in mapRects {
+                var totalLatitude: Double = 0
+                var totalLongitude: Double = 0
+                var annotations = [MKAnnotation]()
+                var hash = [CLLocationCoordinate2D: [MKAnnotation]]()
+                
+                // add annotations
+                for node in tree.annotations(in: mapRect) {
+                    if delegate?.shouldClusterAnnotation(node) ?? true {
+                        totalLatitude += node.coordinate.latitude
+                        totalLongitude += node.coordinate.longitude
+                        annotations.append(node)
+                        hash[node.coordinate, default: [MKAnnotation]()] += [node]
+                    } else {
+                        allAnnotations.append(node)
+                    }
+                }
+                
+                // handle annotations on the same coordinate
+                if shouldDistributeAnnotationsOnSameCoordinate {
+                    for value in hash.values where value.count > 1 {
+                        for (index, node) in value.enumerated() {
+                            let distanceFromContestedLocation = 3 * Double(value.count) / 2
+                            let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
+                            let bearing = radiansBetweenAnnotations * Double(index)
+                            (node as? Annotation)?.coordinate = node.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
+                        }
+                    }
+                }
+                
+                // handle clustering
+                let count = annotations.count
+                if count >= minCountForClustering, zoomLevel <= maxZoomLevel {
+                    let cluster = ClusterAnnotation()
+                    switch clusterPosition {
+                    case .center:
+                        cluster.coordinate = MKMapPoint(x: mapRect.midX, y: mapRect.midY).coordinate
+                    case .nearCenter:
+                        let coordinate = MKMapPoint(x: mapRect.midX, y: mapRect.midY).coordinate
+                        if let annotation = annotations.min(by: { coordinate.distance(from: $0.coordinate) < coordinate.distance(from: $1.coordinate) }) {
+                            cluster.coordinate = annotation.coordinate
+                        }
+                    case .average:
+                        cluster.coordinate = CLLocationCoordinate2D(
+                            latitude: CLLocationDegrees(totalLatitude) / CLLocationDegrees(count),
+                            longitude: CLLocationDegrees(totalLongitude) / CLLocationDegrees(count)
+                        )
+                    case .first:
+                        if let annotation = annotations.first {
+                            cluster.coordinate = annotation.coordinate
+                        }
+                    }
+                    cluster.annotations = annotations
+                    allAnnotations += [cluster]
                 } else {
-                    allAnnotations.append(node)
+                    allAnnotations += annotations
                 }
-            }
-            
-            // handle annotations on the same coordinate
-            if shouldDistributeAnnotationsOnSameCoordinate {
-                for value in hash.values where value.count > 1 {
-                    for (index, node) in value.enumerated() {
-                        let distanceFromContestedLocation = 3 * Double(value.count) / 2
-                        let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
-                        let bearing = radiansBetweenAnnotations * Double(index)
-                        (node as? Annotation)?.coordinate = node.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
-                    }
-                }
-            }
-            
-            // handle clustering
-            let count = annotations.count
-            if count >= minCountForClustering, zoomLevel <= maxZoomLevel {
-                let cluster = ClusterAnnotation()
-                switch clusterPosition {
-                case .center:
-                    cluster.coordinate = MKMapPoint(x: mapRect.midX, y: mapRect.midY).coordinate
-                case .nearCenter:
-                    let coordinate = MKMapPoint(x: mapRect.midX, y: mapRect.midY).coordinate
-                    if let annotation = annotations.min(by: { coordinate.distance(from: $0.coordinate) < coordinate.distance(from: $1.coordinate) }) {
-                        cluster.coordinate = annotation.coordinate
-                    }
-                case .average:
-                    cluster.coordinate = CLLocationCoordinate2D(
-                        latitude: CLLocationDegrees(totalLatitude) / CLLocationDegrees(count),
-                        longitude: CLLocationDegrees(totalLongitude) / CLLocationDegrees(count)
-                    )
-                case .first:
-                    if let annotation = annotations.first {
-                        cluster.coordinate = annotation.coordinate
-                    }
-                }
-                cluster.annotations = annotations
-                allAnnotations += [cluster]
-            } else {
-                allAnnotations += annotations
             }
         }
         
-        }
-            
         guard !isCancelled else { return (toAdd: [], toRemove: []) }
         
         let before = visibleAnnotations
@@ -334,10 +332,8 @@ open class ClusterManager {
         }
         
         dispatchQueue.async(flags: .barrier) {
-            
-        self.visibleAnnotations.subtract(toRemove)
-        self.visibleAnnotations.add(toAdd)
-            
+            self.visibleAnnotations.subtract(toRemove)
+            self.visibleAnnotations.add(toAdd)
         }
         
         return (toAdd: toAdd, toRemove: toRemove)
