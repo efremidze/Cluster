@@ -244,8 +244,8 @@ extension ClusterManager {
     }
     
     func clusteredAnnotations(zoomScale: Double, visibleMapRect: MKMapRect, completion: @escaping (Bool) -> Void) {
-        queue.cancelAllOperations()
-        queue.addBlockOperation { [weak self] operation in
+        operationQueue.cancelAllOperations()
+        operationQueue.addBlockOperation { [weak self] operation in
             guard let self = self else { return }
             _ = self.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: visibleMapRect, operation: operation)
             DispatchQueue.main.async {
