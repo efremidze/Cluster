@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 
 extension UIImage {
     
@@ -38,4 +39,14 @@ extension UIColor {
     }
     class var green: UIColor { return UIColor(red: 76, green: 217, blue: 100) }
     class var blue: UIColor { return UIColor(red: 0, green: 122, blue: 255) }
+}
+
+extension MKMapView {
+    func annotationView<T: MKAnnotationView>(of type: T.Type, annotation: MKAnnotation?, reuseIdentifier: String) -> T {
+        guard let annotationView = dequeueReusableAnnotationView(withIdentifier: reuseIdentifier) as? T else {
+            return type.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
+        }
+        annotationView.annotation = annotation
+        return annotationView
+    }
 }

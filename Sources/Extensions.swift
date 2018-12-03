@@ -125,3 +125,19 @@ extension Double {
         return .equal
     }
 }
+
+class Mutex {
+    private var mutex = pthread_mutex_t()
+    init() {
+        pthread_mutex_init(&mutex, nil)
+    }
+    deinit {
+        pthread_mutex_destroy(&mutex)
+    }
+    @discardableResult
+    func sync<R>(execute: () -> R) -> R {
+        pthread_mutex_lock(&mutex)
+        defer { pthread_mutex_unlock(&mutex) }
+        return execute()
+    }
+}

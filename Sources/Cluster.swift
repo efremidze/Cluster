@@ -124,7 +124,9 @@ open class ClusterManager {
      The objects in this array must adopt the MKAnnotation protocol. If no annotations are associated with the cluster manager, the value of this property is an empty array.
      */
     open var annotations: [MKAnnotation] {
-        return tree.annotations(in: .world)
+        return mutex.sync {
+            tree.annotations(in: .world)
+        }
     }
     
     /**
@@ -136,10 +138,15 @@ open class ClusterManager {
      The list of nested visible annotations associated.
      */
     open var visibleNestedAnnotations: [MKAnnotation] {
-        return visibleAnnotations.reduce([MKAnnotation](), { $0 + (($1 as? ClusterAnnotation)?.annotations ?? [$1]) })
+        return mutex2.sync {
+            visibleAnnotations.reduce([MKAnnotation](), { $0 + (($1 as? ClusterAnnotation)?.annotations ?? [$1]) })
+        }
     }
     
-    open var queue = OperationQueue.serial
+    var queue = OperationQueue.serial
+    
+    let mutex = Mutex()
+    let mutex2 = Mutex()
     
     open weak var delegate: ClusterManagerDelegate?
     
@@ -153,7 +160,9 @@ open class ClusterManager {
      */
     open func add(_ annotation: MKAnnotation) {
         queue.cancelAllOperations()
-        tree.add(annotation)
+        mutex.sync {
+            tree.add(annotation)
+        }
     }
     
     /**
@@ -176,7 +185,9 @@ open class ClusterManager {
      */
     open func remove(_ annotation: MKAnnotation) {
         queue.cancelAllOperations()
-        tree.remove(annotation)
+        mutex.sync {
+            tree.remove(annotation)
+        }
     }
     
     /**
@@ -196,7 +207,9 @@ open class ClusterManager {
      */
     open func removeAll() {
         queue.cancelAllOperations()
-        tree = QuadTree(rect: .world)
+        mutex.sync {
+            tree = QuadTree(rect: .world)
+        }
     }
     
     /**
@@ -226,7 +239,7 @@ open class ClusterManager {
         queue.cancelAllOperations()
         queue.addBlockOperation { [weak self, weak mapView] operation in
             guard let self = self, let mapView = mapView else { return completion(false) }
-            autoreleasepool { () -> Void in
+            autoreleasepool {
                 let (toAdd, toRemove) = self.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: visibleMapRect, operation: operation)
                 DispatchQueue.main.async { [weak self, weak mapView] in
                     guard let self = self, let mapView = mapView else { return completion(false) }
@@ -246,6 +259,8 @@ open class ClusterManager {
         
         var allAnnotations = [MKAnnotation]()
         
+        mutex.sync {
+
         for mapRect in mapRects {
             var totalLatitude: Double = 0
             var totalLongitude: Double = 0
@@ -265,12 +280,14 @@ open class ClusterManager {
             }
             
             // handle annotations on the same coordinate
-            for value in hash.values where shouldDistributeAnnotationsOnSameCoordinate && value.count > 1 {
-                for (index, node) in value.enumerated() {
-                    let distanceFromContestedLocation = 3 * Double(value.count) / 2
-                    let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
-                    let bearing = radiansBetweenAnnotations * Double(index)
-                    (node as? Annotation)?.coordinate = node.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
+            if shouldDistributeAnnotationsOnSameCoordinate {
+                for value in hash.values where value.count > 1 {
+                    for (index, node) in value.enumerated() {
+                        let distanceFromContestedLocation = 3 * Double(value.count) / 2
+                        let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
+                        let bearing = radiansBetweenAnnotations * Double(index)
+                        (node as? Annotation)?.coordinate = node.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
+                    }
                 }
             }
             
@@ -303,6 +320,8 @@ open class ClusterManager {
             }
         }
         
+        }
+            
         guard !isCancelled else { return (toAdd: [], toRemove: []) }
         
         let before = visibleAnnotations
@@ -316,8 +335,12 @@ open class ClusterManager {
             toRemove.subtract(nonRemoving)
         }
         
+        mutex2.sync {
+            
         visibleAnnotations.subtract(toRemove)
         visibleAnnotations.add(toAdd)
+            
+        }
         
         return (toAdd: toAdd, toRemove: toRemove)
     }

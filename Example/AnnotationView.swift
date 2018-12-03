@@ -36,11 +36,14 @@ class CountClusterAnnotationView: ClusterAnnotationView {
 }
 
 class ImageCountClusterAnnotationView: ClusterAnnotationView {
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
+    lazy var once: Void = {
         countLabel.frame.size.width -= 6
         countLabel.frame.origin.x += 3
         countLabel.frame.origin.y -= 6
+    }()
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        _ = once
     }
 }

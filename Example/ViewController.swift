@@ -23,12 +23,14 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         // When zoom level is quite close to the pins, disable clustering in order to show individual pins and allow the user to interact with them via callouts.
-        mapView.region = .init(center: region.center, span: .init(latitudeDelta: region.delta, longitudeDelta: region.delta))
         manager.delegate = self
         manager.maxZoomLevel = 17
         manager.minCountForClustering = 3
         manager.clusterPosition = .nearCenter
         manager.add(MeAnnotation(coordinate: region.center))
+        
+        mapView.region = .init(center: region.center, span: .init(latitudeDelta: region.delta, longitudeDelta: region.delta))
+        
         addAnnotations()
     }
     
@@ -61,36 +63,17 @@ extension ViewController: MKMapViewDelegate {
         if let annotation = annotation as? ClusterAnnotation {
             let index = segmentedControl.selectedSegmentIndex
             let identifier = "Cluster\(index)"
-            let annotationView: MKAnnotationView
-            if let existingView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) {
-                annotationView = existingView
-            } else {
-                let selection = Selection(rawValue: index)!
-                annotationView = selection.annotationView(annotation: annotation, reuseIdentifier: identifier)
-            }
-            annotationView.annotation = annotation
-            return annotationView
+            let selection = Selection(rawValue: index)!
+            return mapView.annotationView(selection: selection, annotation: annotation, reuseIdentifier: identifier)
         } else if let annotation = annotation as? MeAnnotation {
             let identifier = "Me"
-            let annotationView: MKAnnotationView
-            if let existingView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) {
-                annotationView = existingView
-            } else {
-                annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-                annotationView.image = .me
-            }
-            annotationView.annotation = annotation
+            let annotationView = mapView.annotationView(of: MKAnnotationView.self, annotation: annotation, reuseIdentifier: identifier)
+            annotationView.image = .me
             return annotationView
         } else {
             let identifier = "Pin"
-            let annotationView: MKPinAnnotationView
-            if let existingView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView {
-                annotationView = existingView
-            } else {
-                annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-                annotationView.pinTintColor = .green
-            }
-            annotationView.annotation = annotation
+            let annotationView = mapView.annotationView(of: MKPinAnnotationView.self, annotation: annotation, reuseIdentifier: identifier)
+            annotationView.pinTintColor = .green
             return annotationView
         }
     }
@@ -151,23 +134,25 @@ extension ViewController: ClusterManagerDelegate {
 extension ViewController {
     enum Selection: Int {
         case count, imageCount, image
-        
-        func annotationView(annotation: MKAnnotation?, reuseIdentifier: String?) -> MKAnnotationView {
-            switch self {
-            case .count:
-                let annotationView = CountClusterAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
-                annotationView.countLabel.backgroundColor = .green
-                return annotationView
-            case .imageCount:
-                let annotationView = ImageCountClusterAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
-                annotationView.countLabel.textColor = .green
-                annotationView.image = .pin2
-                return annotationView
-            case .image:
-                let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
-                annotationView.image = .pin
-                return annotationView
-            }
+    }
+}
+
+extension MKMapView {
+    func annotationView(selection: ViewController.Selection, annotation: MKAnnotation?, reuseIdentifier: String) -> MKAnnotationView {
+        switch selection {
+        case .count:
+            let annotationView = self.annotationView(of: CountClusterAnnotationView.self, annotation: annotation, reuseIdentifier: reuseIdentifier)
+            annotationView.countLabel.backgroundColor = .green
+            return annotationView
+        case .imageCount:
+            let annotationView = self.annotationView(of: ImageCountClusterAnnotationView.self, annotation: annotation, reuseIdentifier: reuseIdentifier)
+            annotationView.countLabel.textColor = .green
+            annotationView.image = .pin2
+            return annotationView
+        case .image:
+            let annotationView = self.annotationView(of: MKAnnotationView.self, annotation: annotation, reuseIdentifier: reuseIdentifier)
+            annotationView.image = .pin
+            return annotationView
         }
     }
 }
