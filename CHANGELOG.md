@@ -1,5 +1,11 @@
 # Change log
 
+## [Version 2.4.1](https://github.com/efremidze/Cluster/releases/tag/2.4.1)
+Released on 2018-12-02
+
+- Fixed crash in QuadTreeNode annotations
+- Added dispatch queues
+
 ## [Version 2.4.0](https://github.com/efremidze/Cluster/releases/tag/2.4.0)
 Released on 2018-10-18
 
