@@ -124,7 +124,7 @@ open class ClusterManager {
      The objects in this array must adopt the MKAnnotation protocol. If no annotations are associated with the cluster manager, the value of this property is an empty array.
      */
     open var annotations: [MKAnnotation] {
-        return mutex.sync {
+        return dispatchQueue.sync {
             tree.annotations(in: .world)
         }
     }
@@ -138,15 +138,13 @@ open class ClusterManager {
      The list of nested visible annotations associated.
      */
     open var visibleNestedAnnotations: [MKAnnotation] {
-        return mutex2.sync {
+        return dispatchQueue.sync {
             visibleAnnotations.reduce([MKAnnotation](), { $0 + (($1 as? ClusterAnnotation)?.annotations ?? [$1]) })
         }
     }
     
-    var queue = OperationQueue.serial
-    
-    let mutex = Mutex()
-    let mutex2 = Mutex()
+    let operationQueue = OperationQueue.serial
+    let dispatchQueue = DispatchQueue(label: "com.cluster.concurrentQueue", attributes: .concurrent)
     
     open weak var delegate: ClusterManagerDelegate?
     
@@ -159,9 +157,9 @@ open class ClusterManager {
         - annotation: An annotation object. The object must conform to the MKAnnotation protocol.
      */
     open func add(_ annotation: MKAnnotation) {
-        queue.cancelAllOperations()
-        mutex.sync {
-            tree.add(annotation)
+        operationQueue.cancelAllOperations()
+        dispatchQueue.async(flags: .barrier) {
+            self.tree.add(annotation)
         }
     }
     
@@ -184,9 +182,9 @@ open class ClusterManager {
         - annotation: An annotation object. The object must conform to the MKAnnotation protocol.
      */
     open func remove(_ annotation: MKAnnotation) {
-        queue.cancelAllOperations()
-        mutex.sync {
-            tree.remove(annotation)
+        operationQueue.cancelAllOperations()
+        dispatchQueue.async(flags: .barrier) {
+            self.tree.remove(annotation)
         }
     }
     
@@ -206,9 +204,9 @@ open class ClusterManager {
      Removes all the annotation objects from the cluster manager.
      */
     open func removeAll() {
-        queue.cancelAllOperations()
-        mutex.sync {
-            tree = QuadTree(rect: .world)
+        operationQueue.cancelAllOperations()
+        dispatchQueue.async(flags: .barrier) {
+            self.tree = QuadTree(rect: .world)
         }
     }
     
@@ -236,8 +234,8 @@ open class ClusterManager {
         let visibleMapRect = mapView.visibleMapRect
         let visibleMapRectWidth = visibleMapRect.size.width
         let zoomScale = Double(mapBounds.width) / visibleMapRectWidth
-        queue.cancelAllOperations()
-        queue.addBlockOperation { [weak self, weak mapView] operation in
+        operationQueue.cancelAllOperations()
+        operationQueue.addBlockOperation { [weak self, weak mapView] operation in
             guard let self = self, let mapView = mapView else { return completion(false) }
             autoreleasepool {
                 let (toAdd, toRemove) = self.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: visibleMapRect, operation: operation)
@@ -259,7 +257,7 @@ open class ClusterManager {
         
         var allAnnotations = [MKAnnotation]()
         
-        mutex.sync {
+        dispatchQueue.sync {
 
         for mapRect in mapRects {
             var totalLatitude: Double = 0
@@ -335,10 +333,10 @@ open class ClusterManager {
             toRemove.subtract(nonRemoving)
         }
         
-        mutex2.sync {
+        dispatchQueue.async(flags: .barrier) {
             
-        visibleAnnotations.subtract(toRemove)
-        visibleAnnotations.add(toAdd)
+        self.visibleAnnotations.subtract(toRemove)
+        self.visibleAnnotations.add(toAdd)
             
         }
         

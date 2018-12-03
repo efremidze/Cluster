@@ -129,7 +129,6 @@ extension QuadTreeNode: AnnotationsContainer {
         
         var result = [MKAnnotation]()
         
-        let annotations = self.annotations
         for annotation in annotations where rect.contains(annotation.coordinate) {
             result.append(annotation)
         }
