@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'Cluster'
-  s.version          = '2.4.0'
+  s.version          = '2.4.1'
   s.summary          = 'Map Clustering Library'
   s.homepage         = 'https://github.com/efremidze/Cluster'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }

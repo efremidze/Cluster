@@ -124,7 +124,9 @@ open class ClusterManager {
      The objects in this array must adopt the MKAnnotation protocol. If no annotations are associated with the cluster manager, the value of this property is an empty array.
      */
     open var annotations: [MKAnnotation] {
-        return tree.annotations(in: .world)
+        return dispatchQueue.sync {
+            tree.annotations(in: .world)
+        }
     }
     
     /**
@@ -136,10 +138,13 @@ open class ClusterManager {
      The list of nested visible annotations associated.
      */
     open var visibleNestedAnnotations: [MKAnnotation] {
-        return visibleAnnotations.reduce([MKAnnotation](), { $0 + (($1 as? ClusterAnnotation)?.annotations ?? [$1]) })
+        return dispatchQueue.sync {
+            visibleAnnotations.reduce([MKAnnotation](), { $0 + (($1 as? ClusterAnnotation)?.annotations ?? [$1]) })
+        }
     }
     
-    open var queue = OperationQueue.serial
+    let operationQueue = OperationQueue.serial
+    let dispatchQueue = DispatchQueue(label: "com.cluster.concurrentQueue", attributes: .concurrent)
     
     open weak var delegate: ClusterManagerDelegate?
     
@@ -152,8 +157,10 @@ open class ClusterManager {
         - annotation: An annotation object. The object must conform to the MKAnnotation protocol.
      */
     open func add(_ annotation: MKAnnotation) {
-        queue.cancelAllOperations()
-        tree.add(annotation)
+        operationQueue.cancelAllOperations()
+        dispatchQueue.async(flags: .barrier) {
+            self.tree.add(annotation)
+        }
     }
     
     /**
@@ -163,8 +170,11 @@ open class ClusterManager {
         - annotations: An array of annotation objects. Each object in the array must conform to the MKAnnotation protocol.
      */
     open func add(_ annotations: [MKAnnotation]) {
-        for annotation in annotations {
-            add(annotation)
+        operationQueue.cancelAllOperations()
+        dispatchQueue.async(flags: .barrier) {
+            for annotation in annotations {
+                self.tree.add(annotation)
+            }
         }
     }
     
@@ -175,8 +185,10 @@ open class ClusterManager {
         - annotation: An annotation object. The object must conform to the MKAnnotation protocol.
      */
     open func remove(_ annotation: MKAnnotation) {
-        queue.cancelAllOperations()
-        tree.remove(annotation)
+        operationQueue.cancelAllOperations()
+        dispatchQueue.async(flags: .barrier) {
+            self.tree.remove(annotation)
+        }
     }
     
     /**
@@ -186,8 +198,11 @@ open class ClusterManager {
         - annotations: An array of annotation objects. Each object in the array must conform to the MKAnnotation protocol.
      */
     open func remove(_ annotations: [MKAnnotation]) {
-        for annotation in annotations {
-            remove(annotation)
+        operationQueue.cancelAllOperations()
+        dispatchQueue.async(flags: .barrier) {
+            for annotation in annotations {
+                self.tree.remove(annotation)
+            }
         }
     }
     
@@ -195,8 +210,10 @@ open class ClusterManager {
      Removes all the annotation objects from the cluster manager.
      */
     open func removeAll() {
-        queue.cancelAllOperations()
-        tree = QuadTree(rect: .world)
+        operationQueue.cancelAllOperations()
+        dispatchQueue.async(flags: .barrier) {
+            self.tree = QuadTree(rect: .world)
+        }
     }
     
     /**
@@ -223,13 +240,14 @@ open class ClusterManager {
         let visibleMapRect = mapView.visibleMapRect
         let visibleMapRectWidth = visibleMapRect.size.width
         let zoomScale = Double(mapBounds.width) / visibleMapRectWidth
-        queue.cancelAllOperations()
-        queue.addBlockOperation { [weak self, weak mapView] operation in
-            guard let `self` = self, let mapView = mapView else { return completion(false) }
-            autoreleasepool { () -> Void in
+        operationQueue.cancelAllOperations()
+        operationQueue.addBlockOperation { [weak self, weak mapView] operation in
+            guard let self = self, let mapView = mapView else { return completion(false) }
+            autoreleasepool {
                 let (toAdd, toRemove) = self.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: visibleMapRect, operation: operation)
                 DispatchQueue.main.async { [weak self, weak mapView] in
-                    guard let `self` = self, let mapView = mapView else { return completion(false) }
+                    guard let self = self, let mapView = mapView else { return completion(false) }
+                    if toAdd.isEmpty, toRemove.isEmpty { return completion(false) }
                     self.display(mapView: mapView, toAdd: toAdd, toRemove: toRemove)
                     completion(true)
                 }
@@ -240,30 +258,16 @@ open class ClusterManager {
     open func clusteredAnnotations(zoomScale: Double, visibleMapRect: MKMapRect, operation: Operation? = nil) -> (toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
         var isCancelled: Bool { return operation?.isCancelled ?? false }
         
-        guard !isCancelled, !zoomScale.isInfinite, !zoomScale.isNaN else { return (toAdd: [], toRemove: []) }
+        guard !isCancelled else { return (toAdd: [], toRemove: []) }
         
-        zoomLevel = zoomScale.zoomLevel
-        let scaleFactor = zoomScale / cellSize(for: zoomLevel)
+        let mapRects = self.mapRects(zoomScale: zoomScale, visibleMapRect: visibleMapRect)
         
-        let minX = Int(floor(visibleMapRect.minX * scaleFactor))
-        let maxX = Int(floor(visibleMapRect.maxX * scaleFactor))
-        let minY = Int(floor(visibleMapRect.minY * scaleFactor))
-        let maxY = Int(floor(visibleMapRect.maxY * scaleFactor))
+        guard !isCancelled else { return (toAdd: [], toRemove: []) }
         
         var allAnnotations = [MKAnnotation]()
         
-//        mapView.removeOverlays(mapView.overlays)
-//        mapView.add(MKBasePolyline(mapRect: visibleMapRect))
-        
-        for x in minX...maxX {
-            for y in minY...maxY {
-                var mapRect = MKMapRect(x: Double(x) / scaleFactor, y: Double(y) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
-                if mapRect.origin.x > MKMapPointMax.x {
-                    mapRect.origin.x -= MKMapPointMax.x
-                }
-                
-//                mapView.add(MKPolyline(mapRect: mapRect))
-                
+        dispatchQueue.sync {
+            for mapRect in mapRects {
                 var totalLatitude: Double = 0
                 var totalLongitude: Double = 0
                 var annotations = [MKAnnotation]()
@@ -282,12 +286,14 @@ open class ClusterManager {
                 }
                 
                 // handle annotations on the same coordinate
-                for value in hash.values where shouldDistributeAnnotationsOnSameCoordinate && value.count > 1 {
-                    for (index, node) in value.enumerated() {
-                        let distanceFromContestedLocation = 3 * Double(value.count) / 2
-                        let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
-                        let bearing = radiansBetweenAnnotations * Double(index)
-                        (node as? Annotation)?.coordinate = node.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
+                if shouldDistributeAnnotationsOnSameCoordinate {
+                    for value in hash.values where value.count > 1 {
+                        for (index, node) in value.enumerated() {
+                            let distanceFromContestedLocation = 3 * Double(value.count) / 2
+                            let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
+                            let bearing = radiansBetweenAnnotations * Double(index)
+                            (node as? Annotation)?.coordinate = node.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
+                        }
                     }
                 }
                 
@@ -334,10 +340,36 @@ open class ClusterManager {
             toRemove.subtract(nonRemoving)
         }
         
-        visibleAnnotations.subtract(toRemove)
-        visibleAnnotations.add(toAdd)
+        dispatchQueue.async(flags: .barrier) {
+            self.visibleAnnotations.subtract(toRemove)
+            self.visibleAnnotations.add(toAdd)
+        }
         
         return (toAdd: toAdd, toRemove: toRemove)
+    }
+    
+    func mapRects(zoomScale: Double, visibleMapRect: MKMapRect) -> [MKMapRect] {
+        guard !zoomScale.isInfinite, !zoomScale.isNaN else { return [] }
+        
+        zoomLevel = zoomScale.zoomLevel
+        let scaleFactor = zoomScale / cellSize(for: zoomLevel)
+        
+        let minX = Int(floor(visibleMapRect.minX * scaleFactor))
+        let maxX = Int(floor(visibleMapRect.maxX * scaleFactor))
+        let minY = Int(floor(visibleMapRect.minY * scaleFactor))
+        let maxY = Int(floor(visibleMapRect.maxY * scaleFactor))
+        
+        var mapRects = [MKMapRect]()
+        for x in minX...maxX {
+            for y in minY...maxY {
+                var mapRect = MKMapRect(x: Double(x) / scaleFactor, y: Double(y) / scaleFactor, width: 1 / scaleFactor, height: 1 / scaleFactor)
+                if mapRect.origin.x > MKMapPointMax.x {
+                    mapRect.origin.x -= MKMapPointMax.x
+                }
+                mapRects.append(mapRect)
+            }
+        }
+        return mapRects
     }
     
     open func display(mapView: MKMapView, toAdd: [MKAnnotation], toRemove: [MKAnnotation]) {
@@ -363,5 +395,3 @@ open class ClusterManager {
     }
     
 }
-
-//public class MKBasePolyline: MKPolyline {}
