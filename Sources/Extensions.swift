@@ -42,12 +42,6 @@ extension Double {
     }
 }
 
-extension Comparable {
-    func clamped(to limits: ClosedRange<Self>) -> Self {
-        return min(max(self, limits.lowerBound), limits.upperBound)
-    }
-}
-
 private let radiusOfEarth: Double = 6372797.6
 
 extension CLLocationCoordinate2D {
@@ -112,16 +106,5 @@ extension OperationQueue {
             block(operation)
         }
         self.addOperation(operation)
-    }
-}
-
-extension Double {
-    enum ComparisonOutcome {
-        case equal, less, greater
-    }
-    func compare(to other: Double) -> ComparisonOutcome {
-        if self > other { return .greater }
-        if self < other { return .less }
-        return .equal
     }
 }
