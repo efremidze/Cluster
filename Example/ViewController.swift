@@ -12,25 +12,28 @@ import Cluster
 
 class ViewController: UIViewController {
     
-    @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var mapView: MKMapView! {
+        didSet {
+            mapView.region = .init(center: region.center, span: .init(latitudeDelta: region.delta, longitudeDelta: region.delta))
+        }
+    }
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
-    let manager = ClusterManager()
+    lazy var manager: ClusterManager = {
+        let manager = ClusterManager()
+        manager.delegate = self
+        manager.maxZoomLevel = 17
+        manager.minCountForClustering = 3
+        manager.clusterPosition = .nearCenter
+        return manager
+    }()
     
     let region = (center: CLLocationCoordinate2D(latitude: 37.787994, longitude: -122.407437), delta: 0.1)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // When zoom level is quite close to the pins, disable clustering in order to show individual pins and allow the user to interact with them via callouts.
-        manager.delegate = self
-        manager.maxZoomLevel = 17
-        manager.minCountForClustering = 3
-        manager.clusterPosition = .nearCenter
         manager.add(MeAnnotation(coordinate: region.center))
-        
-        mapView.region = .init(center: region.center, span: .init(latitudeDelta: region.delta, longitudeDelta: region.delta))
-        
         addAnnotations()
     }
     

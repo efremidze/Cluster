@@ -170,8 +170,11 @@ open class ClusterManager {
         - annotations: An array of annotation objects. Each object in the array must conform to the MKAnnotation protocol.
      */
     open func add(_ annotations: [MKAnnotation]) {
-        for annotation in annotations {
-            add(annotation)
+        operationQueue.cancelAllOperations()
+        dispatchQueue.async(flags: .barrier) {
+            for annotation in annotations {
+                self.tree.add(annotation)
+            }
         }
     }
     
@@ -195,8 +198,11 @@ open class ClusterManager {
         - annotations: An array of annotation objects. Each object in the array must conform to the MKAnnotation protocol.
      */
     open func remove(_ annotations: [MKAnnotation]) {
-        for annotation in annotations {
-            remove(annotation)
+        operationQueue.cancelAllOperations()
+        dispatchQueue.async(flags: .barrier) {
+            for annotation in annotations {
+                self.tree.remove(annotation)
+            }
         }
     }
     
@@ -241,6 +247,7 @@ open class ClusterManager {
                 let (toAdd, toRemove) = self.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: visibleMapRect, operation: operation)
                 DispatchQueue.main.async { [weak self, weak mapView] in
                     guard let self = self, let mapView = mapView else { return completion(false) }
+                    if toAdd.isEmpty, toRemove.isEmpty { return completion(false) }
                     self.display(mapView: mapView, toAdd: toAdd, toRemove: toRemove)
                     completion(true)
                 }
@@ -254,6 +261,8 @@ open class ClusterManager {
         guard !isCancelled else { return (toAdd: [], toRemove: []) }
         
         let mapRects = self.mapRects(zoomScale: zoomScale, visibleMapRect: visibleMapRect)
+        
+        guard !isCancelled else { return (toAdd: [], toRemove: []) }
         
         var allAnnotations = [MKAnnotation]()
         
