@@ -1,5 +1,16 @@
-language: objective-c
-osx_image: xcode10
+os: osx
+osx_image: xcode10.1
+env:
+  global:
+  - PROJECT=Cluster.xcodeproj
+  - SCHEME="Cluster"
+  - EXAMPLE_SCHEME="Example"
+  matrix:
+    - DESTINATION="OS=12.1,name=iPhone XS"       SCHEME="$SCHEME"
+    - DESTINATION="OS=11.4,name=iPhone X"        SCHEME="$SCHEME"
+    - DESTINATION="OS=10.3.1,name=iPhone 7 Plus" SCHEME="$SCHEME"
 script:
-  - xcodebuild clean -project Cluster.xcodeproj -scheme Cluster -destination "platform=iOS Simulator,name=iPhone X,OS=12.0" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO test | xcpretty
-  - xcodebuild clean -project Cluster.xcodeproj -scheme Example -destination "platform=iOS Simulator,name=iPhone X,OS=12.0" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO test | xcpretty
+  - set -o pipefail
+
+  - xcodebuild -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" -configuration Release ONLY_ACTIVE_ARCH=NO ENABLE_TESTABILITY=YES test | xcpretty;
+  - xcodebuild -project "$PROJECT" -scheme "$EXAMPLE_SCHEME" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build | xcpretty;
