@@ -277,8 +277,8 @@ open class ClusterManager {
         let toAdd = after.subtracted(before)
         
         if !shouldRemoveInvisibleAnnotations {
-            let nonRemoving = toRemove.filter { !visibleMapRect.contains($0.coordinate) }
-            toRemove.subtract(nonRemoving)
+            let toKeep = toRemove.filter { !visibleMapRect.contains($0.coordinate) }
+            toRemove.subtract(toKeep)
         }
         
         dispatchQueue.async(flags: .barrier) {
