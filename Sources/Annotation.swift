@@ -9,8 +9,11 @@
 import MapKit
 
 open class Annotation: MKPointAnnotation {
-    public convenience init(coordinate: CLLocationCoordinate2D) {
-        self.init()
+    public let id: UUID
+    
+    public init(id: UUID = UUID(), coordinate: CLLocationCoordinate2D = CLLocationCoordinate2D()) {
+        self.id = id
+        super.init()
         self.coordinate = coordinate
     }
 }

@@ -114,7 +114,7 @@ var zoomLevel: Double // The current zoom level of the visible map region.
 var maxZoomLevel: Double // The maximum zoom level before disabling clustering.
 var minCountForClustering: Int // The minimum number of annotations for a cluster. The default is `2`.
 var shouldRemoveInvisibleAnnotations: Bool // Whether to remove invisible annotations. The default is `true`.
-var shouldDistributeAnnotationsOnSameCoordinate: Bool // Whether to arrange annotations in a circle if they have the same coordinate. The default is `true`.
+var shouldDistributeAnnotationsOnSameCoordinate: Bool // Whether to arrange annotations in a circle if they have the same coordinate. The default is `false`.
 var clusterPosition: ClusterPosition // The position of the cluster annotation. The default is `.nearCenter`.
 ```
 

@@ -84,9 +84,9 @@ open class ClusterManager {
     /**
      Whether to arrange annotations in a circle if they have the same coordinate.
      
-     The default is true.
+     The default is false.
      */
-    open var shouldDistributeAnnotationsOnSameCoordinate: Bool = true
+    open var shouldDistributeAnnotationsOnSameCoordinate: Bool = false
     
     /**
      The position of the cluster annotation.
@@ -247,7 +247,6 @@ open class ClusterManager {
                 let (toAdd, toRemove) = self.clusteredAnnotations(zoomScale: zoomScale, visibleMapRect: visibleMapRect, operation: operation)
                 DispatchQueue.main.async { [weak self, weak mapView] in
                     guard let self = self, let mapView = mapView else { return completion(false) }
-                    if toAdd.isEmpty, toRemove.isEmpty { return completion(false) }
                     self.display(mapView: mapView, toAdd: toAdd, toRemove: toRemove)
                     completion(true)
                 }
