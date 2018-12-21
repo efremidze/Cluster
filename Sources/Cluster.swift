@@ -291,18 +291,12 @@ open class ClusterManager {
     func clusteredAnnotations(tree: QuadTree, mapRects: [MKMapRect], zoomLevel: Double) -> [MKAnnotation] {
         var allAnnotations = [MKAnnotation]()
         for mapRect in mapRects {
-            var totalLatitude: Double = 0
-            var totalLongitude: Double = 0
             var annotations = [MKAnnotation]()
-            var hash = [CLLocationCoordinate2D: [MKAnnotation]]()
             
             // add annotations
             for node in tree.annotations(in: mapRect) {
                 if delegate?.shouldClusterAnnotation(node) ?? true {
-                    totalLatitude += node.coordinate.latitude
-                    totalLongitude += node.coordinate.longitude
                     annotations.append(node)
-                    hash[node.coordinate, default: [MKAnnotation]()] += [node]
                 } else {
                     allAnnotations.append(node)
                 }
@@ -310,31 +304,14 @@ open class ClusterManager {
             
             // handle annotations on the same coordinate
             if shouldDistributeAnnotationsOnSameCoordinate {
-                distributeAnnotations(hash: hash)
+                distributeAnnotations(annotations: annotations) // buggy (modifying coordinate)
             }
             
             // handle clustering
             let count = annotations.count
             if count >= minCountForClustering, zoomLevel <= maxZoomLevel {
                 let cluster = ClusterAnnotation()
-                switch clusterPosition {
-                case .center:
-                    cluster.coordinate = MKMapPoint(x: mapRect.midX, y: mapRect.midY).coordinate
-                case .nearCenter:
-                    let coordinate = MKMapPoint(x: mapRect.midX, y: mapRect.midY).coordinate
-                    if let annotation = annotations.min(by: { coordinate.distance(from: $0.coordinate) < coordinate.distance(from: $1.coordinate) }) {
-                        cluster.coordinate = annotation.coordinate
-                    }
-                case .average:
-                    cluster.coordinate = CLLocationCoordinate2D(
-                        latitude: CLLocationDegrees(totalLatitude) / CLLocationDegrees(count),
-                        longitude: CLLocationDegrees(totalLongitude) / CLLocationDegrees(count)
-                    )
-                case .first:
-                    if let annotation = annotations.first {
-                        cluster.coordinate = annotation.coordinate
-                    }
-                }
+                cluster.coordinate = coordinate(annotations: annotations, position: clusterPosition, mapRect: mapRect)
                 cluster.annotations = annotations
                 allAnnotations += [cluster]
             } else {
@@ -344,15 +321,32 @@ open class ClusterManager {
         return allAnnotations
     }
     
-    func distributeAnnotations(hash: [CLLocationCoordinate2D: [MKAnnotation]]) {
-        // handle annotations on the same coordinate
+    func distributeAnnotations(annotations: [MKAnnotation]) {
+        let hash = Dictionary(grouping: annotations) { $0.coordinate }
         for value in hash.values where value.count > 1 {
-            for (index, node) in value.enumerated() {
+            for (index, annotation) in value.enumerated() {
                 let distanceFromContestedLocation = 3 * Double(value.count) / 2
                 let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
                 let bearing = radiansBetweenAnnotations * Double(index)
-                (node as? Annotation)?.coordinate = node.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
+                (annotation as? MKPointAnnotation)?.coordinate = annotation.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
             }
+        }
+    }
+    
+    func coordinate(annotations: [MKAnnotation], position: ClusterPosition, mapRect: MKMapRect) -> CLLocationCoordinate2D {
+        switch position {
+        case .center:
+            return MKMapPoint(x: mapRect.midX, y: mapRect.midY).coordinate
+        case .nearCenter:
+            let coordinate = MKMapPoint(x: mapRect.midX, y: mapRect.midY).coordinate
+            let annotation = annotations.min { coordinate.distance(from: $0.coordinate) < coordinate.distance(from: $1.coordinate) }
+            return annotation!.coordinate
+        case .average:
+            let coordinates = annotations.map { $0.coordinate }
+            let totals = coordinates.reduce((latitude: 0.0, longitude: 0.0)) { ($0.latitude + $1.latitude, $0.longitude + $1.longitude) }
+            return CLLocationCoordinate2D(latitude: totals.latitude / Double(coordinates.count), longitude: totals.longitude / Double(coordinates.count))
+        case .first:
+            return annotations.first!.coordinate
         }
     }
     
