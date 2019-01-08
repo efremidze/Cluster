@@ -10,6 +10,8 @@
 
 Cluster is an easy map annotation clustering library. This repository uses an efficient method (QuadTree) to aggregate pins into a cluster.
 
+![Demo Screenshots](https://raw.githubusercontent.com/efremidze/Cluster/master/Images/demo.png)
+
 - [Features](#features)
 - [Requirements](#requirements)
 - [Demo](#demo)
@@ -34,17 +36,44 @@ Cluster is an easy map annotation clustering library. This repository uses an ef
 ## Requirements
 
 - iOS 8.0+
-- Xcode 9.0+
-- Swift 4 (Cluster 2.x), Swift 3 (Cluster 1.x)
+- Xcode 10.1+
+- Swift 4.2+
 
 ## Demo
 
-![Demo Screenshots](https://raw.githubusercontent.com/efremidze/Cluster/master/Images/demo.png)
+A demo is included in the `Cluster` project. It demonstrates how to:
 
-If you want to try it, simply run:
+- integrate the library
+- add annotations
+- configure annotation view
+- customize annotations
+
+![Demo GIF](https://thumbs.gfycat.com/BoringUnhealthyAngelwingmussel-size_restricted.gif)
+
+[Demo Video](https://gfycat.com/BoringUnhealthyAngelwingmussel)
 
 ```
 $ pod try Cluster
+```
+
+## Installation
+
+Cluster is available via CocoaPods and Carthage.
+
+### CocoaPods
+
+To install Cluster with [CocoaPods](http://cocoapods.org/), add this to your `Podfile`:
+
+```
+pod "Cluster"
+```
+
+### Carthage
+
+To install Cluster with [Carthage](https://github.com/Carthage/Carthage), add this to your `Cartfile`:
+
+```
+github "efremidze/Cluster"
 ```
 
 ## Usage
@@ -138,21 +167,6 @@ override func configure() {
 To remove annotations, you can call `remove(_ annotation: MKAnnotation)`. However the annotations will still display until you call `reload()`.
 
 In the case that `shouldRemoveInvisibleAnnotations` is set to `false`, annotations that have been removed may still appear on map until calling `reload()` on visible region.
-
-## Installation
-
-### CocoaPods
-To install with [CocoaPods](http://cocoapods.org/), simply add this in your `Podfile`:
-```ruby
-use_frameworks!
-pod "Cluster"
-```
-
-### Carthage
-To install with [Carthage](https://github.com/Carthage/Carthage), simply add this in your `Cartfile`:
-```ruby
-github "efremidze/Cluster"
-```
 
 ## Communication
 
