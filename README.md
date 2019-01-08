@@ -1,37 +1,24 @@
 ![Cluster](https://raw.githubusercontent.com/efremidze/Cluster/master/Images/logo.png)
 
-<p align="center">
-<a href="https://travis-ci.org/efremidze/Cluster" target="_blank">
-<img alt="Build Status" src="https://travis-ci.org/efremidze/Cluster.svg?style=flat">
-</a>
-<a href="https://swift.org" target="_blank">
-<img alt="Language" src="https://img.shields.io/badge/Swift-4-orange.svg?style=flat">
-</a>
-<a href="http://cocoapods.org/pods/Cluster" target="_blank">
-<img alt="Version" src="https://img.shields.io/cocoapods/v/Cluster.svg?style=flat">
-</a>
-<a href="http://cocoapods.org/pods/Cluster" target="_blank">
-<img alt="License" src="https://img.shields.io/cocoapods/l/Cluster.svg?style=flat">
-</a>
-<a href="http://cocoapods.org/pods/Cluster" target="_blank">
-<img alt="Platform" src="https://img.shields.io/cocoapods/p/Cluster.svg?style=flat">
-</a>
-<a href="https://github.com/Carthage/Carthage" target="_blank">
-<img alt="Carthage compatible" src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat">
-</a>
-</p>
+[![Build Status](https://travis-ci.org/efremidze/Cluster.svg?branch=master)](https://travis-ci.org/efremidze/Cluster)
+[![CocoaPods Compatible](https://img.shields.io/cocoapods/v/Cluster.svg)](https://img.shields.io/cocoapods/v/Cluster.svg)
+[![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Language](https://img.shields.io/badge/Swift-4-orange.svg?style=flat)](https://swift.org)
+[![Version](https://img.shields.io/cocoapods/v/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
+[![License](https://img.shields.io/cocoapods/l/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
+[![Platform](https://img.shields.io/cocoapods/p/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
 
-----------------
+Cluster is an easy map annotation clustering library. This repository uses an efficient method (QuadTree) to aggregate pins into a cluster.
 
-**Cluster** is an easy map annotation clustering library. This repository uses an efficient method (QuadTree) to aggregate pins into a cluster.
-
-<img src="https://raw.githubusercontent.com/efremidze/Cluster/master/Images/demo.gif" width="320">
-
-If you want to try it, simply run:
-
-```
-$ pod try Cluster
-```
+- [Features](#features)
+- [Requirements](#requirements)
+- [Demo](#demo)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Communication](#communication)
+- [Mentions](#mentions)
+- [Credits](#credits)
+- [License](#license)
 
 ## Features
 
@@ -49,6 +36,16 @@ $ pod try Cluster
 - iOS 8.0+
 - Xcode 9.0+
 - Swift 4 (Cluster 2.x), Swift 3 (Cluster 1.x)
+
+## Demo
+
+![Demo Screenshots](https://raw.githubusercontent.com/efremidze/Cluster/master/Images/demo.png)
+
+If you want to try it, simply run:
+
+```
+$ pod try Cluster
+```
 
 ## Usage
 
