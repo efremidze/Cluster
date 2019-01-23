@@ -78,46 +78,63 @@ github "efremidze/Cluster"
 
 ## Usage
 
-Follow the instructions below:
-
-### Step 1: Initialize a ClusterManager object
+The `ClusterManager` class generates, manages and displays annotation clusters.
 
 ```swift
 let clusterManager = ClusterManager()
 ```
 
-### Step 2: Add annotations
+## Adding an Annotation
+
+Create an object that conforms to the `MKAnnotation` protocol, or extend an existing one. Add the annotation object to an instance of `ClusterManager` with `add(annotation:)`.
 
 ```swift
-let annotation = Annotation()
-annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-annotation.style = .color(color, radius: 25) // .image(UIImage(named: "pin"))
-clusterManager.add(annotation)
+let annotation = Annotation(coordinate: CLLocationCoordinate2D(latitude: 21.283921, longitude: -157.831661))
+manager.add(annotation)
 ```
 
-### Step 3: Return the pins and clusters
+## Configuring the Annotation View
+
+Implement the map view’s `mapView(_:viewFor:)` delegate method to configure the annotation view. Return an instance of `MKAnnotationView` to display as a visual representation of the annotation.
 
 ```swift
-func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-    var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-    if view == nil {
-        view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, style: style)
-    } else {
-        view?.annotation = annotation
+extension ViewController: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        if let annotation = annotation as? ClusterAnnotation {
+            return dequeueReusableAnnotationView(withIdentifier: "cluster") ?? CountClusterAnnotationView(annotation: annotation, reuseIdentifier: "cluster")
+        } else {
+            return dequeueReusableAnnotationView(withIdentifier: "pin") ?? MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pin")
+        }
     }
-    return view
 }
 ```
 
-### Step 4: Reload the annotations
+## Customizing Annotations
+
+
+## Removing Annotations
+
+To remove annotations, you can call `remove(annotation:)`. However the annotations will still display until you call `reload()`.
+
+```swift
+manager.remove(annotation)
+```
+
+In the case that `shouldRemoveInvisibleAnnotations` is set to `false`, annotations that have been removed may still appear on map until calling `reload()` on visible region.
+
+## Reloading Annotations
+
+Implement the map view’s `mapView(_:regionDidChangeAnimated:)` delegate method to reload the `ClusterManager` when the region changes.
 
 ```swift
 func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-    clusterManager.reload(mapView) { finished in
+    clusterManager.reload(mapView: mapView) { finished in
         // handle completion
     }
 }
 ```
+
+You need to call `reload()` whenever you add or remove annotations.
 
 ## ClusterManagerDelegate
 
@@ -143,30 +160,6 @@ var shouldRemoveInvisibleAnnotations: Bool // Whether to remove invisible annota
 var shouldDistributeAnnotationsOnSameCoordinate: Bool // Whether to arrange annotations in a circle if they have the same coordinate. The default is `true`.
 var clusterPosition: ClusterPosition // The position of the cluster annotation. The default is `.nearCenter`.
 ```
-
-### Annotations
-
-The `Annotation` class exposes a `style` property that allows you to customize the appearance.
-
-```swift
-var style: ClusterAnnotationStyle // The style of the cluster annotation view.
-```
-
-You can further customize the annotations by subclassing `ClusterAnnotationView` and overriding `configure`:
-
-```swift
-override func configure() {
-    super.configure()
-
-    // customize
-}
-```
-
-## Removing Annotations
-
-To remove annotations, you can call `remove(_ annotation: MKAnnotation)`. However the annotations will still display until you call `reload()`.
-
-In the case that `shouldRemoveInvisibleAnnotations` is set to `false`, annotations that have been removed may still appear on map until calling `reload()` on visible region.
 
 ## Communication
 
