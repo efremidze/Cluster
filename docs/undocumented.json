@@ -86,35 +86,28 @@
     },
     {
       "file": "/Users/home/Documents/Cluster2/Sources/Cluster.swift",
-      "line": 142,
-      "symbol": "ClusterManager.queue",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/home/Documents/Cluster2/Sources/Cluster.swift",
-      "line": 144,
+      "line": 149,
       "symbol": "ClusterManager.delegate",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/home/Documents/Cluster2/Sources/Cluster.swift",
-      "line": 146,
+      "line": 151,
       "symbol": "ClusterManager.init()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/home/Documents/Cluster2/Sources/Cluster.swift",
-      "line": 240,
+      "line": 258,
       "symbol": "ClusterManager.clusteredAnnotations(zoomScale:visibleMapRect:operation:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/home/Documents/Cluster2/Sources/Cluster.swift",
-      "line": 343,
+      "line": 375,
       "symbol": "ClusterManager.display(mapView:toAdd:toRemove:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
