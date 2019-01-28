@@ -1,7 +1,6 @@
 ![Cluster](https://raw.githubusercontent.com/efremidze/Cluster/master/Images/logo.png)
 
 [![Build Status](https://travis-ci.org/efremidze/Cluster.svg?branch=master)](https://travis-ci.org/efremidze/Cluster)
-[![CocoaPods Compatible](https://img.shields.io/cocoapods/v/Cluster.svg)](https://img.shields.io/cocoapods/v/Cluster.svg)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Language](https://img.shields.io/badge/Swift-4-orange.svg?style=flat)](https://swift.org)
 [![Version](https://img.shields.io/cocoapods/v/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
