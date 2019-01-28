@@ -41,7 +41,7 @@ Cluster is an easy map annotation clustering library. This repository uses an ef
 
 ## Demo
 
-A demo is included in the `Cluster` project. It demonstrates how to:
+The [Example](Example) is a great place to get started. It demonstrates how to:
 
 - integrate the library
 - add annotations
@@ -86,7 +86,7 @@ let clusterManager = ClusterManager()
 
 ## Adding an Annotation
 
-Create an object that conforms to the `MKAnnotation` protocol, or extend an existing one. Add the annotation object to an instance of `ClusterManager` with `add(annotation:)`.
+Create an object that conforms to the `MKAnnotation` protocol, or extend an existing one. Then add the annotation object to an instance of `ClusterManager` with `add(annotation:)`.
 
 ```swift
 let annotation = Annotation(coordinate: CLLocationCoordinate2D(latitude: 21.283921, longitude: -157.831661))
@@ -95,22 +95,42 @@ manager.add(annotation)
 
 ## Configuring the Annotation View
 
-Implement the map view’s `mapView(_:viewFor:)` delegate method to configure the annotation view. Return an instance of `MKAnnotationView` to display as a visual representation of the annotation.
+Implement the map view’s `mapView(_:viewFor:)` delegate method to configure the annotation view. Return an instance of `MKAnnotationView` to display as a visual representation of the annotations.
+
+To display clusters, return an instance of `ClusterAnnotationView`.
 
 ```swift
 extension ViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if let annotation = annotation as? ClusterAnnotation {
-            return dequeueReusableAnnotationView(withIdentifier: "cluster") ?? CountClusterAnnotationView(annotation: annotation, reuseIdentifier: "cluster")
+            return CountClusterAnnotationView(annotation: annotation, reuseIdentifier: "cluster")
         } else {
-            return dequeueReusableAnnotationView(withIdentifier: "pin") ?? MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pin")
+            return MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pin")
         }
     }
 }
 ```
 
-## Customizing Annotations
+For performance reasons, you should generally reuse `MKAnnotationView` objects in your map views. See the [Example](Example) to learn more.
 
+### Customizing the Appearance
+
+The `ClusterAnnotationView` class exposes a `countLabel` property. You can subclass `ClusterAnnotationView` to provide custom behavior as needed. Here's an example of subclassing the  `ClusterAnnotationView` and customizing the layer `borderColor`.
+
+```swift
+class CountClusterAnnotationView: ClusterAnnotationView {
+    override func configure() {
+        super.configure()
+
+        self.layer.cornerRadius = self.frame.width / 2
+        self.layer.masksToBounds = true
+        self.layer.borderColor = UIColor.white.cgColor
+        self.layer.borderWidth = 1.5
+    }
+}
+```
+
+See the [AnnotationView](Example/AnnotationView.swift) to learn more.
 
 ## Removing Annotations
 
@@ -134,23 +154,11 @@ func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
 }
 ```
 
-You need to call `reload()` whenever you add or remove annotations.
+You should call `reload()` anytime you add or remove annotations.
 
-## ClusterManagerDelegate
+## Customizing the Manager
 
-The  `ClusterManagerDelegate` protocol manages displaying annotations. 
-
-```swift
-// The size of each cell on the grid at a given zoom level.
-func cellSize(for zoomLevel: Double) -> Double { ... }
-
-// Whether to cluster the given annotation.
-func shouldClusterAnnotation(_ annotation: MKAnnotation) -> Bool { ... }
-```
-
-## Customization
-
-The `ClusterManager` exposes several properties to customize clustering:
+The `ClusterManager` class exposes several properties to configure clustering:
 
 ```swift
 var zoomLevel: Double // The current zoom level of the visible map region.
@@ -159,6 +167,18 @@ var minCountForClustering: Int // The minimum number of annotations for a cluste
 var shouldRemoveInvisibleAnnotations: Bool // Whether to remove invisible annotations. The default is `true`.
 var shouldDistributeAnnotationsOnSameCoordinate: Bool // Whether to arrange annotations in a circle if they have the same coordinate. The default is `true`.
 var clusterPosition: ClusterPosition // The position of the cluster annotation. The default is `.nearCenter`.
+```
+
+### ClusterManagerDelegate
+
+The  `ClusterManagerDelegate` protocol provides a number of functions to manage clustering and configure cells.
+
+```swift
+// The size of each cell on the grid at a given zoom level.
+func cellSize(for zoomLevel: Double) -> Double { ... }
+
+// Whether to cluster the given annotation.
+func shouldClusterAnnotation(_ annotation: MKAnnotation) -> Bool { ... }
 ```
 
 ## Communication
