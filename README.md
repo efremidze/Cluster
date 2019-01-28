@@ -44,9 +44,10 @@ Cluster is an easy map annotation clustering library. This repository uses an ef
 The [Example](Example) is a great place to get started. It demonstrates how to:
 
 - integrate the library
-- add annotations
-- configure annotation view
-- customize annotations
+- add/remove annotations
+- reload annotations
+- configure the annotation view
+- configure the manager
 
 ![Demo GIF](https://thumbs.gfycat.com/BoringUnhealthyAngelwingmussel-size_restricted.gif)
 
@@ -156,7 +157,7 @@ func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
 
 You should call `reload()` anytime you add or remove annotations.
 
-## Customizing the Manager
+## Configuring the Manager
 
 The `ClusterManager` class exposes several properties to configure clustering:
 
@@ -169,7 +170,7 @@ var shouldDistributeAnnotationsOnSameCoordinate: Bool // Whether to arrange anno
 var clusterPosition: ClusterPosition // The position of the cluster annotation. The default is `.nearCenter`.
 ```
 
-### ClusterManagerDelegate
+## ClusterManagerDelegate
 
 The  `ClusterManagerDelegate` protocol provides a number of functions to manage clustering and configure cells.
 
