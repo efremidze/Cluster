@@ -1,37 +1,25 @@
 ![Cluster](https://raw.githubusercontent.com/efremidze/Cluster/master/Images/logo.png)
 
-<p align="center">
-<a href="https://travis-ci.org/efremidze/Cluster" target="_blank">
-<img alt="Build Status" src="https://travis-ci.org/efremidze/Cluster.svg?style=flat">
-</a>
-<a href="https://swift.org" target="_blank">
-<img alt="Language" src="https://img.shields.io/badge/Swift-4-orange.svg?style=flat">
-</a>
-<a href="http://cocoapods.org/pods/Cluster" target="_blank">
-<img alt="Version" src="https://img.shields.io/cocoapods/v/Cluster.svg?style=flat">
-</a>
-<a href="http://cocoapods.org/pods/Cluster" target="_blank">
-<img alt="License" src="https://img.shields.io/cocoapods/l/Cluster.svg?style=flat">
-</a>
-<a href="http://cocoapods.org/pods/Cluster" target="_blank">
-<img alt="Platform" src="https://img.shields.io/cocoapods/p/Cluster.svg?style=flat">
-</a>
-<a href="https://github.com/Carthage/Carthage" target="_blank">
-<img alt="Carthage compatible" src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat">
-</a>
-</p>
+[![Build Status](https://travis-ci.org/efremidze/Cluster.svg?branch=master)](https://travis-ci.org/efremidze/Cluster)
+[![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Language](https://img.shields.io/badge/Swift-4-orange.svg?style=flat)](https://swift.org)
+[![Version](https://img.shields.io/cocoapods/v/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
+[![License](https://img.shields.io/cocoapods/l/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
+[![Platform](https://img.shields.io/cocoapods/p/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
 
-----------------
+Cluster is an easy map annotation clustering library. This repository uses an efficient method (QuadTree) to aggregate pins into a cluster.
 
-**Cluster** is an easy map annotation clustering library. This repository uses an efficient method (QuadTree) to aggregate pins into a cluster.
+![Demo Screenshots](https://raw.githubusercontent.com/efremidze/Cluster/master/Images/demo.png)
 
-<img src="https://raw.githubusercontent.com/efremidze/Cluster/master/Images/demo.gif" width="320">
-
-If you want to try it, simply run:
-
-```
-$ pod try Cluster
-```
+- [Features](#features)
+- [Requirements](#requirements)
+- [Demo](#demo)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Communication](#communication)
+- [Mentions](#mentions)
+- [Credits](#credits)
+- [License](#license)
 
 ## Features
 
@@ -47,67 +35,130 @@ $ pod try Cluster
 ## Requirements
 
 - iOS 8.0+
-- Xcode 9.0+
-- Swift 4 (Cluster 2.x), Swift 3 (Cluster 1.x)
+- Xcode 10.1+
+- Swift 4.2+
+
+## Demo
+
+The [Example](Example) is a great place to get started. It demonstrates how to:
+
+- integrate the library
+- add/remove annotations
+- reload annotations
+- configure the annotation view
+- configure the manager
+
+![Demo GIF](https://thumbs.gfycat.com/BoringUnhealthyAngelwingmussel-size_restricted.gif)
+
+[Demo Video](https://gfycat.com/BoringUnhealthyAngelwingmussel)
+
+```
+$ pod try Cluster
+```
+
+## Installation
+
+Cluster is available via CocoaPods and Carthage.
+
+### CocoaPods
+
+To install Cluster with [CocoaPods](http://cocoapods.org/), add this to your `Podfile`:
+
+```
+pod "Cluster"
+```
+
+### Carthage
+
+To install Cluster with [Carthage](https://github.com/Carthage/Carthage), add this to your `Cartfile`:
+
+```
+github "efremidze/Cluster"
+```
 
 ## Usage
 
-Follow the instructions below:
-
-### Step 1: Initialize a ClusterManager object
+The `ClusterManager` class generates, manages and displays annotation clusters.
 
 ```swift
 let clusterManager = ClusterManager()
 ```
 
-### Step 2: Add annotations
+## Adding an Annotation
+
+Create an object that conforms to the `MKAnnotation` protocol, or extend an existing one. Then add the annotation object to an instance of `ClusterManager` with `add(annotation:)`.
 
 ```swift
-let annotation = Annotation()
-annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-annotation.style = .color(color, radius: 25) // .image(UIImage(named: "pin"))
-clusterManager.add(annotation)
+let annotation = Annotation(coordinate: CLLocationCoordinate2D(latitude: 21.283921, longitude: -157.831661))
+manager.add(annotation)
 ```
 
-### Step 3: Return the pins and clusters
+## Configuring the Annotation View
+
+Implement the map view’s `mapView(_:viewFor:)` delegate method to configure the annotation view. Return an instance of `MKAnnotationView` to display as a visual representation of the annotations.
+
+To display clusters, return an instance of `ClusterAnnotationView`.
 
 ```swift
-func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-    var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-    if view == nil {
-        view = ClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, style: style)
-    } else {
-        view?.annotation = annotation
+extension ViewController: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        if let annotation = annotation as? ClusterAnnotation {
+            return CountClusterAnnotationView(annotation: annotation, reuseIdentifier: "cluster")
+        } else {
+            return MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pin")
+        }
     }
-    return view
 }
 ```
 
-### Step 4: Reload the annotations
+For performance reasons, you should generally reuse `MKAnnotationView` objects in your map views. See the [Example](Example) to learn more.
+
+### Customizing the Appearance
+
+The `ClusterAnnotationView` class exposes a `countLabel` property. You can subclass `ClusterAnnotationView` to provide custom behavior as needed. Here's an example of subclassing the  `ClusterAnnotationView` and customizing the layer `borderColor`.
+
+```swift
+class CountClusterAnnotationView: ClusterAnnotationView {
+    override func configure() {
+        super.configure()
+
+        self.layer.cornerRadius = self.frame.width / 2
+        self.layer.masksToBounds = true
+        self.layer.borderColor = UIColor.white.cgColor
+        self.layer.borderWidth = 1.5
+    }
+}
+```
+
+See the [AnnotationView](Example/AnnotationView.swift) to learn more.
+
+## Removing Annotations
+
+To remove annotations, you can call `remove(annotation:)`. However the annotations will still display until you call `reload()`.
+
+```swift
+manager.remove(annotation)
+```
+
+In the case that `shouldRemoveInvisibleAnnotations` is set to `false`, annotations that have been removed may still appear on map until calling `reload()` on visible region.
+
+## Reloading Annotations
+
+Implement the map view’s `mapView(_:regionDidChangeAnimated:)` delegate method to reload the `ClusterManager` when the region changes.
 
 ```swift
 func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-    clusterManager.reload(mapView) { finished in
+    clusterManager.reload(mapView: mapView) { finished in
         // handle completion
     }
 }
 ```
 
-## ClusterManagerDelegate
+You should call `reload()` anytime you add or remove annotations.
 
-The  `ClusterManagerDelegate` protocol manages displaying annotations. 
+## Configuring the Manager
 
-```swift
-// The size of each cell on the grid at a given zoom level.
-func cellSize(for zoomLevel: Double) -> Double { ... }
-
-// Whether to cluster the given annotation.
-func shouldClusterAnnotation(_ annotation: MKAnnotation) -> Bool { ... }
-```
-
-## Customization
-
-The `ClusterManager` exposes several properties to customize clustering:
+The `ClusterManager` class exposes several properties to configure clustering:
 
 ```swift
 var zoomLevel: Double // The current zoom level of the visible map region.
@@ -118,43 +169,16 @@ var shouldDistributeAnnotationsOnSameCoordinate: Bool // Whether to arrange anno
 var clusterPosition: ClusterPosition // The position of the cluster annotation. The default is `.nearCenter`.
 ```
 
-### Annotations
+## ClusterManagerDelegate
 
-The `Annotation` class exposes a `style` property that allows you to customize the appearance.
-
-```swift
-var style: ClusterAnnotationStyle // The style of the cluster annotation view.
-```
-
-You can further customize the annotations by subclassing `ClusterAnnotationView` and overriding `configure`:
+The  `ClusterManagerDelegate` protocol provides a number of functions to manage clustering and configure cells.
 
 ```swift
-override func configure() {
-    super.configure()
+// The size of each cell on the grid at a given zoom level.
+func cellSize(for zoomLevel: Double) -> Double { ... }
 
-    // customize
-}
-```
-
-## Removing Annotations
-
-To remove annotations, you can call `remove(_ annotation: MKAnnotation)`. However the annotations will still display until you call `reload()`.
-
-In the case that `shouldRemoveInvisibleAnnotations` is set to `false`, annotations that have been removed may still appear on map until calling `reload()` on visible region.
-
-## Installation
-
-### CocoaPods
-To install with [CocoaPods](http://cocoapods.org/), simply add this in your `Podfile`:
-```ruby
-use_frameworks!
-pod "Cluster"
-```
-
-### Carthage
-To install with [Carthage](https://github.com/Carthage/Carthage), simply add this in your `Cartfile`:
-```ruby
-github "efremidze/Cluster"
+// Whether to cluster the given annotation.
+func shouldClusterAnnotation(_ annotation: MKAnnotation) -> Bool { ... }
 ```
 
 ## Communication

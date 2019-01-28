@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.4.2](https://github.com/efremidze/Cluster/releases/tag/2.4.2)
+Released on 2019-01-07
+
+- Updated README
+
 ## [Version 2.4.1](https://github.com/efremidze/Cluster/releases/tag/2.4.1)
 Released on 2018-12-02
 
