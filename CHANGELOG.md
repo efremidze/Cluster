@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.4.3](https://github.com/efremidze/Cluster/releases/tag/2.4.3)
+Released on 2019-01-28
+
+- Reintroduced StyledClusterAnnotationView
+
 ## [Version 2.4.2](https://github.com/efremidze/Cluster/releases/tag/2.4.2)
 Released on 2019-01-07
 

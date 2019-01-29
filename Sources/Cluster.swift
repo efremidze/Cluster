@@ -320,6 +320,7 @@ open class ClusterManager {
                         }
                     }
                     cluster.annotations = annotations
+                    cluster.style = (annotations.first as? Annotation)?.style
                     allAnnotations += [cluster]
                 } else {
                     allAnnotations += annotations
