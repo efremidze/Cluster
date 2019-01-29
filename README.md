@@ -132,6 +132,30 @@ class CountClusterAnnotationView: ClusterAnnotationView {
 
 See the [AnnotationView](Example/AnnotationView.swift) to learn more.
 
+### Annotation Styling
+
+You can customize the appearance of the `StyledClusterAnnotationView` by setting the `style` property of the annotation.
+
+```swift
+let annotation = Annotation(coordinate: CLLocationCoordinate2D(latitude: 21.283921, longitude: -157.831661))
+annotation.style = .color(color, radius: 25)
+manager.add(annotation)
+```
+
+Several styles are available in the `ClusterAnnotationStyle` enum:
+- `color(UIColor, radius: CGFloat)` - Displays the annotations as a circle. 
+- `image(UIImage?)` - Displays the annotation as an image.
+
+Once you have added the annotation, you need to return an instance of the `StyledClusterAnnotationView` to display the styled annotation.
+
+```swift
+func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+    if let annotation = annotation as? ClusterAnnotation {
+        return StyledClusterAnnotationView(annotation: annotation, reuseIdentifier: identifier, style: style)
+    }
+}
+```
+
 ## Removing Annotations
 
 To remove annotations, you can call `remove(annotation:)`. However the annotations will still display until you call `reload()`.
