@@ -86,7 +86,7 @@ let clusterManager = ClusterManager()
 
 ## Adding an Annotation
 
-Create an object that conforms to the `MKAnnotation` protocol, or extend an existing one. Then add the annotation object to an instance of `ClusterManager` with `add(annotation:)`.
+Create an object that conforms to the `MKAnnotation` protocol, or extend an existing one. Next, add the annotation object to an instance of `ClusterManager` with `add(annotation:)`.
 
 ```swift
 let annotation = Annotation(coordinate: CLLocationCoordinate2D(latitude: 21.283921, longitude: -157.831661))
