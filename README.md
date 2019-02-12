@@ -86,7 +86,7 @@ let clusterManager = ClusterManager()
 
 ## Adding an Annotation
 
-Create an object that conforms to the `MKAnnotation` protocol, or extend an existing one. Then add the annotation object to an instance of `ClusterManager` with `add(annotation:)`.
+Create an object that conforms to the `MKAnnotation` protocol, or extend an existing one. Next, add the annotation object to an instance of `ClusterManager` with `add(annotation:)`.
 
 ```swift
 let annotation = Annotation(coordinate: CLLocationCoordinate2D(latitude: 21.283921, longitude: -157.831661))
@@ -189,7 +189,7 @@ var zoomLevel: Double // The current zoom level of the visible map region.
 var maxZoomLevel: Double // The maximum zoom level before disabling clustering.
 var minCountForClustering: Int // The minimum number of annotations for a cluster. The default is `2`.
 var shouldRemoveInvisibleAnnotations: Bool // Whether to remove invisible annotations. The default is `true`.
-var shouldDistributeAnnotationsOnSameCoordinate: Bool // Whether to arrange annotations in a circle if they have the same coordinate. The default is `false`.
+var shouldDistributeAnnotationsOnSameCoordinate: Bool // Whether to arrange annotations in a circle if they have the same coordinate. The default is `true`.
 var clusterPosition: ClusterPosition // The position of the cluster annotation. The default is `.nearCenter`.
 ```
 

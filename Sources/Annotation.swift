@@ -9,14 +9,11 @@
 import MapKit
 
 open class Annotation: MKPointAnnotation {
-    public let id: UUID
-    
     // @available(*, deprecated: 2.5.0, message: "See docs/MigratingToTransforms.md")
     open var style: ClusterAnnotationStyle?
     
-    public init(id: UUID = UUID(), coordinate: CLLocationCoordinate2D = CLLocationCoordinate2D()) {
-        self.id = id
-        super.init()
+    public convenience init(coordinate: CLLocationCoordinate2D) {
+        self.init()
         self.coordinate = coordinate
     }
 }

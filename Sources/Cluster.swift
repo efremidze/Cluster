@@ -84,9 +84,9 @@ open class ClusterManager {
     /**
      Whether to arrange annotations in a circle if they have the same coordinate.
      
-     The default is false.
+     The default is true.
      */
-    open var shouldDistributeAnnotationsOnSameCoordinate: Bool = false
+    open var shouldDistributeAnnotationsOnSameCoordinate: Bool = true
     
     /**
      The position of the cluster annotation.

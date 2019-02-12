@@ -24,7 +24,6 @@ class ViewController: UIViewController {
         manager.delegate = self
         manager.maxZoomLevel = 17
         manager.minCountForClustering = 3
-        manager.shouldDistributeAnnotationsOnSameCoordinate = true
         manager.clusterPosition = .nearCenter
         return manager
     }()
