@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.4.4](https://github.com/efremidze/Cluster/releases/tag/2.4.4)
+Released on 2019-02-11
+
+- Refactored Clustering
+
 ## [Version 2.4.3](https://github.com/efremidze/Cluster/releases/tag/2.4.3)
 Released on 2019-01-28
 

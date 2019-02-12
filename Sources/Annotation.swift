@@ -44,7 +44,6 @@ open class ClusterAnnotation: Annotation {
  The view associated with your cluster annotations.
  */
 open class ClusterAnnotationView: MKAnnotationView {
-    
     open lazy var countLabel: UILabel = {
         let label = UILabel()
         label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -70,7 +69,6 @@ open class ClusterAnnotationView: MKAnnotationView {
         let count = annotation.annotations.count
         countLabel.text = "\(count)"
     }
-    
 }
 
 /**
