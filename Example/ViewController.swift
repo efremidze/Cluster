@@ -116,8 +116,8 @@ extension ViewController: MKMapViewDelegate {
 
 extension ViewController: ClusterManagerDelegate {
     
-    func cellSize(for zoomLevel: Double) -> Double {
-        return 0 // default
+    func cellSize(for zoomLevel: Double) -> Double? {
+        return nil // default
     }
     
     func shouldClusterAnnotation(_ annotation: MKAnnotation) -> Bool {
