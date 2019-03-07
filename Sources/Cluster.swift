@@ -18,7 +18,7 @@ public protocol ClusterManagerDelegate: class {
      
      - Returns: The cell size at the given zoom level.
      */
-    func cellSize(for zoomLevel: Double) -> Double
+    func cellSize(for zoomLevel: Double) -> Double?
     
     /**
      Whether to cluster the given annotation.
@@ -32,8 +32,8 @@ public protocol ClusterManagerDelegate: class {
 }
 
 public extension ClusterManagerDelegate {
-    func cellSize(for zoomLevel: Double) -> Double {
-        return 0
+    func cellSize(for zoomLevel: Double) -> Double? {
+        return nil
     }
     
     func shouldClusterAnnotation(_ annotation: MKAnnotation) -> Bool {
@@ -382,7 +382,7 @@ open class ClusterManager {
     }
     
     func cellSize(for zoomLevel: Double) -> Double {
-        if let cellSize = delegate?.cellSize(for: zoomLevel), cellSize > 0 {
+        if let cellSize = delegate?.cellSize(for: zoomLevel) {
             return cellSize
         }
         switch zoomLevel {
