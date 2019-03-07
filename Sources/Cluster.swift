@@ -304,7 +304,7 @@ open class ClusterManager {
             
             // handle annotations on the same coordinate
             if shouldDistributeAnnotationsOnSameCoordinate {
-                distributeAnnotations(annotations: annotations) // buggy (modifying coordinate)
+                distributeAnnotations(annotations: annotations, tree: tree, mapRect: mapRect)
             }
             
             // handle clustering
@@ -322,14 +322,16 @@ open class ClusterManager {
         return allAnnotations
     }
     
-    func distributeAnnotations(annotations: [MKAnnotation]) {
+    func distributeAnnotations(annotations: [MKAnnotation], tree: QuadTree, mapRect: MKMapRect) {
         let hash = Dictionary(grouping: annotations) { $0.coordinate }
         for value in hash.values where value.count > 1 {
             for (index, annotation) in value.enumerated() {
+                tree.remove(annotation)
                 let distanceFromContestedLocation = 3 * Double(value.count) / 2
                 let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
                 let bearing = radiansBetweenAnnotations * Double(index)
                 (annotation as? MKPointAnnotation)?.coordinate = annotation.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
+                tree.add(annotation)
             }
         }
     }
