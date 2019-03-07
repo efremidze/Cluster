@@ -263,6 +263,11 @@ open class ClusterManager {
         
         guard !isCancelled else { return (toAdd: [], toRemove: []) }
         
+        // handle annotations on the same coordinate
+        if shouldDistributeAnnotationsOnSameCoordinate {
+            distributeAnnotations(tree: tree)
+        }
+        
         let allAnnotations = dispatchQueue.sync {
             clusteredAnnotations(tree: tree, mapRects: mapRects, zoomLevel: zoomLevel)
         }
@@ -302,11 +307,6 @@ open class ClusterManager {
                 }
             }
             
-            // handle annotations on the same coordinate
-            if shouldDistributeAnnotationsOnSameCoordinate {
-                distributeAnnotations(annotations: annotations, tree: tree, mapRect: mapRect)
-            }
-            
             // handle clustering
             let count = annotations.count
             if count >= minCountForClustering, zoomLevel <= maxZoomLevel {
@@ -322,16 +322,21 @@ open class ClusterManager {
         return allAnnotations
     }
     
-    func distributeAnnotations(annotations: [MKAnnotation], tree: QuadTree, mapRect: MKMapRect) {
+    func distributeAnnotations(tree: QuadTree) {
+        let annotations = dispatchQueue.sync {
+            tree.annotations(in: .world)
+        }
         let hash = Dictionary(grouping: annotations) { $0.coordinate }
-        for value in hash.values where value.count > 1 {
-            for (index, annotation) in value.enumerated() {
-                tree.remove(annotation)
-                let distanceFromContestedLocation = 3 * Double(value.count) / 2
-                let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
-                let bearing = radiansBetweenAnnotations * Double(index)
-                (annotation as? MKPointAnnotation)?.coordinate = annotation.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
-                tree.add(annotation)
+        dispatchQueue.async(flags: .barrier) {
+            for value in hash.values where value.count > 1 {
+                for (index, annotation) in value.enumerated() {
+                    tree.remove(annotation)
+                    let distanceFromContestedLocation = 3 * Double(value.count) / 2
+                    let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
+                    let bearing = radiansBetweenAnnotations * Double(index)
+                    (annotation as? MKPointAnnotation)?.coordinate = annotation.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
+                    tree.add(annotation)
+                }
             }
         }
     }

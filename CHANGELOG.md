@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.4.6](https://github.com/efremidze/Cluster/releases/tag/2.4.6)
+Released on 2019-03-07
+
+- Performance improvements
+
 ## [Version 2.4.5](https://github.com/efremidze/Cluster/releases/tag/2.4.5)
 Released on 2019-03-07
 
