@@ -12,9 +12,22 @@ open class Annotation: MKPointAnnotation {
     // @available(*, deprecated: 2.5.0, message: "See docs/MigratingToTransforms.md")
     open var style: ClusterAnnotationStyle?
     
-    public convenience init(coordinate: CLLocationCoordinate2D) {
-        self.init()
+    public let id: UUID
+    
+    public init(id: UUID = UUID(), coordinate: CLLocationCoordinate2D = CLLocationCoordinate2D()) {
+        self.id = id
+        super.init()
         self.coordinate = coordinate
+    }
+    
+    override open var hash: Int {
+        return id.hashValue
+    }
+}
+
+extension Annotation {
+    static func == (lhs: Annotation, rhs: Annotation) -> Bool {
+        return lhs.id == rhs.id
     }
 }
 
