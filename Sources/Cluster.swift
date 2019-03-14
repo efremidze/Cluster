@@ -265,7 +265,7 @@ open class ClusterManager {
         
         // handle annotations on the same coordinate
         if shouldDistributeAnnotationsOnSameCoordinate {
-            distributeAnnotations(tree: tree)
+            distributeAnnotations(tree: tree, mapRect: visibleMapRect)
         }
         
         let allAnnotations = dispatchQueue.sync {
@@ -322,9 +322,9 @@ open class ClusterManager {
         return allAnnotations
     }
     
-    func distributeAnnotations(tree: QuadTree) {
+    func distributeAnnotations(tree: QuadTree, mapRect: MKMapRect) {
         let annotations = dispatchQueue.sync {
-            tree.annotations(in: .world)
+            tree.annotations(in: mapRect)
         }
         let hash = Dictionary(grouping: annotations) { $0.coordinate }
         dispatchQueue.async(flags: .barrier) {

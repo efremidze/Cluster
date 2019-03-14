@@ -19,7 +19,7 @@ class ViewController: UIViewController {
     }
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
-    lazy var manager: ClusterManager = {
+    lazy var manager: ClusterManager = { [unowned self] in
         let manager = ClusterManager()
         manager.delegate = self
         manager.maxZoomLevel = 17
