@@ -91,7 +91,7 @@ extension QuadTreeNode: AnnotationsContainer {
                 return true
             }
             
-            fatalError("rect.contains evaluted to true, but none of the children added the annotation")
+            assertionFailure("rect.contains evaluted to true, but none of the children added the annotation")
         }
         return true
     }
@@ -110,7 +110,7 @@ extension QuadTreeNode: AnnotationsContainer {
                 return true
             }
             
-            fatalError("rect.contains evaluted to true, but none of the children removed the annotation")
+            assertionFailure("rect.contains evaluted to true, but none of the children removed the annotation")
         }
         return true
     }
@@ -120,7 +120,7 @@ extension QuadTreeNode: AnnotationsContainer {
         case .leaf:
             type = .internal(children: Children(parentNode: self))
         case .internal:
-            preconditionFailure("Calling subdivide on an internal node")
+            assertionFailure("Calling subdivide on an internal node")
         }
     }
     

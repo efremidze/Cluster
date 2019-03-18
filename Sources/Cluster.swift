@@ -16,7 +16,7 @@ public protocol ClusterManagerDelegate: class {
      - Parameters:
         - zoomLevel: The zoom level of the visible map region.
      
-     - Returns: The cell size at the given zoom level.
+     - Returns: The cell size at the given zoom level. If you return nil, the cell size will automatically adjust to the zoom level.
      */
     func cellSize(for zoomLevel: Double) -> Double?
     

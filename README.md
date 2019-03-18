@@ -199,7 +199,7 @@ The  `ClusterManagerDelegate` protocol provides a number of functions to manage 
 
 ```swift
 // The size of each cell on the grid at a given zoom level.
-func cellSize(for zoomLevel: Double) -> Double { ... }
+func cellSize(for zoomLevel: Double) -> Double? { ... }
 
 // Whether to cluster the given annotation.
 func shouldClusterAnnotation(_ annotation: MKAnnotation) -> Bool { ... }
