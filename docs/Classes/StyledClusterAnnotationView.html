@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>QuadTree Class Reference</title>
+    <title>StyledClusterAnnotationView Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Class/QuadTree" class="dashAnchor"></a>
-    <a title="QuadTree Class Reference"></a>
+    <a name="//apple_ref/swift/Class/StyledClusterAnnotationView" class="dashAnchor"></a>
+    <a title="StyledClusterAnnotationView Class Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">Cluster Docs</a> (57% documented)</p>
@@ -21,7 +21,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">Cluster Reference</a>
         <img id="carat" src="../img/carat.png" />
-        QuadTree Class Reference
+        StyledClusterAnnotationView Class Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -90,14 +90,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>QuadTree</h1>
+            <h1>StyledClusterAnnotationView</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">QuadTree</span> <span class="p">:</span> <span class="kt">AnnotationsContainer</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">StyledClusterAnnotationView</span> <span class="p">:</span> <span class="kt"><a href="../Classes/ClusterAnnotationView.html">ClusterAnnotationView</a></span></code></pre>
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>A cluster annotation view that supports styles.</p>
 
           </section>
           <section class="section task-group-section">
@@ -106,9 +106,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Cluster8QuadTreeC4rectACSo9MKMapRecta_tcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(rect:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Cluster8QuadTreeC4rectACSo9MKMapRecta_tcfc">init(rect:)</a>
+                    <a name="/s:7Cluster06StyledA14AnnotationViewC5styleAA0aC5StyleOvp"></a>
+                    <a name="//apple_ref/swift/Property/style" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Cluster06StyledA14AnnotationViewC5styleAA0aC5StyleOvp">style</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -116,14 +116,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The style of the cluster annotation view.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">rect</span><span class="p">:</span> <span class="kt">MKMapRect</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">style</span><span class="p">:</span> <span class="kt"><a href="../Enums/ClusterAnnotationStyle.html">ClusterAnnotationStyle</a></span></code></pre>
 
                         </div>
                       </div>
@@ -133,9 +133,46 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Cluster8QuadTreeC3addySbSo12MKAnnotation_pF"></a>
-                    <a name="//apple_ref/swift/Method/add(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Cluster8QuadTreeC3addySbSo12MKAnnotation_pF">add(_:)</a>
+                    <a name="/s:7Cluster06StyledA14AnnotationViewC10annotation15reuseIdentifier5styleACSo12MKAnnotation_pSg_SSSgAA0aC5StyleOtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(annotation:reuseIdentifier:style:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Cluster06StyledA14AnnotationViewC10annotation15reuseIdentifier5styleACSo12MKAnnotation_pSg_SSSgAA0aC5StyleOtcfc">init(annotation:reuseIdentifier:style:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initializes and returns a new cluster annotation view.</p>
+
+<ul>
+<li>annotation: The annotation object to associate with the new view.</li>
+<li>reuseIdentifier: If you plan to reuse the annotation view for similar types of annotations, pass a string to identify it. Although you can pass nil if you do not intend to reuse the view, reusing annotation views is generally recommended.</li>
+<li><p>style: The cluster annotation style to associate with the new view.</p></li>
+</ul>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">annotation</span><span class="p">:</span> <span class="kt">MKAnnotation</span><span class="p">?,</span> <span class="nv">reuseIdentifier</span><span class="p">:</span> <span class="kt">String</span><span class="p">?,</span> <span class="nv">style</span><span class="p">:</span> <span class="kt"><a href="../Enums/ClusterAnnotationStyle.html">ClusterAnnotationStyle</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The initialized cluster annotation view.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@Cluster@objc(cs)StyledClusterAnnotationView(im)initWithCoder:"></a>
+                    <a name="//apple_ref/swift/Method/init(coder:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@Cluster@objc(cs)StyledClusterAnnotationView(im)initWithCoder:">init(coder:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -150,8 +187,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
-<span class="kd">public</span> <span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="n">_</span> <span class="nv">annotation</span><span class="p">:</span> <span class="kt">MKAnnotation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">required</span> <span class="kd">public</span> <span class="nf">init</span><span class="p">?(</span><span class="n">coder</span> <span class="nv">aDecoder</span><span class="p">:</span> <span class="kt">NSCoder</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -161,9 +197,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Cluster8QuadTreeC6removeySbSo12MKAnnotation_pF"></a>
-                    <a name="//apple_ref/swift/Method/remove(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Cluster8QuadTreeC6removeySbSo12MKAnnotation_pF">remove(_:)</a>
+                    <a name="/s:7Cluster06StyledA14AnnotationViewC9configure4withyAA0aC5StyleO_tF"></a>
+                    <a name="//apple_ref/swift/Method/configure(with:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Cluster06StyledA14AnnotationViewC9configure4withyAA0aC5StyleO_tF">configure(with:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -178,8 +214,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
-<span class="kd">public</span> <span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="n">_</span> <span class="nv">annotation</span><span class="p">:</span> <span class="kt">MKAnnotation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">configure</span><span class="p">(</span><span class="n">with</span> <span class="nv">style</span><span class="p">:</span> <span class="kt"><a href="../Enums/ClusterAnnotationStyle.html">ClusterAnnotationStyle</a></span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -189,9 +224,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Cluster8QuadTreeC11annotations2inSaySo12MKAnnotation_pGSo9MKMapRecta_tF"></a>
-                    <a name="//apple_ref/swift/Method/annotations(in:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Cluster8QuadTreeC11annotations2inSaySo12MKAnnotation_pGSo9MKMapRecta_tF">annotations(in:)</a>
+                    <a name="/s:7Cluster06StyledA14AnnotationViewC9configureyyF"></a>
+                    <a name="//apple_ref/swift/Method/configure()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Cluster06StyledA14AnnotationViewC9configureyyF">configure()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -206,7 +241,34 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">annotations</span><span class="p">(</span><span class="k">in</span> <span class="nv">rect</span><span class="p">:</span> <span class="kt">MKMapRect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">MKAnnotation</span><span class="p">]</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">configure</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@Cluster@objc(cs)StyledClusterAnnotationView(im)layoutSubviews"></a>
+                    <a name="//apple_ref/swift/Method/layoutSubviews()" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@Cluster@objc(cs)StyledClusterAnnotationView(im)layoutSubviews">layoutSubviews()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">open</span> <span class="kd">func</span> <span class="nf">layoutSubviews</span><span class="p">()</span></code></pre>
 
                         </div>
                       </div>

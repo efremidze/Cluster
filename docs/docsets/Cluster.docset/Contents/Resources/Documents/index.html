@@ -13,7 +13,7 @@
     <a title="Cluster  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Cluster Docs</a> (56% documented)</p>
+        <p><a href="index.html">Cluster Docs</a> (57% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -46,6 +46,17 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/QuadTree.html">QuadTree</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/StyledClusterAnnotationView.html">StyledClusterAnnotationView</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Enums/ClusterAnnotationStyle.html">ClusterAnnotationStyle</a>
               </li>
             </ul>
           </li>
@@ -82,7 +93,6 @@
             <p><img src="https://raw.githubusercontent.com/efremidze/Cluster/master/Images/logo.png" alt="Cluster"></p>
 
 <p><a href="https://travis-ci.org/efremidze/Cluster"><img src="https://travis-ci.org/efremidze/Cluster.svg?branch=master" alt="Build Status"></a>
-<a href="https://img.shields.io/cocoapods/v/Cluster.svg"><img src="https://img.shields.io/cocoapods/v/Cluster.svg" alt="CocoaPods Compatible"></a>
 <a href="https://github.com/Carthage/Carthage"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage Compatible"></a>
 <a href="https://swift.org"><img src="https://img.shields.io/badge/Swift-4-orange.svg?style=flat" alt="Language"></a>
 <a href="http://cocoapods.org/pods/Cluster"><img src="https://img.shields.io/cocoapods/v/Cluster.svg?style=flat" alt="Version"></a>
@@ -160,7 +170,7 @@
 </code></pre>
 <h2 id='adding-an-annotation' class='heading'>Adding an Annotation</h2>
 
-<p>Create an object that conforms to the <code>MKAnnotation</code> protocol, or extend an existing one. Then add the annotation object to an instance of <code><a href="Classes/ClusterManager.html">ClusterManager</a></code> with <code>add(annotation:)</code>.</p>
+<p>Create an object that conforms to the <code>MKAnnotation</code> protocol, or extend an existing one. Next, add the annotation object to an instance of <code><a href="Classes/ClusterManager.html">ClusterManager</a></code> with <code>add(annotation:)</code>.</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">annotation</span> <span class="o">=</span> <span class="kt">Annotation</span><span class="p">(</span><span class="nv">coordinate</span><span class="p">:</span> <span class="kt">CLLocationCoordinate2D</span><span class="p">(</span><span class="nv">latitude</span><span class="p">:</span> <span class="mf">21.283921</span><span class="p">,</span> <span class="nv">longitude</span><span class="p">:</span> <span class="o">-</span><span class="mf">157.831661</span><span class="p">))</span>
 <span class="n">manager</span><span class="o">.</span><span class="nf">add</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
 </code></pre>
@@ -197,6 +207,28 @@
 </code></pre>
 
 <p>See the <a href="Example/AnnotationView.swift">AnnotationView</a> to learn more.</p>
+<h3 id='annotation-styling' class='heading'>Annotation Styling</h3>
+
+<p>You can customize the appearance of the <code><a href="Classes/StyledClusterAnnotationView.html">StyledClusterAnnotationView</a></code> by setting the <code>style</code> property of the annotation.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">annotation</span> <span class="o">=</span> <span class="kt">Annotation</span><span class="p">(</span><span class="nv">coordinate</span><span class="p">:</span> <span class="kt">CLLocationCoordinate2D</span><span class="p">(</span><span class="nv">latitude</span><span class="p">:</span> <span class="mf">21.283921</span><span class="p">,</span> <span class="nv">longitude</span><span class="p">:</span> <span class="o">-</span><span class="mf">157.831661</span><span class="p">))</span>
+<span class="n">annotation</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="o">.</span><span class="nf">color</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="nv">radius</span><span class="p">:</span> <span class="mi">25</span><span class="p">)</span>
+<span class="n">manager</span><span class="o">.</span><span class="nf">add</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
+</code></pre>
+
+<p>Several styles are available in the <code><a href="Enums/ClusterAnnotationStyle.html">ClusterAnnotationStyle</a></code> enum:</p>
+
+<ul>
+<li><code>color(UIColor, radius: CGFloat)</code> - Displays the annotations as a circle.</li>
+<li><code>image(UIImage?)</code> - Displays the annotation as an image.</li>
+</ul>
+
+<p>Once you have added the annotation, you need to return an instance of the <code><a href="Classes/StyledClusterAnnotationView.html">StyledClusterAnnotationView</a></code> to display the styled annotation.</p>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">mapView</span><span class="p">(</span><span class="n">_</span> <span class="nv">mapView</span><span class="p">:</span> <span class="kt">MKMapView</span><span class="p">,</span> <span class="n">viewFor</span> <span class="nv">annotation</span><span class="p">:</span> <span class="kt">MKAnnotation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">MKAnnotationView</span><span class="p">?</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="k">let</span> <span class="nv">annotation</span> <span class="o">=</span> <span class="n">annotation</span> <span class="k">as?</span> <span class="kt">ClusterAnnotation</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">StyledClusterAnnotationView</span><span class="p">(</span><span class="nv">annotation</span><span class="p">:</span> <span class="n">annotation</span><span class="p">,</span> <span class="nv">reuseIdentifier</span><span class="p">:</span> <span class="n">identifier</span><span class="p">,</span> <span class="nv">style</span><span class="p">:</span> <span class="n">style</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='removing-annotations' class='heading'>Removing Annotations</h2>
 
 <p>To remove annotations, you can call <code>remove(annotation:)</code>. However the annotations will still display until you call <code>reload()</code>.</p>
@@ -229,7 +261,7 @@
 
 <p>The  <code><a href="Protocols/ClusterManagerDelegate.html">ClusterManagerDelegate</a></code> protocol provides a number of functions to manage clustering and configure cells.</p>
 <pre class="highlight swift"><code><span class="c1">// The size of each cell on the grid at a given zoom level.</span>
-<span class="kd">func</span> <span class="nf">cellSize</span><span class="p">(</span><span class="k">for</span> <span class="nv">zoomLevel</span><span class="p">:</span> <span class="kt">Double</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Double</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
+<span class="kd">func</span> <span class="nf">cellSize</span><span class="p">(</span><span class="k">for</span> <span class="nv">zoomLevel</span><span class="p">:</span> <span class="kt">Double</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Double</span><span class="p">?</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
 
 <span class="c1">// Whether to cluster the given annotation.</span>
 <span class="kd">func</span> <span class="nf">shouldClusterAnnotation</span><span class="p">(</span><span class="n">_</span> <span class="nv">annotation</span><span class="p">:</span> <span class="kt">MKAnnotation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
@@ -262,7 +294,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2019 <a class="link" href="https://github.com/efremidze/Cluster" target="_blank" rel="external">efremidze</a>. All rights reserved. (Last updated: 2019-01-28)</p>
+          <p>&copy; 2019 <a class="link" href="https://github.com/efremidze/Cluster" target="_blank" rel="external">efremidze</a>. All rights reserved. (Last updated: 2019-03-18)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
