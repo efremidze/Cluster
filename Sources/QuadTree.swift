@@ -120,7 +120,7 @@ extension QuadTreeNode: AnnotationsContainer {
         case .leaf:
             type = .internal(children: Children(parentNode: self))
         case .internal:
-            assertionFailure("Calling subdivide on an internal node")
+            preconditionFailure("Calling subdivide on an internal node")
         }
     }
     
