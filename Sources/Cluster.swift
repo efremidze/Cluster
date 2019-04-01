@@ -158,8 +158,8 @@ open class ClusterManager {
      */
     open func add(_ annotation: MKAnnotation) {
         operationQueue.cancelAllOperations()
-        dispatchQueue.async(flags: .barrier) {
-            self.tree.add(annotation)
+        dispatchQueue.async(flags: .barrier) { [weak self] in
+            self?.tree.add(annotation)
         }
     }
     
@@ -171,9 +171,9 @@ open class ClusterManager {
      */
     open func add(_ annotations: [MKAnnotation]) {
         operationQueue.cancelAllOperations()
-        dispatchQueue.async(flags: .barrier) {
+        dispatchQueue.async(flags: .barrier) { [weak self] in
             for annotation in annotations {
-                self.tree.add(annotation)
+                self?.tree.add(annotation)
             }
         }
     }
@@ -186,8 +186,8 @@ open class ClusterManager {
      */
     open func remove(_ annotation: MKAnnotation) {
         operationQueue.cancelAllOperations()
-        dispatchQueue.async(flags: .barrier) {
-            self.tree.remove(annotation)
+        dispatchQueue.async(flags: .barrier) { [weak self] in
+            self?.tree.remove(annotation)
         }
     }
     
@@ -199,9 +199,9 @@ open class ClusterManager {
      */
     open func remove(_ annotations: [MKAnnotation]) {
         operationQueue.cancelAllOperations()
-        dispatchQueue.async(flags: .barrier) {
+        dispatchQueue.async(flags: .barrier) { [weak self] in
             for annotation in annotations {
-                self.tree.remove(annotation)
+                self?.tree.remove(annotation)
             }
         }
     }
@@ -211,8 +211,8 @@ open class ClusterManager {
      */
     open func removeAll() {
         operationQueue.cancelAllOperations()
-        dispatchQueue.async(flags: .barrier) {
-            self.tree = QuadTree(rect: .world)
+        dispatchQueue.async(flags: .barrier) { [weak self] in
+            self?.tree = QuadTree(rect: .world)
         }
     }
     
@@ -285,9 +285,9 @@ open class ClusterManager {
             toRemove.subtract(toKeep)
         }
         
-        dispatchQueue.async(flags: .barrier) {
-            self.visibleAnnotations.subtract(toRemove)
-            self.visibleAnnotations.add(toAdd)
+        dispatchQueue.async(flags: .barrier) { [weak self] in
+            self?.visibleAnnotations.subtract(toRemove)
+            self?.visibleAnnotations.add(toAdd)
         }
         
         return (toAdd: toAdd, toRemove: toRemove)

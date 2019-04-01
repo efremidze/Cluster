@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.4.9](https://github.com/efremidze/Cluster/releases/tag/2.4.9)
+Released on 2019-04-01
+
+- Memory management improvements
+
 ## [Version 2.4.8](https://github.com/efremidze/Cluster/releases/tag/2.4.8)
 Released on 2019-03-18
 
