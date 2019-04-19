@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 2.5.0](https://github.com/efremidze/Cluster/releases/tag/2.5.0)
+Released on 2019-04-19
+
+- Swift 5.0 support
+
 ## [Version 2.4.9](https://github.com/efremidze/Cluster/releases/tag/2.4.9)
 Released on 2019-04-01
 

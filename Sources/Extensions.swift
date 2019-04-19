@@ -25,8 +25,9 @@ let CLLocationCoordinate2DMax = CLLocationCoordinate2D(latitude: 90, longitude: 
 let MKMapPointMax = MKMapPoint(CLLocationCoordinate2DMax)
 
 extension CLLocationCoordinate2D: Hashable {
-    public var hashValue: Int {
-        return latitude.hashValue ^ longitude.hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(latitude)
+        hasher.combine(longitude)
     }
 }
 
@@ -76,7 +77,7 @@ extension Array where Element: MKAnnotation {
     }
     @discardableResult
     mutating func remove(_ item: Element) -> Element? {
-        return index { $0.isEqual(item) }.map { remove(at: $0) }
+        return firstIndex { $0.isEqual(item) }.map { remove(at: $0) }
     }
 }
 

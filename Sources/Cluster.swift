@@ -46,14 +46,6 @@ open class ClusterManager {
     var tree = QuadTree(rect: .world)
     
     /**
-     The size of each cell on the grid (The larger the size, the better the performance).
-     
-     If nil, automatically adjusts the cell size to zoom level. The default is nil.
-     */
-    @available(*, deprecated: 2.3.0, message: "Use cellSize(forZoomLevel:)")
-    open var cellSize: Double?
-    
-    /**
      The current zoom level of the visible map region.
      
      Min value is 0 (max zoom out), max is 20 (max zoom in).
@@ -223,7 +215,7 @@ open class ClusterManager {
         - mapView: The map view object to reload.
         - visibleMapRect: The area currently displayed by the map view.
      */
-    @available(*, deprecated: 2.1.4, message: "Use reload(mapView:)")
+    @available(swift, obsoleted: 5.0, message: "Use reload(mapView:)")
     open func reload(_ mapView: MKMapView, visibleMapRect: MKMapRect) {
         reload(mapView: mapView)
     }
