@@ -14,7 +14,7 @@
     <a title="ClusterManager Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Cluster Docs</a> (57% documented)</p>
+        <p><a href="../index.html">Cluster Docs</a> (56% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -106,36 +106,6 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Cluster0A7ManagerC8cellSizeSdSgvp"></a>
-                    <a name="//apple_ref/swift/Property/cellSize" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Cluster0A7ManagerC8cellSizeSdSgvp">cellSize</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The size of each cell on the grid (The larger the size, the better the performance).</p>
-
-<p>If nil, automatically adjusts the cell size to zoom level. The default is nil.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@available(*, deprecated: 2.3.0, message: "Use cellSize(forZoomLevel:﹚")</span>
-<span class="kd">open</span> <span class="k">var</span> <span class="nv">cellSize</span><span class="p">:</span> <span class="kt">Double</span><span class="p">?</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
                     <a name="/s:7Cluster0A7ManagerC9zoomLevelSdvp"></a>
                     <a name="//apple_ref/swift/Property/zoomLevel" class="dashAnchor"></a>
                     <a class="token" href="#/s:7Cluster0A7ManagerC9zoomLevelSdvp">zoomLevel</a>
@@ -155,7 +125,9 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">zoomLevel</span><span class="p">:</span> <span class="kt">Double</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">zoomLevel</span><span class="p">:</span> <span class="kt">Double</span> <span class="p">{</span>
+  <span class="k">get</span>
+  <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -419,9 +391,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Cluster0A7ManagerC8delegateAA0aB8Delegate_pSgXwvp"></a>
+                    <a name="/s:7Cluster0A7ManagerC8delegateAA0aB8Delegate_pSgvp"></a>
                     <a name="//apple_ref/swift/Property/delegate" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Cluster0A7ManagerC8delegateAA0aB8Delegate_pSgXwvp">delegate</a>
+                    <a class="token" href="#/s:7Cluster0A7ManagerC8delegateAA0aB8Delegate_pSgvp">delegate</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -684,65 +656,6 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Cluster0A7ManagerC6reload_14visibleMapRectySo9MKMapViewC_So0gF0atF"></a>
-                    <a name="//apple_ref/swift/Method/reload(_:visibleMapRect:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Cluster0A7ManagerC6reload_14visibleMapRectySo9MKMapViewC_So0gF0atF">reload(_:visibleMapRect:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Reload the annotations on the map view.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@available(*, deprecated: 2.1.4, message: "Use reload(mapView:﹚")</span>
-<span class="kd">open</span> <span class="kd">func</span> <span class="nf">reload</span><span class="p">(</span><span class="n">_</span> <span class="nv">mapView</span><span class="p">:</span> <span class="kt">MKMapView</span><span class="p">,</span> <span class="nv">visibleMapRect</span><span class="p">:</span> <span class="kt">MKMapRect</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>mapView</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The map view object to reload.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>visibleMapRect</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The area currently displayed by the map view.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
                     <a name="/s:7Cluster0A7ManagerC6reload7mapView10completionySo05MKMapE0C_ySbctF"></a>
                     <a name="//apple_ref/swift/Method/reload(mapView:completion:)" class="dashAnchor"></a>
                     <a class="token" href="#/s:7Cluster0A7ManagerC6reload7mapView10completionySo05MKMapE0C_ySbctF">reload(mapView:completion:)</a>
@@ -857,7 +770,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2019 <a class="link" href="https://github.com/efremidze/Cluster" target="_blank" rel="external">efremidze</a>. All rights reserved. (Last updated: 2019-03-18)</p>
+          <p>&copy; 2019 <a class="link" href="https://github.com/efremidze/Cluster" target="_blank" rel="external">efremidze</a>. All rights reserved. (Last updated: 2019-04-19)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
