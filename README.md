@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/efremidze/Cluster.svg?branch=master)](https://travis-ci.org/efremidze/Cluster)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![Language](https://img.shields.io/badge/Swift-4-orange.svg?style=flat)](https://swift.org)
+[![Language](https://img.shields.io/badge/Swift-5-orange.svg?style=flat)](https://swift.org)
 [![Version](https://img.shields.io/cocoapods/v/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
 [![License](https://img.shields.io/cocoapods/l/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
 [![Platform](https://img.shields.io/cocoapods/p/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
@@ -35,8 +35,8 @@ Cluster is an easy map annotation clustering library. This repository uses an ef
 ## Requirements
 
 - iOS 8.0+
-- Xcode 10.1+
-- Swift 4.2+
+- Xcode 9.0+
+- Swift 5 (Cluster 3.x), Swift 4 (Cluster 2.x), Swift 3 (Cluster 1.x)
 
 ## Demo
 

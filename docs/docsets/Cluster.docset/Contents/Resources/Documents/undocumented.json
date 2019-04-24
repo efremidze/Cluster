@@ -72,21 +72,14 @@
     },
     {
       "file": "/Users/home/Documents/Cluster/Sources/Annotation.swift",
-      "line": 123,
-      "symbol": "StyledClusterAnnotationView.configure(with:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/home/Documents/Cluster/Sources/Annotation.swift",
-      "line": 128,
+      "line": 122,
       "symbol": "StyledClusterAnnotationView.configure()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/home/Documents/Cluster/Sources/Annotation.swift",
-      "line": 151,
+      "line": 145,
       "symbol": "StyledClusterAnnotationView.layoutSubviews()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -114,35 +107,35 @@
     },
     {
       "file": "/Users/home/Documents/Cluster/Sources/Cluster.swift",
-      "line": 149,
+      "line": 141,
       "symbol": "ClusterManager.delegate",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/home/Documents/Cluster/Sources/Cluster.swift",
-      "line": 151,
+      "line": 143,
       "symbol": "ClusterManager.init()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/home/Documents/Cluster/Sources/Cluster.swift",
-      "line": 257,
+      "line": 249,
       "symbol": "ClusterManager.clusteredAnnotations(zoomScale:visibleMapRect:operation:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/home/Documents/Cluster/Sources/Cluster.swift",
-      "line": 386,
+      "line": 377,
       "symbol": "ClusterManager.display(mapView:toAdd:toRemove:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/home/Documents/Cluster/Sources/Extensions.swift",
-      "line": 33,
+      "line": 34,
       "symbol": "==(_:_:)",
       "symbol_kind": "source.lang.swift.decl.function.free",
       "warning": "undocumented"
