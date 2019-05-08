@@ -78,13 +78,14 @@ github "efremidze/Cluster"
 
 ## Usage
 
+### The Basics
 The `ClusterManager` class generates, manages and displays annotation clusters.
 
 ```swift
 let clusterManager = ClusterManager()
 ```
 
-## Adding an Annotation
+### Adding an Annotation
 
 Create an object that conforms to the `MKAnnotation` protocol, or extend an existing one. Next, add the annotation object to an instance of `ClusterManager` with `add(annotation:)`.
 
@@ -93,7 +94,7 @@ let annotation = Annotation(coordinate: CLLocationCoordinate2D(latitude: 21.2839
 manager.add(annotation)
 ```
 
-## Configuring the Annotation View
+### Configuring the Annotation View
 
 Implement the map view’s `mapView(_:viewFor:)` delegate method to configure the annotation view. Return an instance of `MKAnnotationView` to display as a visual representation of the annotations.
 
@@ -113,7 +114,7 @@ extension ViewController: MKMapViewDelegate {
 
 For performance reasons, you should generally reuse `MKAnnotationView` objects in your map views. See the [Example](Example) to learn more.
 
-### Customizing the Appearance
+#### Customizing the Appearance
 
 The `ClusterAnnotationView` class exposes a `countLabel` property. You can subclass `ClusterAnnotationView` to provide custom behavior as needed. Here's an example of subclassing the  `ClusterAnnotationView` and customizing the layer `borderColor`.
 
@@ -132,7 +133,7 @@ class CountClusterAnnotationView: ClusterAnnotationView {
 
 See the [AnnotationView](Example/AnnotationView.swift) to learn more.
 
-### Annotation Styling
+#### Annotation Styling
 
 You can customize the appearance of the `StyledClusterAnnotationView` by setting the `style` property of the annotation.
 
@@ -156,7 +157,7 @@ func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnota
 }
 ```
 
-## Removing Annotations
+### Removing Annotations
 
 To remove annotations, you can call `remove(annotation:)`. However the annotations will still display until you call `reload()`.
 
@@ -166,7 +167,7 @@ manager.remove(annotation)
 
 In the case that `shouldRemoveInvisibleAnnotations` is set to `false`, annotations that have been removed may still appear on map until calling `reload()` on visible region.
 
-## Reloading Annotations
+### Reloading Annotations
 
 Implement the map view’s `mapView(_:regionDidChangeAnimated:)` delegate method to reload the `ClusterManager` when the region changes.
 
@@ -180,7 +181,7 @@ func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
 
 You should call `reload()` anytime you add or remove annotations.
 
-## Configuring the Manager
+### Configuring the Manager
 
 The `ClusterManager` class exposes several properties to configure clustering:
 
@@ -193,7 +194,7 @@ var shouldDistributeAnnotationsOnSameCoordinate: Bool // Whether to arrange anno
 var clusterPosition: ClusterPosition // The position of the cluster annotation. The default is `.nearCenter`.
 ```
 
-## ClusterManagerDelegate
+### ClusterManagerDelegate
 
 The  `ClusterManagerDelegate` protocol provides a number of functions to manage clustering and configure cells.
 
