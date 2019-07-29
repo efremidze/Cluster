@@ -82,7 +82,7 @@ open class ClusterManager {
 	
 	/**
 	 The distance in meters from contested location when the annotations have the same coordinate.
-	
+
 	 The default is 3.
 	 */
 	open var distanceFromContestedLocation: Double = 3
