@@ -79,13 +79,13 @@ open class ClusterManager {
      The default is true.
      */
     open var shouldDistributeAnnotationsOnSameCoordinate: Bool = true
-	
-	/**
-	 The distance in meters from contested location when the annotations have the same coordinate.
 
-	 The default is 3.
-	 */
-	open var distanceFromContestedLocation: Double = 3
+    /**
+     The distance in meters from contested location when the annotations have the same coordinate.
+
+     The default is 3.
+    */
+    open var distanceFromContestedLocation: Double = 3
 
     /**
      The position of the cluster annotation.
