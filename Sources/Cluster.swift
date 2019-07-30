@@ -81,6 +81,13 @@ open class ClusterManager {
     open var shouldDistributeAnnotationsOnSameCoordinate: Bool = true
     
     /**
+     The distance in meters from contested location when the annotations have the same coordinate.
+
+     The default is 3.
+    */
+    open var distanceFromContestedLocation: Double = 3
+
+    /**
      The position of the cluster annotation.
      */
     public enum ClusterPosition {
@@ -323,10 +330,9 @@ open class ClusterManager {
             for value in hash.values where value.count > 1 {
                 for (index, annotation) in value.enumerated() {
                     tree.remove(annotation)
-                    let distanceFromContestedLocation = 3 * Double(value.count) / 2
                     let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
                     let bearing = radiansBetweenAnnotations * Double(index)
-                    (annotation as? MKPointAnnotation)?.coordinate = annotation.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: distanceFromContestedLocation)
+                    (annotation as? MKPointAnnotation)?.coordinate = annotation.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: self.distanceFromContestedLocation)
                     tree.add(annotation)
                 }
             }
