@@ -213,6 +213,7 @@ extension Tests {
         let expectation = self.expectation(description: "Clustering")
         expectation.assertForOverFulfill = true
         
+        self.measure {
         for i in 0...100 {
             DispatchQueue.global().async {
                 manager.clusteredAnnotations(zoomScale: self.zoomScale, visibleMapRect: self.mapRect) { finished in
@@ -221,6 +222,7 @@ extension Tests {
                     }
                 }
             }
+        }
         }
         
         let result = XCTWaiter.wait(for: [expectation], timeout: 10)

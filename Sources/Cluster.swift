@@ -43,7 +43,16 @@ public extension ClusterManagerDelegate {
 
 open class ClusterManager {
     
-    var tree = QuadTree(rect: .world)
+    class Data {
+        var tree = QuadTree(rect: .world)
+        var visibleAnnotations = [MKAnnotation]()
+    }
+    @Atomic var data = Data()
+    
+    var tree: QuadTree {
+        get { return data.tree }
+        set { data.tree = newValue }
+    }
     
     /**
      The current zoom level of the visible map region.
@@ -123,27 +132,25 @@ open class ClusterManager {
      The objects in this array must adopt the MKAnnotation protocol. If no annotations are associated with the cluster manager, the value of this property is an empty array.
      */
     open var annotations: [MKAnnotation] {
-        return dispatchQueue.sync {
-            tree.annotations(in: .world)
-        }
+        tree.annotations(in: .world)
     }
     
     /**
      The list of visible annotations associated.
      */
-    open var visibleAnnotations = [MKAnnotation]()
+    open var visibleAnnotations: [MKAnnotation] {
+        get { return data.visibleAnnotations }
+        set { data.visibleAnnotations = newValue }
+    }
     
     /**
      The list of nested visible annotations associated.
      */
     open var visibleNestedAnnotations: [MKAnnotation] {
-        return dispatchQueue.sync {
-            visibleAnnotations.reduce([MKAnnotation](), { $0 + (($1 as? ClusterAnnotation)?.annotations ?? [$1]) })
-        }
+        visibleAnnotations.reduce([MKAnnotation](), { $0 + (($1 as? ClusterAnnotation)?.annotations ?? [$1]) })
     }
     
     let operationQueue = OperationQueue.serial
-    let dispatchQueue = DispatchQueue(label: "com.cluster.concurrentQueue", attributes: .concurrent)
     
     open weak var delegate: ClusterManagerDelegate?
     
@@ -157,9 +164,7 @@ open class ClusterManager {
      */
     open func add(_ annotation: MKAnnotation) {
         operationQueue.cancelAllOperations()
-        dispatchQueue.async(flags: .barrier) { [weak self] in
-            self?.tree.add(annotation)
-        }
+        tree.add(annotation)
     }
     
     /**
@@ -170,10 +175,8 @@ open class ClusterManager {
      */
     open func add(_ annotations: [MKAnnotation]) {
         operationQueue.cancelAllOperations()
-        dispatchQueue.async(flags: .barrier) { [weak self] in
-            for annotation in annotations {
-                self?.tree.add(annotation)
-            }
+        for annotation in annotations {
+            tree.add(annotation)
         }
     }
     
@@ -185,9 +188,7 @@ open class ClusterManager {
      */
     open func remove(_ annotation: MKAnnotation) {
         operationQueue.cancelAllOperations()
-        dispatchQueue.async(flags: .barrier) { [weak self] in
-            self?.tree.remove(annotation)
-        }
+        tree.remove(annotation)
     }
     
     /**
@@ -198,10 +199,8 @@ open class ClusterManager {
      */
     open func remove(_ annotations: [MKAnnotation]) {
         operationQueue.cancelAllOperations()
-        dispatchQueue.async(flags: .barrier) { [weak self] in
-            for annotation in annotations {
-                self?.tree.remove(annotation)
-            }
+        for annotation in annotations {
+            tree.remove(annotation)
         }
     }
     
@@ -210,9 +209,7 @@ open class ClusterManager {
      */
     open func removeAll() {
         operationQueue.cancelAllOperations()
-        dispatchQueue.async(flags: .barrier) { [weak self] in
-            self?.tree = QuadTree(rect: .world)
-        }
+        tree = QuadTree(rect: .world)
     }
     
     /**
@@ -267,9 +264,7 @@ open class ClusterManager {
             distributeAnnotations(tree: tree, mapRect: visibleMapRect)
         }
         
-        let allAnnotations = dispatchQueue.sync {
-            clusteredAnnotations(tree: tree, mapRects: mapRects, zoomLevel: zoomLevel)
-        }
+        let allAnnotations = clusteredAnnotations(tree: tree, mapRects: mapRects, zoomLevel: zoomLevel)
         
         guard !isCancelled else { return (toAdd: [], toRemove: []) }
         
@@ -284,10 +279,8 @@ open class ClusterManager {
             toRemove.subtract(toKeep)
         }
         
-        dispatchQueue.async(flags: .barrier) { [weak self] in
-            self?.visibleAnnotations.subtract(toRemove)
-            self?.visibleAnnotations.add(toAdd)
-        }
+        visibleAnnotations.subtract(toRemove)
+        visibleAnnotations.add(toAdd)
         
         return (toAdd: toAdd, toRemove: toRemove)
     }
@@ -322,19 +315,15 @@ open class ClusterManager {
     }
     
     func distributeAnnotations(tree: QuadTree, mapRect: MKMapRect) {
-        let annotations = dispatchQueue.sync {
-            tree.annotations(in: mapRect)
-        }
+        let annotations = tree.annotations(in: mapRect)
         let hash = Dictionary(grouping: annotations) { $0.coordinate }
-        dispatchQueue.async(flags: .barrier) {
-            for value in hash.values where value.count > 1 {
-                for (index, annotation) in value.enumerated() {
-                    tree.remove(annotation)
-                    let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
-                    let bearing = radiansBetweenAnnotations * Double(index)
-                    (annotation as? MKPointAnnotation)?.coordinate = annotation.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: self.distanceFromContestedLocation)
-                    tree.add(annotation)
-                }
+        for value in hash.values where value.count > 1 {
+            for (index, annotation) in value.enumerated() {
+                tree.remove(annotation)
+                let radiansBetweenAnnotations = (.pi * 2) / Double(value.count)
+                let bearing = radiansBetweenAnnotations * Double(index)
+                (annotation as? MKPointAnnotation)?.coordinate = annotation.coordinate.coordinate(onBearingInRadians: bearing, atDistanceInMeters: self.distanceFromContestedLocation)
+                tree.add(annotation)
             }
         }
     }
