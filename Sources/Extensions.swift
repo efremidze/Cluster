@@ -97,6 +97,7 @@ extension MKPolyline {
 extension OperationQueue {
     static var serial: OperationQueue {
         let queue = OperationQueue()
+        queue.name = "com.cluster.serialQueue"
         queue.maxConcurrentOperationCount = 1
         return queue
     }
