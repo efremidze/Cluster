@@ -1,5 +1,10 @@
 # Change log
 
+## [Version 3.0.3](https://github.com/efremidze/Cluster/releases/tag/3.0.3)
+Released on 2019-11-18
+
+- Reverted Atomic Property Wrapper
+
 ## [Version 3.0.2](https://github.com/efremidze/Cluster/releases/tag/3.0.2)
 Released on 2019-10-11
 
