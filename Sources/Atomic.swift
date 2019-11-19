@@ -9,7 +9,7 @@
 import Foundation
 
 @propertyWrapper
-final class Atomic<Value> {
+class Atomic<Value> {
     private let queue = DispatchQueue(label: "Atomic serial queue", attributes: .concurrent)
     
     private var _value: Value
@@ -19,17 +19,7 @@ final class Atomic<Value> {
     }
     
     var wrappedValue: Value {
-        get { return load() }
-        set { store(newValue: newValue) }
-    }
-    
-    func load() -> Value {
-        return queue.sync { _value }
-    }
-    
-    func store(newValue: Value) {
-        queue.async(flags: .barrier) { [weak self] in
-            self?._value = newValue
-        }
+        get { return queue.sync { _value } }
+        set { queue.async(flags: .barrier) { self._value = newValue } }
     }
 }
