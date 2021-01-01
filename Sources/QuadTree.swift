@@ -78,9 +78,12 @@ extension QuadTreeNode: AnnotationsContainer {
     func add(_ annotation: MKAnnotation) -> Bool {
         guard rect.contains(annotation.coordinate) else { return false }
         
+        if annotations.count != QuadTreeNode.maxPointCapacity {
+            annotations.append(annotation)
+        }
+            
         switch type {
         case .leaf:
-            annotations.append(annotation)
             // if the max capacity was reached, become an internal node
             if annotations.count == QuadTreeNode.maxPointCapacity {
                 subdivide()
