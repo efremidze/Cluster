@@ -6,7 +6,7 @@
 //  Copyright © 2017 efremidze. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 //! Project version number for Cluster.
 FOUNDATION_EXPORT double ClusterVersionNumber;

@@ -23,6 +23,7 @@
 		8BFA2B801E9F7184001A80FB /* Cluster.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BFA2B5F1E9F7149001A80FB /* Cluster.framework */; };
 		8BFA2B811E9F7184001A80FB /* Cluster.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8BFA2B5F1E9F7149001A80FB /* Cluster.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8BFA2B861E9F71BD001A80FB /* Cluster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFA2B851E9F71BD001A80FB /* Cluster.swift */; };
+		BFD7F1C72983CD71005A30E7 /* NSTextField+TextProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18053D2983881100BBDC9D /* NSTextField+TextProperty.swift */; };
 		F45EDCB2234F9DF700A6270D /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45EDCB1234F9DF700A6270D /* Atomic.swift */; };
 		F4619D1B216C95FC00018B20 /* AnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4619D1A216C95FC00018B20 /* AnnotationView.swift */; };
 		F4AF970720F5EF1C008DB4E5 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AF970620F5EF1C008DB4E5 /* Tests.swift */; };
@@ -86,6 +87,7 @@
 		8BFA2B7A1E9F715B001A80FB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8BFA2B7C1E9F715B001A80FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8BFA2B851E9F71BD001A80FB /* Cluster.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cluster.swift; sourceTree = "<group>"; };
+		BF18053D2983881100BBDC9D /* NSTextField+TextProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSTextField+TextProperty.swift"; sourceTree = "<group>"; };
 		F45EDCB1234F9DF700A6270D /* Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
 		F4619D1A216C95FC00018B20 /* AnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationView.swift; sourceTree = "<group>"; };
 		F4AF970420F5EF1C008DB4E5 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -153,6 +155,7 @@
 				8B65CB031EA30BAB00753706 /* Extensions.swift */,
 				8BFA2B631E9F7149001A80FB /* Info.plist */,
 				8B03BCAF1EBE8A1500CC9EED /* QuadTree.swift */,
+				BF18053D2983881100BBDC9D /* NSTextField+TextProperty.swift */,
 			);
 			name = Cluster;
 			path = Sources;
@@ -336,6 +339,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFD7F1C72983CD71005A30E7 /* NSTextField+TextProperty.swift in Sources */,
 				8BFA2B861E9F71BD001A80FB /* Cluster.swift in Sources */,
 				8B5335101EA2C723005C0A31 /* Annotation.swift in Sources */,
 				8B03BCB01EBE8A1500CC9EED /* QuadTree.swift in Sources */,
@@ -547,7 +551,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.efremidze.Cluster;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -571,6 +579,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.efremidze.Cluster;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
