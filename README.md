@@ -48,9 +48,7 @@ The [Example](Example) is a great place to get started. It demonstrates how to:
 - configure the annotation view
 - configure the manager
 
-![Demo GIF](https://thumbs.gfycat.com/BoringUnhealthyAngelwingmussel-size_restricted.gif)
-
-[Demo Video](https://gfycat.com/BoringUnhealthyAngelwingmussel)
+<img src="/Images/demo.gif" width="250" />
 
 ```
 $ pod try Cluster
