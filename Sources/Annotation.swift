@@ -7,6 +7,14 @@
 //
 
 import MapKit
+#if os(macOS)
+import Cocoa
+public typealias CommonColor = NSColor
+public typealias CommonImage = NSImage
+#elseif os(iOS)
+public typealias CommonColor = UIColor
+public typealias CommonImage = UIImage
+#endif
 
 open class Annotation: MKPointAnnotation {
     // @available(swift, obsoleted: 6.0, message: "Please migrate to StyledClusterAnnotationView.")
@@ -44,6 +52,7 @@ open class ClusterAnnotation: Annotation {
  The view associated with your cluster annotations.
  */
 open class ClusterAnnotationView: MKAnnotationView {
+    #if os(iOS)
     open lazy var countLabel: UILabel = {
         let label = UILabel()
         label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -57,6 +66,27 @@ open class ClusterAnnotationView: MKAnnotationView {
         self.addSubview(label)
         return label
     }()
+    #endif
+    
+    #if os(macOS)
+    open lazy var countLabel: NSTextField = {
+        let label = NSTextField()
+        label.font = .boldSystemFont(ofSize: 13)
+        label.textColor = .white
+        label.drawsBackground = false
+        label.isSelectable = false
+        label.isEditable = false
+        label.isBezeled = false
+        label.alignment = .center
+        label.maximumNumberOfLines = 1
+        label.preferredMaxLayoutWidth = self.frame.width
+        label.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(label)
+        NSLayoutConstraint(item: label, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0).isActive = true
+        NSLayoutConstraint(item: label, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: -1).isActive = true
+        return label
+    }()
+    #endif
     
     open override var annotation: MKAnnotation? {
         didSet {
@@ -81,12 +111,12 @@ public enum ClusterAnnotationStyle {
      - `color`: The color of the annotation circle
      - `radius`: The radius of the annotation circle
      */
-    case color(UIColor, radius: CGFloat)
+    case color(CommonColor, radius: CGFloat)
     
     /**
      Displays the annotation as an image.
      */
-    case image(UIImage?)
+    case image(CommonImage?)
 }
 
 /**
@@ -142,14 +172,45 @@ open class StyledClusterAnnotationView: ClusterAnnotationView {
         }
     }
     
-    override open func layoutSubviews() {
-        super.layoutSubviews()
-        
+    // macOS's layer is optional, unlike iOS.
+    private func getLayer() -> CALayer? {
+        return layer
+    }
+    
+    private func layoutView() {
         if case .color = style {
-            layer.masksToBounds = true
-            layer.cornerRadius = image == nil ? bounds.width / 2 : 0
+            getLayer()?.masksToBounds = true
+            getLayer()?.cornerRadius = image == nil ? bounds.width / 2 : 0
+            #if os(iOS)
             countLabel.frame = bounds
+            #endif
         }
     }
     
+    #if os(iOS)
+    override open func layoutSubviews() {
+        super.layoutSubviews()
+        
+        self.layoutView()
+    }
+    #endif
+    
+    #if os(macOS)
+    open override func layout() {
+        super.layout()
+        
+        self.layoutView()
+    }
+    
+    var _backgroundColor = NSColor.clear
+    var backgroundColor: NSColor {
+        get {
+            return _backgroundColor
+        }
+        set {
+            getLayer()?.backgroundColor = newValue.cgColor
+            _backgroundColor = newValue
+        }
+    }
+    #endif
 }
