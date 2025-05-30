@@ -4,6 +4,6 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build
         run: set -o pipefail && xcodebuild -project "Cluster.xcodeproj" -scheme "Example" CODE_SIGNING_ALLOWED=NO clean build | xcpretty
