@@ -1,11 +1,11 @@
 ![Cluster](https://raw.githubusercontent.com/efremidze/Cluster/master/Images/logo.png)
 
-[![Build Status](https://travis-ci.org/efremidze/Cluster.svg?branch=master)](https://travis-ci.org/efremidze/Cluster)
-[![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![Language](https://img.shields.io/badge/Swift-5-orange.svg?style=flat)](https://swift.org)
-[![Version](https://img.shields.io/cocoapods/v/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
-[![License](https://img.shields.io/cocoapods/l/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
-[![Platform](https://img.shields.io/cocoapods/p/Cluster.svg?style=flat)](http://cocoapods.org/pods/Cluster)
+[![CI](https://github.com/efremidze/Cluster/actions/workflows/ci.yml/badge.svg)](https://github.com/efremidze/Cluster/actions/workflows/ci.yml)
+[![CocoaPods](https://img.shields.io/cocoapods/v/Cluster.svg)](https://cocoapods.org/pods/Cluster)
+[![Carthage](https://img.shields.io/badge/Carthage-compatible-brightgreen.svg)](https://github.com/Carthage/Carthage)
+[![SPM](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
+[![Swift](https://img.shields.io/badge/Swift-5.9+-orange.svg)](https://swift.org)
+[![License](https://img.shields.io/github/license/efremidze/Cluster.svg)](https://github.com/efremidze/Cluster/blob/master/LICENSE)
 
 Cluster is an easy map annotation clustering library. This repository uses an efficient method (QuadTree) to aggregate pins into a cluster.
 
