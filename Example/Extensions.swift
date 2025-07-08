@@ -10,7 +10,6 @@ import UIKit
 import MapKit
 
 extension UIImage {
-    
     func filled(with color: UIColor) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
         color.setFill()
@@ -26,11 +25,6 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return newImage
     }
-    
-    static let pin = UIImage(named: "pin")?.filled(with: .green)
-    static let pin2 = UIImage(named: "pin2")?.filled(with: .green)
-    static let me = UIImage(named: "me")?.filled(with: .blue)
-    
 }
 
 extension UIColor {
