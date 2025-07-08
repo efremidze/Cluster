@@ -34,8 +34,7 @@ Cluster is an easy map annotation clustering library. This repository uses an ef
 
 ## Requirements
 
-- iOS 8.0+
-- Xcode 9.0+
+- iOS 12.0+
 - Swift 5 (Cluster 3.x), Swift 4 (Cluster 2.x), Swift 3 (Cluster 1.x)
 
 ## Demo
