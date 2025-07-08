@@ -71,7 +71,7 @@ extension ViewController: MKMapViewDelegate {
         } else if let annotation = annotation as? MeAnnotation {
             let identifier = "Me"
             let annotationView = mapView.annotationView(of: MKAnnotationView.self, annotation: annotation, reuseIdentifier: identifier)
-            annotationView.image = .me
+            annotationView.image = UIImage.me.filled(with: .blue)
             return annotationView
         } else {
             let identifier = "Pin"
@@ -142,11 +142,11 @@ extension MKMapView {
         case .imageCount:
             let annotationView = self.annotationView(of: ImageCountClusterAnnotationView.self, annotation: annotation, reuseIdentifier: reuseIdentifier)
             annotationView.countLabel.textColor = .green
-            annotationView.image = .pin2
+            annotationView.image = UIImage.pin2.filled(with: .green)
             return annotationView
         case .image:
             let annotationView = self.annotationView(of: MKAnnotationView.self, annotation: annotation, reuseIdentifier: reuseIdentifier)
-            annotationView.image = .pin
+            annotationView.image = UIImage.pin.filled(with: .green)
             return annotationView
         }
     }

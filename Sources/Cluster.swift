@@ -9,7 +9,7 @@
 import CoreLocation
 import MapKit
 
-public protocol ClusterManagerDelegate: class {
+public protocol ClusterManagerDelegate: AnyObject {
     /**
      The size of each cell on the grid (The larger the size, the better the performance) at a given zoom level.
      
